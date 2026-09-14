@@ -6,8 +6,8 @@ This is a repository built by Group 5 for [OSU's CSE3902 class: Interactive Syst
 ### Authors:
 
 - Ayush Saggar
-  - GitHub: \[insert\]
-  - Contact: \[insert\]
+  - GitHub: [Podzied](https://github.com/Podzied)
+  - Contact: [saggar.9](mailto:saggar.9@osu.edu)
 - Baowen Liu
   - GitHub: [PowerSixxx](https://github.com/PowerSixxx)
   - Contact: [liu.11884@osu.edu](mailto:liu.11884@osu.edu)
