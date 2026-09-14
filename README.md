@@ -9,20 +9,18 @@ This is a repository built by Group 5 for [OSU's CSE3902 class: Interactive Syst
   - GitHub: \[insert\]
   - Contact: \[insert\]
 - Baowen Liu
-  - GitHub: \[insert\]
-  - Contact: \[insert\]
+  - GitHub: [PowerSixxx](https://github.com/PowerSixxx)
+  - Contact: [liu.11884@osu.edu](mailto:liu.11884@osu.edu)
 - Ethan Singh
-  - GitHub: \[insert\]
-  - Contact: \[insert\]
+  - GitHub: [ethansingh123](https://github.com/ethansingh123)
+  - Contact: [singh.2164@osu.edu](mailto:singh.2164@osu.edu)
 - Jack Rose
   - GitHub: [Ra4ster](https://github.com/ra4ster)
   - Contact: [rose.1775@osu.edu](mailto:rose.1775@osu.edu)
-- Trish Pham
-  - GitHub: \[insert\]
-  - Contact: \[insert\]
 - Tyler Brown
-  - GitHub: \[insert\]
-  - Contact: \[insert\]
+  - GitHub: [Brownt13487](https://github.com/Brownt13487)
+  - Contact: [brown.9452@osu.edu](mailto:brown.9452@osu.edu)
+- ~~Trish Pham~~
 
 ## How to use Git:
 
