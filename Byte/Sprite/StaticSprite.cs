@@ -1,0 +1,32 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Sprint0.Sprite;
+
+/// <summary>
+/// Non-moving, non-animating sprite.
+/// </summary>
+public class StaticSprite : ISprite
+{
+    private readonly Texture2D texture;
+    private readonly Vector2 position;
+    public Color Color { get; set; }
+    private float scale;
+    private readonly Rectangle sourceRectangle;
+
+    public StaticSprite(Texture2D texture, Vector2 position, Color color, Rectangle sourceRectangle, float scale = 1f)
+    {
+        this.texture = texture;
+        this.position = position;
+        Color = color;
+        this.scale = scale;
+        this.sourceRectangle = sourceRectangle;
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangle, Color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+    public void Update(GameTime gameTime)
+    {
+        // Does nothing! It is not moving or animating.
+    }
+}
