@@ -1,3 +1,6 @@
+
+#----------------------------- Global Properties ----------------------------#
+
 /outputDir:bin/$(Platform)
 /intermediateDir:obj/$(Platform)
 /platform:DesktopGL
@@ -5,12 +8,10 @@
 /profile:Reach
 /compress:False
 
-#begin Roboto.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Roboto.spritefont
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
 
 #begin Bowser.png
 /importer:TextureImporter
@@ -23,3 +24,23 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Bowser.png
+
+#begin linkSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:linkSheet.png
+
+#begin Roboto.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Roboto.spritefont
+

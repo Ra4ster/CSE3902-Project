@@ -6,7 +6,7 @@ namespace Byte.Player
 {
     public interface IPlayerState
     {
-        public IPlayerState Update();
+        public IPlayerState Update(Link link);
 
         public void Draw();
     }
