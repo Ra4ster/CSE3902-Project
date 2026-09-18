@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Sprint0.Controller;
-using Sprint0.Sprite;
+using Byte.Controller;
+using Byte.Sprite;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
