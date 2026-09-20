@@ -13,4 +13,3 @@ namespace Byte.Item
         Vector2 Position { get; set; }
     }
 }
-}
