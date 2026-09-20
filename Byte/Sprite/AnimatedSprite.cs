@@ -3,11 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Sprint0.Sprite;
 
+
 /// <summary>
 /// Non-moving, animated sprite
 /// </summary>
 public class AnimatedSprite : ISprite
 {
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private readonly Texture2D texture;
     private readonly Vector2 position;
     public Color Color { get; set; }

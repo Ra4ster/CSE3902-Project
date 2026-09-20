@@ -1,17 +1,23 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Byte.Command;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Sprint0.Controller;
 using Sprint0.Sprite;
+using Byte.Player;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
 /// </summary>
 public class Game : Microsoft.Xna.Framework.Game
 {
+
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static Rectangle[] quadrants = new Rectangle[4];
+
+    public Link link;
+    public ISprite linkSprite;
 
     private Texture2D? pixelTexture;
 
@@ -45,10 +51,16 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         Texture2D bowser = Content.Load<Texture2D>("Bowser");
         SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
+
+        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet");
+
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
         pixelTexture.SetData([Color.White]);
+
+        Vector2 linkPos = new Vector2(220.0f);
+        link = new Link(linkPos, new StaticSprite(linkSheet,linkPos,Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter,linkSheet,mouseControls, kbControls);
 
         Rectangle[] bowserFrames =
         {
@@ -74,12 +86,19 @@ public class Game : Microsoft.Xna.Framework.Game
         Vector2 movingPos = new Vector2(500.0f);
         Vector2 fullPos = new Vector2(500.0f);
 
+        link.sourceRects = new Rectangle[10];
+        
+
+
         Vector2 textPos = new Vector2(50.0f, 1450.0f);
-        TextSprite = new TextSprite(roboto, "Jack Rose\nSprites From: https://www.spriters-resource.com/game_boy_advance/mlss/asset/241181/", ref textPos, Color.DarkRed);
 
         Vector2 velocityX = new Vector2(-400.0f, 0.0f);
         Vector2 velocityY = new Vector2(0.0f, 800.0f);
 
+        ICommand moveUpCommand = new MoveUpCommand(this, link);
+        ICommand moveDownCommand = new MoveDownCommand(this, link);
+        ICommand moveLeftCommand = new MoveLeftCommand(this, link);
+        ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
         ICommand staticSpriteCommand = new SetStaticSpriteCommand(this, bowser, ref staticPos, Color.White, ref bowserFrames[0], 4.0f);
         ICommand animatedSpriteCommand = new SetAnimatedSpriteCommand(this, bowser, ref animatedPos, Color.White, bowserFrames, 0.1f, 4.0f);
@@ -87,6 +106,10 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand movingAnimatedSpriteCommand = new MovingAnimatedSpriteCommand(this, bowser, ref fullPos, ref velocityX, Color.White, bowserFrames, 0.1f, 4.0f);
 
         keybindings.Add(Keys.D0, quitCommand);
+        keybindings.Add(Keys.W, moveUpCommand);
+        keybindings.Add(Keys.S, moveDownCommand);
+        keybindings.Add(Keys.A, moveLeftCommand);
+        keybindings.Add(Keys.D, moveRightCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
         keybindings.Add(Keys.D1, staticSpriteCommand);
         leftClickBindings.Add(quadrants[0], staticSpriteCommand);
@@ -98,15 +121,16 @@ public class Game : Microsoft.Xna.Framework.Game
         leftClickBindings.Add(quadrants[3], movingAnimatedSpriteCommand);
 
         base.LoadContent();
-        staticSpriteCommand.Execute();
+        staticSpriteCommand.Execute(new GameTime());
     }
 
     protected override void Update(GameTime gameTime)
     {
-        kbControls.Update();
-        mouseControls.Update();
+        kbControls.Update(gameTime);
+        mouseControls.Update(gameTime);
         ActiveSprite?.Update(gameTime);
         TextSprite?.Update(gameTime);
+        link.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -121,6 +145,7 @@ public class Game : Microsoft.Xna.Framework.Game
         SpritePainter?.Draw(pixelTexture, quadrants[1], Color.LightGreen);
         SpritePainter?.Draw(pixelTexture, quadrants[2], Color.LightSkyBlue);
         SpritePainter?.Draw(pixelTexture, quadrants[3], Color.LightGoldenrodYellow);
+        link.state.Draw(link);
         // Sprites
         ActiveSprite?.Draw(SpritePainter!);
         TextSprite?.Draw(SpritePainter!);

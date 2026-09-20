@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Sprint0.Sprite;
 
 namespace Byte.Player
 {
@@ -16,16 +17,22 @@ namespace Byte.Player
 
         public Vector2 Direction { get; set; }
 
+        public ISprite currentSprite { get; set; }
 
-        public void Update();
+        public SpriteBatch spriteBatch { get; set; }
+
+
+        public void Update(GameTime gameTime);
 
         public void TakeDamage();
 
-        public void Move(Vector2 direction);
+        public void Move(GameTime gameTime);
 
         public void Attack();
 
         public void UseItem();
+
+        public void GetNewState(IPlayerState state);
 
         
 
