@@ -12,14 +12,14 @@
 /processorParam:TextureFormat=Compressed
 /build:Roboto.spritefont
 
-#begin Bowser.png
+#begin DungeonEnemies.png
 /importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=150,203,255,255
+/importer:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
+/processorParam:PremultipyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Bowser.png
+/build:DungeonEnemies.png
