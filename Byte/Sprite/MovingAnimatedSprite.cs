@@ -8,6 +8,7 @@ using Sprint0.Sprite;
 /// </summary>
 public class MovingAnimatedSprite : ISprite
 {
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private Vector2 position;
     private Vector2 velocity;
     private Texture2D texture;
@@ -21,7 +22,7 @@ public class MovingAnimatedSprite : ISprite
     private float animationTimer = 0;
     private float frameDuration;
 
-    public MovingAnimatedSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
+    public MovingAnimatedSprite(Texture2D texture, Vector2 position,  Vector2 velocity, Color color,
     Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
     {
         this.texture = texture;
@@ -35,7 +36,7 @@ public class MovingAnimatedSprite : ISprite
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, Vector2.Zero, scale, Effects, 0f);
     }
 
     public void Update(GameTime gameTime)
@@ -43,6 +44,7 @@ public class MovingAnimatedSprite : ISprite
         float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         // 1. Moving
+        /*
         if (position.X < Game.WINDOW_SIZE.Left || position.X > Game.WINDOW_SIZE.Right - (sourceRectangles[currentFrame].Width * scale))
             velocity = new Vector2(velocity.X * -1.0f, velocity.Y);
 
@@ -52,6 +54,7 @@ public class MovingAnimatedSprite : ISprite
             velocity = new Vector2(velocity.X, velocity.Y * -1.0f);
 
         position.Y += velocity.Y * seconds;
+        */
 
         // 2. Animating
         animationTimer += seconds;
@@ -62,9 +65,10 @@ public class MovingAnimatedSprite : ISprite
         }
     }
 
-    public void SetPos(int x, int y)
+    public void SetPos(Vector2 position)
     {
-        position.X = x;
-        position.Y = y;
+        //position.X = x;
+        //position.Y = y;
+        this.position = position;
     }
 }

@@ -25,5 +25,5 @@ public class SetAnimatedSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute() => game.ActiveSprite = new AnimatedSprite(texture, ref position, color, sourceRects, frameDuration, scale);
+    public void Execute(GameTime gameTime) => game.ActiveSprite = new AnimatedSprite(texture, ref position, color, sourceRects, frameDuration, scale);
 }

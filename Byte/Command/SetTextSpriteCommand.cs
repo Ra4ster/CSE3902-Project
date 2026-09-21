@@ -21,5 +21,5 @@ public class SetTextSpriteCommand : ICommand
         this.color = color;
         this.scale = scale;
     }
-    public void Execute() => game.ActiveSprite = new TextSprite(spriteFont, text, ref position, color, scale);
+    public void Execute(GameTime gameTime) => game.ActiveSprite = new TextSprite(spriteFont, text, ref position, color, scale);
 }

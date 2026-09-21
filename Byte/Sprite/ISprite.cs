@@ -5,7 +5,7 @@ namespace Sprint0.Sprite;
 
 public interface ISprite
 {
-    
+    public SpriteEffects Effects { get; set; }
     /// <summary>
     /// Draws this to the screen using the sprite batch.
     /// </summary>
