@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -22,5 +23,8 @@ public class SetMovingSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute() => game.ActiveSprite = new MovingSprite(texture, ref position, ref velocity, color, ref sourceRect, scale);
+    public void Execute()
+    {
+        throw new NotImplementedException();
+    }
 }

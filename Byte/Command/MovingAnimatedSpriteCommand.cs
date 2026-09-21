@@ -28,5 +28,8 @@ public class MovingAnimatedSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute() => game.ActiveSprite = new MovingAnimatedSprite(texture, ref position, ref velocity, color, sourceRects, frameDuration, scale);
+    public void Execute()
+    {
+        throw new NotImplementedException();
+    }
 }

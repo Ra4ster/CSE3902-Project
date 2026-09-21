@@ -22,5 +22,8 @@ public class SetStaticSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute() => game.ActiveSprite = new StaticSprite(texture, position, color, rectangle, scale);
+    public void Execute()
+    {
+        throw new NotImplementedException();
+    }
 }
