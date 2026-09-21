@@ -52,7 +52,7 @@ public class Game : Microsoft.Xna.Framework.Game
         Texture2D bowser = Content.Load<Texture2D>("Bowser");
         SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
 
-        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet");
+        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet3");
 
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
@@ -95,6 +95,7 @@ public class Game : Microsoft.Xna.Framework.Game
         Vector2 velocityX = new Vector2(-400.0f, 0.0f);
         Vector2 velocityY = new Vector2(0.0f, 800.0f);
 
+        ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
         ICommand moveDownCommand = new MoveDownCommand(this, link);
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
@@ -119,6 +120,7 @@ public class Game : Microsoft.Xna.Framework.Game
         leftClickBindings.Add(quadrants[2], movingSpriteCommand);
         keybindings.Add(Keys.D4, movingAnimatedSpriteCommand);
         leftClickBindings.Add(quadrants[3], movingAnimatedSpriteCommand);
+        keybindings.Add(Keys.I, attackCommand);
 
         base.LoadContent();
         staticSpriteCommand.Execute(new GameTime());

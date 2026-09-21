@@ -11,7 +11,7 @@ namespace Byte.Command
         private Link player;
         Game gameGet;
 
-        float speed = 2.0f;
+        
 
         public MoveDownCommand(Game game, Link link)
         {
