@@ -1,29 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Sprite.Enemy
 {
+    /// <summary>
+    /// An enemy that patrols cardinal directions.
+    /// </summary>
+    /// <seealso cref="SeekingEnemy"/>
     internal class PatrolEnemy : AbstractEnemy
     {
-        private readonly Vector2[] patrolPath;
-        private int currentWaypoint;
+        protected readonly Vector2[] patrolPath;
+        protected int currentWaypoint;
         protected float patrolSpeed { get; }
 
-        /// <summary>
-        /// Initializer for patroller
-        /// </summary>
-        /// <param name="texture">Texture of sprite</param>
-        /// <param name="position">See MA Sprite</param>
-        /// <param name="velocity">See MA Sprite</param>
-        /// <param name="color">See MA Sprite</param>
-        /// <param name="sourceRectangles">See MA Sprite</param>
-        /// <param name="frameDuration">See MA Sprite</param>
-        /// <param name="scale">See MA Sprite</param>
-        /// <param name="patrolPath">Path of points to patrol around</param>
-        /// <param name="patrolSpeed">Speed of movement between points</param>
         internal PatrolEnemy(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
             Rectangle[] sourceRectangles, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed)
             : base(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale)
@@ -35,25 +24,32 @@ namespace Byte.Sprite.Enemy
 
         protected override void Move(GameTime gameTime)
         {
-            Vector2 direction = patrolPath[currentWaypoint] - position;
+            Vector2 target = patrolPath[currentWaypoint];
 
-            if (direction.LengthSquared() < 25f)
+            float dx = target.X - position.X;
+            float dy = target.Y - position.Y;
+
+            const float threshold = 2f;
+
+            if (Math.Abs(dx) + Math.Abs(dy) <= threshold)
             {
-                currentWaypoint++;
+                position = target;
+                currentWaypoint = (currentWaypoint + 1) % patrolPath.Length;
 
-                if (currentWaypoint >= patrolPath.Length)
-                    currentWaypoint = 0;
-
-                direction = patrolPath[currentWaypoint] - position;
+                target = patrolPath[currentWaypoint];
+                dx = target.X - position.X;
+                dy = target.Y - position.Y;
             }
 
-            if (direction != Vector2.Zero)
+            if (Math.Abs(dx) > threshold)
+                velocity = new Vector2(Math.Sign(dx) * patrolSpeed, 0f);
+            else if (Math.Abs(dy) > threshold)
             {
-                direction.Normalize();
-                velocity = direction * patrolSpeed;
+                position.X = target.X;
+                velocity = new Vector2(0f, Math.Sign(dy) * patrolSpeed);
             }
-
-            base.Update(gameTime);
+            else
+                velocity = Vector2.Zero;
         }
     }
 }

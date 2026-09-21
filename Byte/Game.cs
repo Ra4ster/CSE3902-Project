@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
 using Byte.Sprite;
+using Byte.Sprite.Enemy;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
@@ -14,6 +15,8 @@ public class Game : Microsoft.Xna.Framework.Game
     public static Rectangle[] quadrants = new Rectangle[4];
 
     private Texture2D? pixelTexture;
+
+    private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
 
     private SpriteBatch? SpritePainter { get; set; }
 
@@ -38,9 +41,35 @@ public class Game : Microsoft.Xna.Framework.Game
         graphicsDeviceManager.PreferredBackBufferHeight = WINDOW_SIZE.Height;
     }
 
+    private void AddEnemies(Texture2D enemyTex)
+    {
+        enemies.Add(EnemyFactory.CreateStalfos(enemyTex,
+        [
+            new Vector2(100, 100),
+            new Vector2(100, 300),
+            new Vector2(300, 300),
+            new Vector2(300, 100)
+        ], 200f));
+
+        enemies.Add(EnemyFactory.CreateKeese(enemyTex,
+        [
+            new Vector2(500, 600),
+            new Vector2(350, 450),
+            new Vector2(300, 400),
+            new Vector2(250, 450)
+        ], 200f));
+
+        enemies.Add(EnemyFactory.CreateGel(enemyTex,
+        [
+            new Vector2(300, 800),
+            new Vector2(800, 800)
+        ], 200f, 1.5f));
+    }
+
     protected override void LoadContent()
     {
         SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
+        Texture2D enemyTex = Content.Load<Texture2D>("DungeonEnemies");
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
@@ -56,10 +85,9 @@ public class Game : Microsoft.Xna.Framework.Game
         quadrants[2] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top + topHeight, leftWidth, bottomHeight);
         quadrants[3] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top + topHeight, rightWidth, bottomHeight);
 
-        Vector2 velocityX = new Vector2(-400.0f, 0.0f);
-        Vector2 velocityY = new Vector2(0.0f, 800.0f);
-
         ICommand quitCommand = new QuitCommand(this);
+
+        AddEnemies(enemyTex);
 
         keybindings.Add(Keys.D0, quitCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
@@ -71,6 +99,7 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         kbControls.Update();
         mouseControls.Update();
+        foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -78,13 +107,20 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         GraphicsDevice.Clear(Color.White);
 
-        SpritePainter?.Begin();
+        SpritePainter?.Begin(
+            sortMode: SpriteSortMode.Deferred,
+            blendState: BlendState.NonPremultiplied,
+            samplerState: SamplerState.PointClamp
+    );
 
         // Quadrants
         SpritePainter?.Draw(pixelTexture, quadrants[0], Color.LightPink);
         SpritePainter?.Draw(pixelTexture, quadrants[1], Color.LightGreen);
         SpritePainter?.Draw(pixelTexture, quadrants[2], Color.LightSkyBlue);
         SpritePainter?.Draw(pixelTexture, quadrants[3], Color.LightGoldenrodYellow);
+
+        foreach (AbstractEnemy enemy in enemies)
+            enemy.Draw(SpritePainter!);
 
         SpritePainter?.End();
 

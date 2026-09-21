@@ -12,7 +12,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Roboto.spritefont
 
-#begin DungeonEnemies.png
+#begin DungeonEnemies
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255

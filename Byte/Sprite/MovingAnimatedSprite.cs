@@ -7,43 +7,51 @@ using Byte.Sprite;
 /// </summary>
 public class MovingAnimatedSprite : ISprite
 {
-    protected Vector2 position { get; set; }
-    protected Vector2 velocity { get; set; }
+    protected Vector2 position;
+    protected Vector2 velocity;
 
-    private Texture2D texture;
-    public Color Color { get; set; }
+    protected Texture2D texture;
+    protected Color color { get; set; }
 
-    private float scale;
+    protected float scale;
 
-    private Rectangle[] sourceRectangles;
+    protected SpriteEffects spriteEffects;
 
-    private int currentFrame;
-    private float animationTimer = 0;
-    private float frameDuration;
+    protected Rectangle[] sourceRectangles;
+
+    protected int currentFrame;
+    protected float animationTimer = 0;
+    protected float frameDuration;
 
     public MovingAnimatedSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
-        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
+        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f, SpriteEffects spriteEffects = SpriteEffects.None)
     {
         this.position = position;
         this.velocity = velocity;
         this.texture = texture;
-        Color = color;
+        this.color = color;
         this.sourceRectangles = sourceRectangles;
         this.frameDuration = frameDuration;
         this.scale = scale;
+        this.spriteEffects = spriteEffects;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public virtual void Draw(SpriteBatch spriteBatch)
     {
+        Vector2 drawPosition = new Vector2(
+            MathF.Round(position.X),
+            MathF.Round(position.Y)
+        );
+
         spriteBatch.Draw(
             texture,
-            position,
+            drawPosition,
             sourceRectangles[currentFrame],
-            Color,
+            color,
             0f,
             Vector2.Zero,
             scale,
-            SpriteEffects.None,
+            spriteEffects,
             0f);
     }
 
