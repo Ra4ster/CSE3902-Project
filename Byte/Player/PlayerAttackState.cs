@@ -12,10 +12,10 @@ namespace Byte.Player
 
         Rectangle[] attackSouthFrames =
         {
-            new Rectangle(1,47,16,16),
-            new Rectangle(18,47,16,26),
-            new Rectangle(35,47,16,22),
-            new Rectangle(52,47,16,18)
+            new Rectangle(1,47,16,14),
+            new Rectangle(19,47,14,26),
+            new Rectangle(35,47,15,22),
+            new Rectangle(52,47,15,18)
 
         };
      
@@ -30,9 +30,9 @@ namespace Byte.Player
         Rectangle[] attackNorthFrames =
        {
             new Rectangle(1,109,16,16),
-            new Rectangle(18,97,16,27),
-            new Rectangle(36,98,16,26),
-            new Rectangle(52,106,16,18)
+            new Rectangle(18,97,14,27),
+            new Rectangle(36,98,14,26),
+            new Rectangle(52,106,14,18)
 
         };
 

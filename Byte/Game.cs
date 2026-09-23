@@ -52,7 +52,7 @@ public class Game : Microsoft.Xna.Framework.Game
         Texture2D bowser = Content.Load<Texture2D>("Bowser");
         SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
 
-        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet3");
+        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet4");
 
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
