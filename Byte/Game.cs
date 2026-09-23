@@ -43,7 +43,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
     private void AddEnemies(Texture2D enemyTex)
     {
-        enemies.Add(EnemyFactory.CreateStalfos(enemyTex,
+        enemies.Add(EnemyFactory.Instance.CreateStalfos(enemyTex,
         [
             new Vector2(100, 100),
             new Vector2(100, 300),
@@ -51,7 +51,7 @@ public class Game : Microsoft.Xna.Framework.Game
             new Vector2(300, 100)
         ], 200f));
 
-        enemies.Add(EnemyFactory.CreateKeese(enemyTex,
+        enemies.Add(EnemyFactory.Instance.CreateKeese(enemyTex,
         [
             new Vector2(500, 600),
             new Vector2(350, 450),
@@ -59,7 +59,7 @@ public class Game : Microsoft.Xna.Framework.Game
             new Vector2(250, 450)
         ], 200f));
 
-        enemies.Add(EnemyFactory.CreateGel(enemyTex,
+        enemies.Add(EnemyFactory.Instance.CreateGel(enemyTex,
         [
             new Vector2(300, 800),
             new Vector2(800, 800)
@@ -68,7 +68,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
     protected override void LoadContent()
     {
-        SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
+        // SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
         Texture2D enemyTex = Content.Load<Texture2D>("DungeonEnemies");
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
@@ -85,10 +85,10 @@ public class Game : Microsoft.Xna.Framework.Game
         quadrants[2] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top + topHeight, leftWidth, bottomHeight);
         quadrants[3] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top + topHeight, rightWidth, bottomHeight);
 
-        ICommand quitCommand = new QuitCommand(this);
-
         AddEnemies(enemyTex);
 
+
+        ICommand quitCommand = new QuitCommand(this);
         keybindings.Add(Keys.D0, quitCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
 

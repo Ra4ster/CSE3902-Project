@@ -5,12 +5,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Sprite.Enemy
 {
-    internal static class EnemyFactory
+    internal class EnemyFactory
     {
         private const float SCALE = 10.0f;
         private const float FRAME_DURATION = 0.08f;
 
-        public static AbstractEnemy CreateStalfos(
+        private Texture2D enemyTex;
+
+        private EnemyFactory() { }
+
+        private static EnemyFactory instance = new EnemyFactory();
+
+        public static EnemyFactory Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+        public AbstractEnemy CreateStalfos(
             Texture2D texture,
             Vector2[] patrolPath,
             float speed)
@@ -19,14 +33,14 @@ namespace Byte.Sprite.Enemy
             return new Stalfos(texture, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
         }
 
-        public static AbstractEnemy CreateKeese(Texture2D texture,
+        public AbstractEnemy CreateKeese(Texture2D texture,
         Vector2[] patrolPath, float speed)
         {
             Vector2 velocity = Vector2.Zero;
             return new Keese(texture, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
         }
 
-        public static AbstractEnemy CreateGel(Texture2D texture, Vector2[] patrolPath, float speed, float waitDuration)
+        public AbstractEnemy CreateGel(Texture2D texture, Vector2[] patrolPath, float speed, float waitDuration)
         {
             Vector2 velocity = Vector2.Zero;
             return new Gel(texture, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed, waitDuration);
