@@ -64,6 +64,14 @@ public class Game : Microsoft.Xna.Framework.Game
         int topHeight = WINDOW_SIZE.Height / 2;
         int bottomHeight = WINDOW_SIZE.Height - topHeight;
 
+
+        //Items
+        Rectangle[] rupeeFrames;
+        Rectangle[] boomerangFrames;
+        Rectangle[] bowFrames;
+        Rectangle[] heartFrames;
+        Rectangle[] bombFrames;
+
         quadrants[0] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top, leftWidth, topHeight);
         quadrants[1] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top, rightWidth, topHeight);
         quadrants[2] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top + topHeight, leftWidth, bottomHeight);

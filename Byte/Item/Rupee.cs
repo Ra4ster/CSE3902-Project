@@ -8,56 +8,36 @@ namespace Byte.Item
 {
     internal class Rupee
     {
-        public Vector2 Position { get; set; }
+        private readonly Texture2D texture;
+        private readonly Vector2 position;
+        public Color Color { get; set; }
 
-        private Texture2D spriteSheet;
-        private List<Rectangle> sourceRectangles;
-        private int currentFrame;
-        private double timer;
-        private double frameInterval = 5000;
-        private int spriteSheetPosX;
-        private int spriteSheetPosY;
         private Rectangle[] sourceRectangles;
-        private int frameWidth;
-        private int frameHeight;
-        public Rupee(Texture2D texture, Vector2 position)
-        {
-            spriteSheet = texture;
-            Position = position;
-            currentFrame = 0;
-            timer = 0;
+        private float scale;
+        private readonly double frameDuration;
 
-            sourceRectangles = new List<Rectangle>
-            {
-                new Rectangle(0, 0, spriteSheetPosX, spriteSheetPosY),
-                new Rectangle(8, 0, 8, 16)
-            };
+        private int currentFrame;
+        private float animationTimer = 0;
+
+        public Rupee(Texture2D texture, ref Vector2 position, Color color, Rectangle[] sourceRectangles, float frameDuration, float scale = 1f)
+        {
+            this.position = position;
+            this.texture = texture;
+            Color = color;
+            this.scale = scale;
+            this.sourceRectangles = sourceRectangles;
+            this.frameDuration = frameDuration;
         }
+
+        public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
         public void Update(GameTime gameTime)
         {
-            timer += gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (timer >= frameInterval)
+            animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (animationTimer >= frameDuration)
             {
-                currentFrame = (currentFrame + 1) % sourceRectangles.Count;
-                timer = 0;
-            }
-
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            if (spriteSheet != null)
-            {
-                Rectangle destinationRectangle = new Rectangle((int)Position.X, (int)Position.Y, (int)(sourceRectangles[currentFrame].Width * 2), (int)(sourceRectangles[currentFrame].Height * 2));
-
-                spriteBatch.Draw(
-                    spriteSheet,
-                    destinationRectangle,
-                    sourceRectangles[currentFrame],
-                    Color.White
-                );
+                currentFrame = (currentFrame + 1) % sourceRectangles.Length; 
+                animationTimer = 0;
             }
         }
-    }
 }
