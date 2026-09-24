@@ -22,6 +22,10 @@ namespace Byte.Command
          
         public void Execute(GameTime gameTime)
         {
+            if (player.IsAttacking)
+            {
+                return;
+            }
             player.Direction = CardinalDirections.North;
             
             player.MovementSpeed = new Vector2(0, -200);

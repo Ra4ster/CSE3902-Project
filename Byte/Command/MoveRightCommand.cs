@@ -1,5 +1,6 @@
 ﻿using Byte.Player;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,6 +22,17 @@ namespace Byte.Command
 
         public void Execute(GameTime gameTime)
         {
+            if (player.IsAttacking)
+            {
+                return;
+            }
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.W) ||
+                keyboardState.IsKeyDown(Keys.S))
+            {
+                return;
+            }
             player.Direction = CardinalDirections.East;
 
             player.MovementSpeed = new Vector2(200,0);

@@ -21,13 +21,11 @@ namespace Byte.Command
 
         public void Execute(GameTime gameTime)
         {
-            
 
-            player.MovementSpeed = new Vector2(0, 0);
-            if (player.state is not PlayerAttackState)
-            {
-                player.GetNewState(new PlayerAttackState());
-            }
+            player.Attack();
+           
+            
+            
             
         }
     }

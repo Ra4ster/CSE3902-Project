@@ -8,6 +8,9 @@ using Sprint0.Sprite;
 /// </summary>
 public class TextSprite : ISprite
 {
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get;  set; } = false;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private readonly SpriteFont font;
     public string Text { get; set; }
@@ -24,8 +27,17 @@ public class TextSprite : ISprite
         this.scale = scale;
     }
 
-    public void Draw(SpriteBatch spriteBatch) => spriteBatch.DrawString(font, Text, position, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.DrawString(font, Text, position, color, 0f, Origin, scale, SpriteEffects.None, 0f);
 
     public void Update(GameTime gameTime) {/* This doesn't animate */}
 
+    public void MoveOrigin(Vector2 origin)
+    {
+
+       // Does nothing in this iSprite  
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        // does nothing
+    }
 }

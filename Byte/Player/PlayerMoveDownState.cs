@@ -8,7 +8,7 @@ namespace Byte.Player
 {
     public class PlayerMoveDownState : IPlayerState
     {
-
+        // frames for walking south animation
         Rectangle[] southFrames =
         {
             new Rectangle(1, 11, 16, 16),
@@ -21,8 +21,10 @@ namespace Byte.Player
         }
         public IPlayerState Update(Link link, GameTime gametime)
         {
+            // check if in walking sprite already
             if (link.currentSprite is not MovingAnimatedSprite)
             {
+                // create new walking sprite
                 link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                      link.Position,
                      link.MovementSpeed,
@@ -30,15 +32,18 @@ namespace Byte.Player
                     southFrames,
                     .1f,
                     6.0f);
+                
             }
             if (link.currentSprite is MovingAnimatedSprite)
             {
+                // update current position
                 MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
 
                 sprite.SetPos(link.Position);
                 sprite.Update(gametime);
             }
-
+            // update origin for sprite
+            link.currentSprite.MoveOrigin(Link.LinkOrigin);
             return this;
         }
         public void Draw(Link link)

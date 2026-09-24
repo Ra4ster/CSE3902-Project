@@ -9,6 +9,7 @@ namespace Byte.Player
     public class PlayerMoveRightState : IPlayerState
     {
 
+        // Contains walking east frames
         Rectangle[] eastFrames =
         {
             new Rectangle(35, 11, 16, 16),
@@ -21,6 +22,7 @@ namespace Byte.Player
         }
         public IPlayerState Update(Link link, GameTime gametime)
         {
+            // check if already walking if not start walking
             if (link.currentSprite is not MovingAnimatedSprite)
             {
                 link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
@@ -33,12 +35,13 @@ namespace Byte.Player
             }
             if (link.currentSprite is MovingAnimatedSprite)
             {
+                // if walking update position
                 MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
 
                 sprite.SetPos(link.Position);
                 sprite.Update(gametime);
             }
-
+            link.currentSprite.MoveOrigin(Link.LinkOrigin);
             return this;
         }
         public void Draw(Link link)

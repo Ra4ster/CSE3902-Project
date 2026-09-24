@@ -59,8 +59,8 @@ public class Game : Microsoft.Xna.Framework.Game
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
         pixelTexture.SetData([Color.White]);
 
-        Vector2 linkPos = new Vector2(220.0f);
-        link = new Link(linkPos, new StaticSprite(linkSheet,linkPos,Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter,linkSheet,mouseControls, kbControls);
+        
+        link = new Link(Link.startPos, new StaticSprite(linkSheet,Link.startPos,Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter,linkSheet,mouseControls, kbControls);
 
         Rectangle[] bowserFrames =
         {
@@ -105,6 +105,7 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand animatedSpriteCommand = new SetAnimatedSpriteCommand(this, bowser, ref animatedPos, Color.White, bowserFrames, 0.1f, 4.0f);
         ICommand movingSpriteCommand = new SetMovingSpriteCommand(this, bowser, ref movingPos, Color.White, ref velocityY, ref bowserFrames[0], 4.0f);
         ICommand movingAnimatedSpriteCommand = new MovingAnimatedSpriteCommand(this, bowser, ref fullPos, ref velocityX, Color.White, bowserFrames, 0.1f, 4.0f);
+        ICommand resetCommand = new ResetCommand(this, link);
 
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -120,7 +121,10 @@ public class Game : Microsoft.Xna.Framework.Game
         leftClickBindings.Add(quadrants[2], movingSpriteCommand);
         keybindings.Add(Keys.D4, movingAnimatedSpriteCommand);
         leftClickBindings.Add(quadrants[3], movingAnimatedSpriteCommand);
-        keybindings.Add(Keys.I, attackCommand);
+        keybindings.Add(Keys.Z, attackCommand);
+        keybindings.Add(Keys.N, attackCommand);
+        keybindings.Add(Keys.Q, resetCommand);
+        keybindings.Add(Keys.R, resetCommand);
 
         base.LoadContent();
         staticSpriteCommand.Execute(new GameTime());
