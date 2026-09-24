@@ -11,7 +11,7 @@ namespace Byte.Command
     {
         private Link player;
         Game gameGet;
-        float speed = 2.0f;
+    
 
         public MoveRightCommand(Game game, Link link)
         {
@@ -22,12 +22,14 @@ namespace Byte.Command
 
         public void Execute(GameTime gameTime)
         {
+            // check if player is attacking and stop command if so
             if (player.IsAttacking)
             {
                 return;
             }
             KeyboardState keyboardState = Keyboard.GetState();
 
+            // check if player is moving up or down - cant move right/left during
             if (keyboardState.IsKeyDown(Keys.W) ||
                 keyboardState.IsKeyDown(Keys.S))
             {
@@ -35,6 +37,7 @@ namespace Byte.Command
             }
             player.Direction = CardinalDirections.East;
 
+            // update player direction and begin moving
             player.MovementSpeed = new Vector2(200,0);
             if (player.state is not PlayerMoveRightState)
             {

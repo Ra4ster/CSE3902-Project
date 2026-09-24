@@ -21,7 +21,7 @@ namespace Byte.Command
 
         public void Execute(GameTime gameTime)
         {
-
+            // cause player to attack
             player.Attack();
            
             
