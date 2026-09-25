@@ -128,10 +128,6 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
-        ICommand staticSpriteCommand = new SetStaticSpriteCommand(this, bowser, ref staticPos, Color.White, ref bowserFrames[0], 4.0f);
-        ICommand animatedSpriteCommand = new SetAnimatedSpriteCommand(this, bowser, ref animatedPos, Color.White, bowserFrames, 0.1f, 4.0f);
-        ICommand movingSpriteCommand = new SetMovingSpriteCommand(this, bowser, ref movingPos, Color.White, ref velocityY, ref bowserFrames[0], 4.0f);
-        ICommand movingAnimatedSpriteCommand = new MovingAnimatedSpriteCommand(this, bowser, ref fullPos, ref velocityX, Color.White, bowserFrames, 0.1f, 4.0f);
         ICommand resetCommand = new ResetCommand(this, link);
 
         keybindings.Add(Keys.D0, quitCommand);
@@ -140,14 +136,6 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.A, moveLeftCommand);
         keybindings.Add(Keys.D, moveRightCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
-        keybindings.Add(Keys.D1, staticSpriteCommand);
-        leftClickBindings.Add(quadrants[0], staticSpriteCommand);
-        keybindings.Add(Keys.D2, animatedSpriteCommand);
-        leftClickBindings.Add(quadrants[1], animatedSpriteCommand);
-        keybindings.Add(Keys.D3, movingSpriteCommand);
-        leftClickBindings.Add(quadrants[2], movingSpriteCommand);
-        keybindings.Add(Keys.D4, movingAnimatedSpriteCommand);
-        leftClickBindings.Add(quadrants[3], movingAnimatedSpriteCommand);
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.Q, resetCommand);

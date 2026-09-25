@@ -17,7 +17,7 @@ public class MovingAnimatedSprite : ISprite
     public Color Color { get; set; }
     protected Color color { get => Color; set => Color = value; }
 
-    private float scale;
+    public float scale;
     public Vector2 Origin { get; set; } = Vector2.Zero;
 
     private Rectangle[] sourceRectangles;
