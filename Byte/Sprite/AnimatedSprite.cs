@@ -9,10 +9,14 @@ namespace Sprint0.Sprite;
 /// </summary>
 public class AnimatedSprite : ISprite
 {
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get; set; } = false;
+    private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private readonly Texture2D texture;
     private readonly Vector2 position;
     public Color Color { get; set; }
+    public Vector2 Origin { get; set; } = Vector2.Zero;
 
     private Rectangle[] sourceRectangles;
     private float scale;
@@ -31,8 +35,16 @@ public class AnimatedSprite : ISprite
         this.frameDuration = frameDuration;
     }
 
-    public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        Vector2 frameOrigin = Origin;
+        if (frameOrigins != null)
+        {
+            frameOrigin = frameOrigins[currentFrame];
+        }
 
+        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
+    }
     public void Update(GameTime gameTime)
     {
         animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -41,5 +53,15 @@ public class AnimatedSprite : ISprite
             currentFrame = (currentFrame + 1) % sourceRectangles.Length; // loop around
             animationTimer = 0;
         }
+    }
+
+    public void MoveOrigin(Vector2 origin)
+    {
+
+        Origin = origin;
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        frameOrigins = Origins;
     }
 }
