@@ -14,6 +14,8 @@ public class StaticSprite : ISprite
     private float scale;
     private readonly Rectangle sourceRectangle;
 
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
+
     public StaticSprite(Texture2D texture, Vector2 position, Color color, Rectangle sourceRectangle, float scale = 1f)
     {
         this.texture = texture;
@@ -23,7 +25,7 @@ public class StaticSprite : ISprite
         this.sourceRectangle = sourceRectangle;
     }
 
-    public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangle, Color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangle, Color, 0f, Vector2.Zero, scale, Effects, 0f);
 
     public void Update(GameTime gameTime)
     {

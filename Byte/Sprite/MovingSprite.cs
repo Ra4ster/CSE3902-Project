@@ -7,7 +7,9 @@ using Byte.Sprite;
 /// Moving, non-animating sprite.
 /// </summary>
 public class MovingSprite : ISprite
+
 {
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private Vector2 position;
     private Texture2D texture;
     public Vector2 Velocity { get; set; }

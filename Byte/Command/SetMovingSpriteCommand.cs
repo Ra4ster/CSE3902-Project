@@ -23,8 +23,5 @@ public class SetMovingSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute()
-    {
-        throw new NotImplementedException();
-    }
+    public void Execute(GameTime gameTime) => game.linkSprite = new MovingSprite(texture, ref position, ref velocity, color, ref sourceRect, scale);
 }

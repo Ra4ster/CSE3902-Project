@@ -21,7 +21,7 @@ public class MouseController : IController
         CurrentState = Mouse.GetState();
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         PreviousState = CurrentState;
         CurrentState = Mouse.GetState();
@@ -33,7 +33,7 @@ public class MouseController : IController
             PreviousState.LeftButton != ButtonState.Pressed &&
             mouseCmd.Key.Contains(new Point(CurrentState.X, CurrentState.Y)))
             {
-                mouseCmd.Value.Execute();
+                mouseCmd.Value.Execute(gameTime);
             }
         }
 
@@ -43,7 +43,7 @@ public class MouseController : IController
             PreviousState.RightButton != ButtonState.Pressed &&
             mouseCmd.Key.Contains(new Point(CurrentState.X, CurrentState.Y)))
             {
-                mouseCmd.Value.Execute();
+                mouseCmd.Value.Execute(gameTime);
             }
         }
     }

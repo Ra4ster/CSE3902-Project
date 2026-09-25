@@ -7,6 +7,7 @@ using Byte.Sprite;
 /// </summary>
 public class TextSprite : ISprite
 {
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private readonly SpriteFont font;
     public string Text { get; set; }
     private readonly Vector2 position;

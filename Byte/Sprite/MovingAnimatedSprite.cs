@@ -7,16 +7,14 @@ using Byte.Sprite;
 /// </summary>
 public class MovingAnimatedSprite : ISprite
 {
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     protected Vector2 position;
     protected Vector2 velocity;
-
     protected Texture2D texture;
-    protected Color color { get; set; }
+    public Color Color { get; set; }
+    protected Color color { get => Color; set => Color = value; }
 
     protected float scale;
-
-    protected SpriteEffects spriteEffects;
-
     protected Rectangle[] sourceRectangles;
 
     protected int currentFrame;
@@ -29,12 +27,16 @@ public class MovingAnimatedSprite : ISprite
         this.position = position;
         this.velocity = velocity;
         this.texture = texture;
-        this.color = color;
+        Color = color;
         this.sourceRectangles = sourceRectangles;
         this.frameDuration = frameDuration;
         this.scale = scale;
-        this.spriteEffects = spriteEffects;
+        Effects = spriteEffects;
     }
+
+    public MovingAnimatedSprite(Texture2D texture, Vector2 position, Vector2 velocity, Color color,
+        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
+        : this(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale) { }
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
@@ -47,11 +49,11 @@ public class MovingAnimatedSprite : ISprite
             texture,
             drawPosition,
             sourceRectangles[currentFrame],
-            color,
+                Color,
             0f,
             Vector2.Zero,
             scale,
-            spriteEffects,
+                Effects,
             0f);
     }
 
@@ -59,10 +61,8 @@ public class MovingAnimatedSprite : ISprite
     {
         float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // Moving
         position += velocity * seconds;
 
-        // Animating
         animationTimer += seconds;
 
         if (animationTimer >= frameDuration)
@@ -72,8 +72,8 @@ public class MovingAnimatedSprite : ISprite
         }
     }
 
-    public void SetPos(int x, int y)
+    public void SetPos(Vector2 position)
     {
-        position = new Vector2(x, y);
+        this.position = position;
     }
 }

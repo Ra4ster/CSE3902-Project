@@ -25,8 +25,5 @@ public class SetAnimatedSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute()
-    {
-        throw new NotImplementedException();
-    }
+    public void Execute(GameTime gameTime) => game.linkSprite = new AnimatedSprite(texture, ref position, color, sourceRects, frameDuration, scale);
 }

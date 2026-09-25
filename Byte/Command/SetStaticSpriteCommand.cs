@@ -22,8 +22,5 @@ public class SetStaticSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute()
-    {
-        throw new NotImplementedException();
-    }
+    public void Execute(GameTime gameTime) => game.linkSprite = new StaticSprite(texture, position, color, rectangle, scale);
 }

@@ -21,8 +21,5 @@ public class SetTextSpriteCommand : ICommand
         this.color = color;
         this.scale = scale;
     }
-    public void Execute()
-    {
-        throw new NotImplementedException();
-    }
+    public void Execute(GameTime gameTime) => game.linkSprite = new TextSprite(spriteFont, text, ref position, color, scale);
 }
