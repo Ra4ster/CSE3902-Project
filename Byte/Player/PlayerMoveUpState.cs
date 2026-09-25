@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Sprint0.Sprite;
+using Byte.Sprite;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Byte.Player
 {
-    public class PlayerMoveUpState :IPlayerState
+    public class PlayerMoveUpState : IPlayerState
     {
         
         // frames for north walking
@@ -20,7 +20,7 @@ namespace Byte.Player
 
 
         }
-        public IPlayerState Update(Link link,GameTime gametime)
+        public IPlayerState Update(Link link, GameTime gametime)
         {
             
             // Check if already walking if not start
@@ -34,7 +34,7 @@ namespace Byte.Player
                     .1f,
                     6.0f);
             }
-            if(link.currentSprite is MovingAnimatedSprite)
+            if (link.currentSprite is MovingAnimatedSprite)
             {
                 MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
 

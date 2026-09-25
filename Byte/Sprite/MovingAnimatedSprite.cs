@@ -1,7 +1,6 @@
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Sprint0.Sprite;
+using Byte.Sprite;
 
 /// <summary>
 /// Moving, animating sprite
@@ -12,10 +11,11 @@ public class MovingAnimatedSprite : ISprite
     public bool IsFinished { get; set; } = false;
     private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
-    private Vector2 position;
-    private Vector2 velocity;
-    private Texture2D texture;
+    protected Vector2 position;
+    protected Vector2 velocity;
+    protected Texture2D texture;
     public Color Color { get; set; }
+    protected Color color { get => Color; set => Color = value; }
 
     private float scale;
     public Vector2 Origin { get; set; } = Vector2.Zero;
@@ -26,19 +26,24 @@ public class MovingAnimatedSprite : ISprite
     private float animationTimer = 0;
     private float frameDuration;
 
-    public MovingAnimatedSprite(Texture2D texture, Vector2 position,  Vector2 velocity, Color color,
-    Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
+    public MovingAnimatedSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
+        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f, SpriteEffects spriteEffects = SpriteEffects.None)
     {
-        this.texture = texture;
         this.position = position;
         this.velocity = velocity;
+        this.texture = texture;
         Color = color;
         this.sourceRectangles = sourceRectangles;
         this.frameDuration = frameDuration;
         this.scale = scale;
+        Effects = spriteEffects;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public MovingAnimatedSprite(Texture2D texture, Vector2 position, Vector2 velocity, Color color,
+        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
+        : this(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale) { }
+
+    public virtual void Draw(SpriteBatch spriteBatch)
     {
         Vector2 frameOrigin = Origin;
         if(frameOrigins != null)
@@ -49,12 +54,15 @@ public class MovingAnimatedSprite : ISprite
         spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
     }
 
-    public void Update(GameTime gameTime)
+    public virtual void Update(GameTime gameTime)
     {
         float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+        position += velocity * seconds;
+
       
         animationTimer += seconds;
+
         if (animationTimer >= frameDuration)
         {
             animationTimer -= frameDuration;
@@ -75,8 +83,6 @@ public class MovingAnimatedSprite : ISprite
 
     public void SetPos(Vector2 position)
     {
-        //position.X = x;
-        //position.Y = y;
         this.position = position;
 
     }

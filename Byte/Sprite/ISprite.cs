@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Sprint0.Sprite;
+namespace Byte.Sprite;
 
 public interface ISprite
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Sprint0.Sprite;
+using Byte.Sprite;
 using System;
 using System.Collections.Generic;
 using System.Text;

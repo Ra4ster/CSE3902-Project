@@ -1,6 +1,6 @@
-namespace Sprint0.Controller;
-
 using Microsoft.Xna.Framework;
+
+namespace Byte.Controller;
 
 public interface IController
 {

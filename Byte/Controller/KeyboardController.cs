@@ -1,8 +1,7 @@
-using System.Windows.Input;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
-namespace Sprint0.Controller;
+namespace Byte.Controller;
 
 /// <summary>
 /// Controls key input.

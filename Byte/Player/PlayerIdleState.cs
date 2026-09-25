@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Sprint0.Sprite;
+using Byte.Sprite;
 
 namespace Byte.Player
 {
@@ -19,9 +19,9 @@ namespace Byte.Player
         };
         public PlayerIdleState()
         {
-            
+
         }
-        public IPlayerState Update(Link link,GameTime gameTime)
+        public IPlayerState Update(Link link, GameTime gameTime)
         {
             
             // update gameStart so new sprite is only made when game starts

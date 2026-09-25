@@ -1,7 +1,6 @@
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Sprint0.Sprite;
+using Byte.Sprite;
 
 /// <summary>
 /// Sprite containing string to be rendered with font.

@@ -1,7 +1,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Sprint0.Sprite;
+using Byte.Sprite;
 
 public class SetStaticSpriteCommand : ICommand
 {
@@ -22,5 +22,5 @@ public class SetStaticSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute(GameTime gameTime) => game.ActiveSprite = new StaticSprite(texture, position, color, rectangle, scale);
+    public void Execute(GameTime gameTime) => game.linkSprite = new StaticSprite(texture, position, color, rectangle, scale);
 }

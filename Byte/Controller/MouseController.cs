@@ -1,8 +1,7 @@
-using System.Windows.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Sprint0.Controller;
+namespace Byte.Controller;
 
 /// <summary>
 /// Controls mouse input (excluding scroll/move).

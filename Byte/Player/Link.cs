@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Sprint0.Controller;
-using Sprint0.Sprite;
+using Byte.Controller;
+using Byte.Sprite;
 using System;
 using System.Collections.Generic;
 
@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Byte.Player
 {
-    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch,Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
+    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
     {
         // Contains the starting position for each link
         public static readonly Vector2 startPos = new Vector2(220.0f);
@@ -72,7 +72,7 @@ namespace Byte.Player
             if (shouldBeIdle(keys) && !IsAttacking){
                 GetNewState(new PlayerIdleState());
             }
-            state.Update(this,gameTime);
+            state.Update(this, gameTime);
         }
 
         // Show damage texture
@@ -102,7 +102,7 @@ namespace Byte.Player
         // display the item currently being used
         public void UseItem()
         {
-            
+
         }
 
         // update state to the new type that is being passed
@@ -121,12 +121,12 @@ namespace Byte.Player
         // check if a key that is pressed has a different state attached to it
         public bool shouldBeIdle(Keys[] keys)
         {
-            bool state = 
+            bool state =
             Array.Exists(keys, key => key == Keys.W) ||
             Array.Exists(keys, key => key == Keys.A) ||
             Array.Exists(keys, key => key == Keys.S) ||
             Array.Exists(keys, key => key == Keys.D) ||
-            Array.Exists(keys, key => key == Keys.Z)||
+            Array.Exists(keys, key => key == Keys.Z) ||
             Array.Exists(keys, key => key == Keys.I) ||
             Array.Exists(keys, key => key == Keys.U) ||
             Array.Exists(keys, key => key == Keys.N);
@@ -139,6 +139,6 @@ namespace Byte.Player
         
        
 
-        
+
     }
 }

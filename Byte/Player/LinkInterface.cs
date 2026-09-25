@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Sprint0.Sprite;
+using Byte.Sprite;
 
 namespace Byte.Player
 {
-    
+
     public interface LinkInterface
     {
         // current health
@@ -46,7 +46,7 @@ namespace Byte.Player
         // update player state
         public void GetNewState(IPlayerState state);
 
-        
+
 
     }
 }
