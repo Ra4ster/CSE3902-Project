@@ -1,7 +1,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Sprint0.Sprite;
+using Byte.Sprite;
 
 public class SetAnimatedSpriteCommand : ICommand
 {
@@ -25,5 +25,5 @@ public class SetAnimatedSpriteCommand : ICommand
         this.scale = scale;
     }
 
-    public void Execute() => game.ActiveSprite = new AnimatedSprite(texture, ref position, color, sourceRects, frameDuration, scale);
+    public void Execute(GameTime gameTime) => game.linkSprite = new AnimatedSprite(texture, ref position, color, sourceRects, frameDuration, scale);
 }

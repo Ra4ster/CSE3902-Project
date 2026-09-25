@@ -1,7 +1,7 @@
-using System.Windows.Input;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
-namespace Sprint0.Controller;
+namespace Byte.Controller;
 
 /// <summary>
 /// Controls key input.
@@ -10,7 +10,7 @@ public class KeyboardController : IController
 {
     private Dictionary<Keys, ICommand> keyboardCommands;
 
-    private KeyboardState currentState;
+    public KeyboardState currentState;
 
     private KeyboardState previousState;
 
@@ -20,16 +20,16 @@ public class KeyboardController : IController
         currentState = Keyboard.GetState();
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         previousState = currentState;
         currentState = Keyboard.GetState();
 
         foreach (KeyValuePair<Keys, ICommand> pair in keyboardCommands)
         {
-            if (currentState.IsKeyDown(pair.Key) && !previousState.IsKeyDown(pair.Key))
+            if (currentState.IsKeyDown(pair.Key))
             {
-                pair.Value.Execute();
+                pair.Value.Execute(gameTime);
             }
         }
     }

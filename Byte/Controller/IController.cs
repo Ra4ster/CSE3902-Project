@@ -1,11 +1,11 @@
-namespace Sprint0.Controller;
-
 using Microsoft.Xna.Framework;
+
+namespace Byte.Controller;
 
 public interface IController
 {
     /// <summary>
     /// For each input, executes its command.
     /// </summary>
-    void Update();
+    void Update(GameTime gameTime);
 }

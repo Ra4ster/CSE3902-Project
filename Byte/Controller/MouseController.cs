@@ -1,8 +1,7 @@
-using System.Windows.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Sprint0.Controller;
+namespace Byte.Controller;
 
 /// <summary>
 /// Controls mouse input (excluding scroll/move).
@@ -22,7 +21,7 @@ public class MouseController : IController
         CurrentState = Mouse.GetState();
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         PreviousState = CurrentState;
         CurrentState = Mouse.GetState();
@@ -34,7 +33,7 @@ public class MouseController : IController
             PreviousState.LeftButton != ButtonState.Pressed &&
             mouseCmd.Key.Contains(new Point(CurrentState.X, CurrentState.Y)))
             {
-                mouseCmd.Value.Execute();
+                mouseCmd.Value.Execute(gameTime);
             }
         }
 
@@ -44,7 +43,7 @@ public class MouseController : IController
             PreviousState.RightButton != ButtonState.Pressed &&
             mouseCmd.Key.Contains(new Point(CurrentState.X, CurrentState.Y)))
             {
-                mouseCmd.Value.Execute();
+                mouseCmd.Value.Execute(gameTime);
             }
         }
     }

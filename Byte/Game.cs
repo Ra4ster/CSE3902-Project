@@ -1,22 +1,28 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Byte.Command;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Sprint0.Controller;
-using Sprint0.Sprite;
+using Byte.Controller;
+using Byte.Sprite;
+using Byte.Sprite.Enemy;
+using Byte.Player;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
 /// </summary>
 public class Game : Microsoft.Xna.Framework.Game
 {
+
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static Rectangle[] quadrants = new Rectangle[4];
 
+    public Link link;
+    public ISprite linkSprite;
+
     private Texture2D? pixelTexture;
 
-    public ISprite? ActiveSprite { get; set; }
-    public ISprite? TextSprite { get; set; }
+    private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
 
     private SpriteBatch? SpritePainter { get; set; }
 
@@ -41,14 +47,45 @@ public class Game : Microsoft.Xna.Framework.Game
         graphicsDeviceManager.PreferredBackBufferHeight = WINDOW_SIZE.Height;
     }
 
+    private void AddEnemies(Texture2D enemyTex)
+    {
+        enemies.Add(EnemyFactory.Instance.CreateStalfos(enemyTex,
+        [
+            new Vector2(100, 100),
+            new Vector2(100, 300),
+            new Vector2(300, 300),
+            new Vector2(300, 100)
+        ], 200f));
+
+        enemies.Add(EnemyFactory.Instance.CreateKeese(enemyTex,
+        [
+            new Vector2(500, 600),
+            new Vector2(350, 450),
+            new Vector2(300, 400),
+            new Vector2(250, 450)
+        ], 200f));
+
+        enemies.Add(EnemyFactory.Instance.CreateGel(enemyTex,
+        [
+            new Vector2(300, 800),
+            new Vector2(800, 800)
+        ], 200f, 1.5f));
+    }
+
     protected override void LoadContent()
     {
-        Texture2D bowser = Content.Load<Texture2D>("Bowser");
-        SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
+        // SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
+        Texture2D enemyTex = Content.Load<Texture2D>("DungeonEnemies");
+
+        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet4");
+
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
         pixelTexture.SetData([Color.White]);
+
+        
+        link = new Link(Link.startPos, new StaticSprite(linkSheet,Link.startPos,Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter,linkSheet,mouseControls, kbControls);
 
         Rectangle[] bowserFrames =
         {
@@ -82,39 +119,45 @@ public class Game : Microsoft.Xna.Framework.Game
         Vector2 movingPos = new Vector2(500.0f);
         Vector2 fullPos = new Vector2(500.0f);
 
+        link.sourceRects = new Rectangle[10];
+
+
+
         Vector2 textPos = new Vector2(50.0f, 1450.0f);
-        TextSprite = new TextSprite(roboto, "Jack Rose\nSprites From: https://www.spriters-resource.com/game_boy_advance/mlss/asset/241181/", ref textPos, Color.DarkRed);
 
         Vector2 velocityX = new Vector2(-400.0f, 0.0f);
         Vector2 velocityY = new Vector2(0.0f, 800.0f);
+        AddEnemies(enemyTex);
 
+
+        ICommand attackCommand = new AttackCommand(this, link);
+        ICommand moveUpCommand = new MoveUpCommand(this, link);
+        ICommand moveDownCommand = new MoveDownCommand(this, link);
+        ICommand moveLeftCommand = new MoveLeftCommand(this, link);
+        ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
-        ICommand staticSpriteCommand = new SetStaticSpriteCommand(this, bowser, ref staticPos, Color.White, ref bowserFrames[0], 4.0f);
-        ICommand animatedSpriteCommand = new SetAnimatedSpriteCommand(this, bowser, ref animatedPos, Color.White, bowserFrames, 0.1f, 4.0f);
-        ICommand movingSpriteCommand = new SetMovingSpriteCommand(this, bowser, ref movingPos, Color.White, ref velocityY, ref bowserFrames[0], 4.0f);
-        ICommand movingAnimatedSpriteCommand = new MovingAnimatedSpriteCommand(this, bowser, ref fullPos, ref velocityX, Color.White, bowserFrames, 0.1f, 4.0f);
+        ICommand resetCommand = new ResetCommand(this, link);
 
         keybindings.Add(Keys.D0, quitCommand);
+        keybindings.Add(Keys.W, moveUpCommand);
+        keybindings.Add(Keys.S, moveDownCommand);
+        keybindings.Add(Keys.A, moveLeftCommand);
+        keybindings.Add(Keys.D, moveRightCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
-        keybindings.Add(Keys.D1, staticSpriteCommand);
-        leftClickBindings.Add(quadrants[0], staticSpriteCommand);
-        keybindings.Add(Keys.D2, animatedSpriteCommand);
-        leftClickBindings.Add(quadrants[1], animatedSpriteCommand);
-        keybindings.Add(Keys.D3, movingSpriteCommand);
-        leftClickBindings.Add(quadrants[2], movingSpriteCommand);
-        keybindings.Add(Keys.D4, movingAnimatedSpriteCommand);
-        leftClickBindings.Add(quadrants[3], movingAnimatedSpriteCommand);
+        keybindings.Add(Keys.Z, attackCommand);
+        keybindings.Add(Keys.N, attackCommand);
+        keybindings.Add(Keys.Q, resetCommand);
+        keybindings.Add(Keys.R, resetCommand);
 
         base.LoadContent();
-        staticSpriteCommand.Execute();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        kbControls.Update();
-        mouseControls.Update();
-        ActiveSprite?.Update(gameTime);
-        TextSprite?.Update(gameTime);
+        kbControls.Update(gameTime);
+        mouseControls.Update(gameTime);
+        foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
+        link.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -122,16 +165,21 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         GraphicsDevice.Clear(Color.White);
 
-        SpritePainter?.Begin();
+        SpritePainter?.Begin(
+            sortMode: SpriteSortMode.Deferred,
+            blendState: BlendState.NonPremultiplied,
+            samplerState: SamplerState.PointClamp
+    );
 
         // Quadrants
         SpritePainter?.Draw(pixelTexture, quadrants[0], Color.LightPink);
         SpritePainter?.Draw(pixelTexture, quadrants[1], Color.LightGreen);
         SpritePainter?.Draw(pixelTexture, quadrants[2], Color.LightSkyBlue);
         SpritePainter?.Draw(pixelTexture, quadrants[3], Color.LightGoldenrodYellow);
-        // Sprites
-        ActiveSprite?.Draw(SpritePainter!);
-        TextSprite?.Draw(SpritePainter!);
+        link.state.Draw(link);
+
+        foreach (AbstractEnemy enemy in enemies)
+            enemy.Draw(SpritePainter!);
 
         SpritePainter?.End();
 
