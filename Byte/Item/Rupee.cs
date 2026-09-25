@@ -36,8 +36,9 @@ namespace Byte.Item
             animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (animationTimer >= frameDuration)
             {
-                currentFrame = (currentFrame + 1) % sourceRectangles.Length; 
+                currentFrame = (currentFrame + 1) % sourceRectangles.Length;
                 animationTimer = 0;
             }
         }
+    }
 }
