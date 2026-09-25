@@ -3,28 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\rupee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\rupee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\iitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\iitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\sprite\\animatedsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\animatedsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\command\\icommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\command\\icommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\rupee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\rupee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\iitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\iitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\command\\icommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\command\\icommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\heart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\boomerang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\boomerang.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\command\\setanimatedspritecommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -50,50 +50,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "AnimatedSprite.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Sprite\\AnimatedSprite.cs",
               "RelativeDocumentMoniker": "Byte\\Sprite\\AnimatedSprite.cs",
               "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Sprite\\AnimatedSprite.cs",
               "RelativeToolTip": "Byte\\Sprite\\AnimatedSprite.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAgwB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAA3wB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-24T20:20:23.43Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "Rupee.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Rupee.cs",
               "RelativeDocumentMoniker": "Byte\\Item\\Rupee.cs",
               "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Rupee.cs",
               "RelativeToolTip": "Byte\\Item\\Rupee.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwCoAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-24T20:20:15.149Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Game.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Game.cs",
               "RelativeDocumentMoniker": "Byte\\Game.cs",
               "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Game.cs",
               "RelativeToolTip": "Byte\\Game.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAqwFUAAABnAAAAAAAAAA==",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAuwFMAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-24T19:57:49.478Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "ICommand.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\ICommand.cs",
               "RelativeDocumentMoniker": "Byte\\Command\\ICommand.cs",
@@ -101,12 +101,11 @@
               "RelativeToolTip": "Byte\\Command\\ICommand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-24T19:57:45.516Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-24T19:57:45.516Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ItemManager.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\ItemManager.cs",
               "RelativeDocumentMoniker": "Byte\\Item\\ItemManager.cs",
@@ -119,7 +118,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Heart.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Heart.cs",
               "RelativeDocumentMoniker": "Byte\\Item\\Heart.cs",
@@ -131,7 +130,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Boomerang.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Boomerang.cs",
               "RelativeDocumentMoniker": "Byte\\Item\\Boomerang.cs",
@@ -143,19 +142,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "IItem.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\IItem.cs",
               "RelativeDocumentMoniker": "Byte\\Item\\IItem.cs",
               "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\IItem.cs",
               "RelativeToolTip": "Byte\\Item\\IItem.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-20T22:48:12.287Z"
+              "WhenOpened": "2026-09-20T22:48:12.287Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 1,
               "Title": "LinkInterface.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Player\\LinkInterface.cs",
               "RelativeDocumentMoniker": "Byte\\Player\\LinkInterface.cs",
@@ -163,7 +163,8 @@
               "RelativeToolTip": "Byte\\Player\\LinkInterface.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-20T22:48:11.23Z"
+              "WhenOpened": "2026-09-20T22:48:11.23Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

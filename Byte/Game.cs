@@ -79,6 +79,8 @@ public class Game : Microsoft.Xna.Framework.Game
 
         Texture2D linkSheet = Content.Load<Texture2D>("linkSheet4");
 
+        Texture2D itemSheet = Content.Load<Texture2D>("items.png");
+
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);

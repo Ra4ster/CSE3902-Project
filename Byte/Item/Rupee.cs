@@ -6,11 +6,13 @@ using System.Text;
 
 namespace Byte.Item
 {
-    internal class Rupee
+    internal class Rupee : IItem
     {
         private readonly Texture2D texture;
         private readonly Vector2 position;
         public Color Color { get; set; }
+        public Vector2 Position { get; set; }
+
 
         private Rectangle[] sourceRectangles;
         private float scale;
@@ -39,6 +41,16 @@ namespace Byte.Item
                 currentFrame = (currentFrame + 1) % sourceRectangles.Length;
                 animationTimer = 0;
             }
+        }
+
+        void IItem.Update(GameTime gametime)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IItem.Draw(SpriteBatch spriteBatch)
+        {
+            throw new NotImplementedException();
         }
     }
 }
