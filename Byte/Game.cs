@@ -77,15 +77,15 @@ public class Game : Microsoft.Xna.Framework.Game
         // SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
         Texture2D enemyTex = Content.Load<Texture2D>("DungeonEnemies");
 
-        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet");
+        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet4");
 
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
         pixelTexture.SetData([Color.White]);
 
-        Vector2 linkPos = new Vector2(220.0f);
-        link = new Link(linkPos, new StaticSprite(linkSheet, linkPos, Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter, linkSheet, mouseControls, kbControls);
+        
+        link = new Link(Link.startPos, new StaticSprite(linkSheet,Link.startPos,Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter,linkSheet,mouseControls, kbControls);
 
         Rectangle[] bowserFrames =
         {
@@ -122,17 +122,36 @@ public class Game : Microsoft.Xna.Framework.Game
         AddEnemies(enemyTex);
 
 
+        ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
         ICommand moveDownCommand = new MoveDownCommand(this, link);
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
+        ICommand staticSpriteCommand = new SetStaticSpriteCommand(this, bowser, ref staticPos, Color.White, ref bowserFrames[0], 4.0f);
+        ICommand animatedSpriteCommand = new SetAnimatedSpriteCommand(this, bowser, ref animatedPos, Color.White, bowserFrames, 0.1f, 4.0f);
+        ICommand movingSpriteCommand = new SetMovingSpriteCommand(this, bowser, ref movingPos, Color.White, ref velocityY, ref bowserFrames[0], 4.0f);
+        ICommand movingAnimatedSpriteCommand = new MovingAnimatedSpriteCommand(this, bowser, ref fullPos, ref velocityX, Color.White, bowserFrames, 0.1f, 4.0f);
+        ICommand resetCommand = new ResetCommand(this, link);
+
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
         keybindings.Add(Keys.S, moveDownCommand);
         keybindings.Add(Keys.A, moveLeftCommand);
         keybindings.Add(Keys.D, moveRightCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
+        keybindings.Add(Keys.D1, staticSpriteCommand);
+        leftClickBindings.Add(quadrants[0], staticSpriteCommand);
+        keybindings.Add(Keys.D2, animatedSpriteCommand);
+        leftClickBindings.Add(quadrants[1], animatedSpriteCommand);
+        keybindings.Add(Keys.D3, movingSpriteCommand);
+        leftClickBindings.Add(quadrants[2], movingSpriteCommand);
+        keybindings.Add(Keys.D4, movingAnimatedSpriteCommand);
+        leftClickBindings.Add(quadrants[3], movingAnimatedSpriteCommand);
+        keybindings.Add(Keys.Z, attackCommand);
+        keybindings.Add(Keys.N, attackCommand);
+        keybindings.Add(Keys.Q, resetCommand);
+        keybindings.Add(Keys.R, resetCommand);
 
         base.LoadContent();
     }

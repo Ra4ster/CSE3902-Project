@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+// Contains the directions that link can face
 public static class CardinalDirections
 {
     public static readonly Vector2 North = new Vector2(0, 1);

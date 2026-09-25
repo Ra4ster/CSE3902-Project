@@ -22,6 +22,13 @@ namespace Byte.Command
          
         public void Execute(GameTime gameTime)
         {
+            // Check if player is attacking and stop if so
+            if (player.IsAttacking)
+            {
+                return;
+            }
+
+            // update direction and move player
             player.Direction = CardinalDirections.North;
             
             player.MovementSpeed = new Vector2(0, -200);
