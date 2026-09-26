@@ -24,6 +24,6 @@ internal sealed class GameAssets
         instance = new GameAssets(
             content.Load<Texture2D>("AssetSheets/enemySheet"),
             content.Load<Texture2D>("AssetSheets/bossSheet"),
-            content.Load<Texture2D>("AssetSheets/linkSheet"));
+            content.Load<Texture2D>("AssetSheets/linkSheet2"));
     }
 }
