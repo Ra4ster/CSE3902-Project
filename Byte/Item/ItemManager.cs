@@ -6,10 +6,26 @@ using System.Text;
 
 namespace Byte.Item
 {
-    internal class ItemManager
+    public class ItemManager
     {
         private List<IItem> items;
         private int currentIndex;
+
+        public ItemManager()
+        {
+            items = new List<IItem>();
+            currentIndex = 0;
+        }
+
+        public void AddItem(IItem item)
+        {
+            items.Add(item);
+        }
+
+        public void RemoveItem(IItem item)
+        {
+            items.Remove(item);
+        }
 
         public void NextItem()
         {
@@ -19,7 +35,7 @@ namespace Byte.Item
             }
         }
 
-        public void PrevItem()
+        public void PreviousItem()
         {
             if (items.Count > 0)
             {

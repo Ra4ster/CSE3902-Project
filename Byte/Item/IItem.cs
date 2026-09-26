@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Byte.Item
 {
-    internal interface IItem
+    public interface IItem
     {
         void Update(GameTime gametime);
         void Draw(SpriteBatch spriteBatch);

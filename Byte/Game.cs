@@ -1,11 +1,12 @@
 ﻿using Byte.Command;
+using Byte.Controller;
+using Byte.Item;
+using Byte.Player;
+using Byte.Sprite;
+using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Byte.Controller;
-using Byte.Sprite;
-using Byte.Sprite.Enemy;
-using Byte.Player;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
@@ -79,7 +80,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
         Texture2D linkSheet = Content.Load<Texture2D>("linkSheet4");
 
-        Texture2D itemSheet = Content.Load<Texture2D>("items.png");
+        Texture2D itemSheet = Content.Load<Texture2D>("items");
 
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
@@ -103,13 +104,25 @@ public class Game : Microsoft.Xna.Framework.Game
         int topHeight = WINDOW_SIZE.Height / 2;
         int bottomHeight = WINDOW_SIZE.Height - topHeight;
 
+        //Code dealing with items:
+        Texture2D itemsTexture = Content.Load<Texture2D>("items");
 
-        //Items
-        Rectangle[] rupeeFrames;
-        Rectangle[] boomerangFrames;
-        Rectangle[] bowFrames;
-        Rectangle[] heartFrames;
-        Rectangle[] bombFrames;
+        ItemFactory itemFactory = new ItemFactory(itemsTexture);
+        ItemManager itemManager = new ItemManager();
+
+        Vector2 spawnPos = new Vector2(500,500);
+
+        itemManager.AddItem(itemFactory.CreateRupee(spawnPos));
+        itemManager.AddItem(itemFactory.CreateHeart(spawnPos));
+        itemManager.AddItem(itemFactory.CreateBoomerang(spawnPos));
+        itemManager.AddItem(itemFactory.CreateBow(spawnPos));
+        itemManager.AddItem(itemFactory.CreateBomb(spawnPos));
+
+        ICommand NextItemCommand = new NextItemCommand(itemManager);
+        ICommand PreviousItemCommand = new PreviousItemCommand(itemManager);
+        keybindings.Add(Keys.I, NextItemCommand);
+        keybindings.Add(Keys.U, PreviousItemCommand);
+
 
         quadrants[0] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top, leftWidth, topHeight);
         quadrants[1] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top, rightWidth, topHeight);
