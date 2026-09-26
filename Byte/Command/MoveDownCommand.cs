@@ -11,7 +11,7 @@ namespace Byte.Command
         private Link player;
         Game gameGet;
 
-        float speed = 2.0f;
+        
 
         public MoveDownCommand(Game game, Link link)
         {
@@ -21,6 +21,15 @@ namespace Byte.Command
 
         public void Execute(GameTime gameTime)
         {
+            // check if player is attacking - cant move during
+            if (player.IsAttacking)
+            {
+                return;
+            }
+
+
+
+            //update player direction and move player
             player.Direction = CardinalDirections.South;
 
             player.MovementSpeed = new Vector2(0, 200);

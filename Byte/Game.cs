@@ -105,17 +105,25 @@ public class Game : Microsoft.Xna.Framework.Game
         link.sourceRects = new Rectangle[10];
         AddEnemies();
 
+
+        ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
         ICommand moveDownCommand = new MoveDownCommand(this, link);
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
+        ICommand resetCommand = new ResetCommand(this, link);
+
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
         keybindings.Add(Keys.S, moveDownCommand);
         keybindings.Add(Keys.A, moveLeftCommand);
         keybindings.Add(Keys.D, moveRightCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
+        keybindings.Add(Keys.Z, attackCommand);
+        keybindings.Add(Keys.N, attackCommand);
+        keybindings.Add(Keys.Q, resetCommand);
+        keybindings.Add(Keys.R, resetCommand);
 
         base.LoadContent();
     }

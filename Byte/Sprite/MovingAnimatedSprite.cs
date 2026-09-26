@@ -7,6 +7,9 @@ using Byte.Sprite;
 /// </summary>
 public class MovingAnimatedSprite : ISprite
 {
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get; set; } = false;
+    private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     protected Vector2 position;
     protected Vector2 velocity;
@@ -14,12 +17,14 @@ public class MovingAnimatedSprite : ISprite
     public Color Color { get; set; }
     protected Color color { get => Color; set => Color = value; }
 
-    protected float scale;
-    protected Rectangle[] sourceRectangles;
+    public float scale;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
 
-    protected int currentFrame;
-    protected float animationTimer = 0;
-    protected float frameDuration;
+    private Rectangle[] sourceRectangles;
+
+    public int currentFrame;
+    private float animationTimer = 0;
+    private float frameDuration;
 
     public MovingAnimatedSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
         Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f, SpriteEffects spriteEffects = SpriteEffects.None)
@@ -40,21 +45,13 @@ public class MovingAnimatedSprite : ISprite
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
-        Vector2 drawPosition = new Vector2(
-            MathF.Round(position.X),
-            MathF.Round(position.Y)
-        );
+        Vector2 frameOrigin = Origin;
+        if(frameOrigins != null)
+        {
+            frameOrigin = frameOrigins[currentFrame];
+        }
 
-        spriteBatch.Draw(
-            texture,
-            drawPosition,
-            sourceRectangles[currentFrame],
-                Color,
-            0f,
-            Vector2.Zero,
-            scale,
-                Effects,
-            0f);
+        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
     }
 
     public virtual void Update(GameTime gameTime)
@@ -63,17 +60,39 @@ public class MovingAnimatedSprite : ISprite
 
         position += velocity * seconds;
 
+      
         animationTimer += seconds;
 
         if (animationTimer >= frameDuration)
         {
-            currentFrame = (currentFrame + 1) % sourceRectangles.Length;
-            animationTimer = 0;
+            animationTimer -= frameDuration;
+            if(currentFrame < sourceRectangles.Length - 1)
+            {
+                currentFrame++;
+            }else if (Loop)
+            {
+                currentFrame = 0;
+            }
+            else
+            {
+                IsFinished = true;
+            }
+            
         }
     }
 
     public void SetPos(Vector2 position)
     {
         this.position = position;
+
+    }
+    public void MoveOrigin(Vector2 origin)
+    {
+
+        Origin = origin;
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        frameOrigins = Origins;
     }
 }
