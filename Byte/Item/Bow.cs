@@ -10,9 +10,9 @@ namespace Byte.Item
     internal class Bow : IItem
     {
         public Vector2 Position { get; set; }
-        private readonly AnimatedSprite sprite;
+        private readonly StaticSprite sprite;
 
-        public Bow(AnimatedSprite sprite, Vector2 position)
+        public Bow(StaticSprite sprite, Vector2 position)
         {
             this.sprite = sprite;
             Position = position;

@@ -10,9 +10,9 @@ namespace Byte.Item
     internal class Bomb : IItem
     {
         public Vector2 Position { get; set; }
-        private readonly AnimatedSprite sprite;
+        private readonly StaticSprite sprite;
 
-        public Bomb(AnimatedSprite sprite, Vector2 position)
+        public Bomb(StaticSprite sprite, Vector2 position)
         {
             this.sprite = sprite;
             Position = position;
