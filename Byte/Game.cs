@@ -18,8 +18,8 @@ public class Game : Microsoft.Xna.Framework.Game
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static Rectangle[] quadrants = new Rectangle[4];
 
-    public Link link;
-    public ISprite linkSprite;
+    public Link link = null!;
+    public ISprite? linkSprite;
 
     private Texture2D? pixelTexture;
 
@@ -28,7 +28,6 @@ public class Game : Microsoft.Xna.Framework.Game
     private SpriteBatch? SpritePainter { get; set; }
 
     Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
-
     Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
     Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
 
@@ -48,9 +47,9 @@ public class Game : Microsoft.Xna.Framework.Game
         graphicsDeviceManager.PreferredBackBufferHeight = WINDOW_SIZE.Height;
     }
 
-    private void AddEnemies(Texture2D enemyTex)
+    private void AddEnemies()
     {
-        enemies.Add(EnemyFactory.Instance.CreateStalfos(enemyTex,
+        enemies.Add(EnemyFactory.Instance.CreateStalfos(
         [
             new Vector2(100, 100),
             new Vector2(100, 300),
@@ -58,7 +57,7 @@ public class Game : Microsoft.Xna.Framework.Game
             new Vector2(300, 100)
         ], 200f));
 
-        enemies.Add(EnemyFactory.Instance.CreateKeese(enemyTex,
+        enemies.Add(EnemyFactory.Instance.CreateKeese(
         [
             new Vector2(500, 600),
             new Vector2(350, 450),
@@ -66,38 +65,35 @@ public class Game : Microsoft.Xna.Framework.Game
             new Vector2(250, 450)
         ], 200f));
 
-        enemies.Add(EnemyFactory.Instance.CreateGel(enemyTex,
+        enemies.Add(EnemyFactory.Instance.CreateGel(
         [
             new Vector2(300, 800),
             new Vector2(800, 800)
+        ], 200f, 1.5f));
+
+        enemies.Add(EnemyFactory.Instance.CreateAquamentus(
+        [
+            new Vector2(800, 900),
+            new Vector2(1000, 900)
         ], 200f, 1.5f));
     }
 
     protected override void LoadContent()
     {
-        // SpriteFont roboto = Content.Load<SpriteFont>("Roboto");
-        Texture2D enemyTex = Content.Load<Texture2D>("DungeonEnemies");
-
-        Texture2D linkSheet = Content.Load<Texture2D>("linkSheet4");
-
         Texture2D itemSheet = Content.Load<Texture2D>("items");
 
+        GameAssets.Load(Content); // TODO: Wrap item sheet in GameAssets
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
         pixelTexture.SetData([Color.White]);
 
-        
-        link = new Link(Link.startPos, new StaticSprite(linkSheet,Link.startPos,Color.White, new Rectangle(1, 11, 16, 16), 6.0f), SpritePainter,linkSheet,mouseControls, kbControls);
-
-        Rectangle[] bowserFrames =
-        {
-            new Rectangle(17, 8, 42, 40),
-            new Rectangle(65, 8, 42, 40),
-            new Rectangle(113, 8, 42, 40),
-            new Rectangle(161, 8, 42, 40),
-            new Rectangle(209, 8, 42, 40)
-        };
+        Vector2 linkPos = new Vector2(220.0f);
+        link = new Link(linkPos, new StaticSprite(
+            GameAssets.Instance.LinkSheet, linkPos,
+            Color.White, new Rectangle(1, 11, 16, 16), 6.0f),
+            SpritePainter, GameAssets.Instance.LinkSheet,
+            mouseControls, kbControls);
 
         int leftWidth = WINDOW_SIZE.Width / 2;
         int rightWidth = WINDOW_SIZE.Width - leftWidth;
@@ -129,20 +125,8 @@ public class Game : Microsoft.Xna.Framework.Game
         quadrants[2] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top + topHeight, leftWidth, bottomHeight);
         quadrants[3] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top + topHeight, rightWidth, bottomHeight);
 
-        Vector2 animatedPos = new Vector2(500.0f);
-        Vector2 staticPos = new Vector2(500.0f);
-        Vector2 movingPos = new Vector2(500.0f);
-        Vector2 fullPos = new Vector2(500.0f);
-
         link.sourceRects = new Rectangle[10];
-
-
-
-        Vector2 textPos = new Vector2(50.0f, 1450.0f);
-
-        Vector2 velocityX = new Vector2(-400.0f, 0.0f);
-        Vector2 velocityY = new Vector2(0.0f, 800.0f);
-        AddEnemies(enemyTex);
+        AddEnemies();
 
 
         ICommand attackCommand = new AttackCommand(this, link);
@@ -171,7 +155,9 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         kbControls.Update(gameTime);
         mouseControls.Update(gameTime);
+
         foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
+
         link.Update(gameTime);
         base.Update(gameTime);
     }

@@ -1,7 +1,6 @@
 
 using Byte.Sprite.Enemy.Minion;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Sprite.Enemy
 {
@@ -10,12 +9,13 @@ namespace Byte.Sprite.Enemy
         private const float SCALE = 10.0f;
         private const float FRAME_DURATION = 0.08f;
 
-        private Texture2D enemyTex;
-
         private EnemyFactory() { }
 
         private static EnemyFactory instance = new EnemyFactory();
 
+        /// <summary>
+        /// Eager initialization; we can assume the game has enemies.
+        /// </summary>
         public static EnemyFactory Instance
         {
             get
@@ -25,25 +25,29 @@ namespace Byte.Sprite.Enemy
         }
 
         public AbstractEnemy CreateStalfos(
-            Texture2D texture,
             Vector2[] patrolPath,
             float speed)
         {
             Vector2 velocity = Vector2.Zero;
-            return new Stalfos(texture, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
+            return new Stalfos(GameAssets.Instance.EnemySheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
         }
 
-        public AbstractEnemy CreateKeese(Texture2D texture,
-        Vector2[] patrolPath, float speed)
+        public AbstractEnemy CreateKeese(Vector2[] patrolPath, float speed)
         {
             Vector2 velocity = Vector2.Zero;
-            return new Keese(texture, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
+            return new Keese(GameAssets.Instance.EnemySheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
         }
 
-        public AbstractEnemy CreateGel(Texture2D texture, Vector2[] patrolPath, float speed, float waitDuration)
+        public AbstractEnemy CreateGel(Vector2[] patrolPath, float speed, float waitDuration)
         {
             Vector2 velocity = Vector2.Zero;
-            return new Gel(texture, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed, waitDuration);
+            return new Gel(GameAssets.Instance.EnemySheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed, waitDuration);
+        }
+
+        public AbstractEnemy CreateAquamentus(Vector2[] patrolPath, float speed, float waitDuration)
+        {
+            Vector2 velocity = Vector2.Zero;
+            return new Aquamentus(GameAssets.Instance.BossSheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed, waitDuration);
         }
     }
 }

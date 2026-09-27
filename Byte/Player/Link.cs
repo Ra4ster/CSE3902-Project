@@ -18,7 +18,7 @@ namespace Byte.Player
 
         // use to see if movement/other needs to be stopped - cant move when attacking
         public bool IsAttacking { get; set; } = false;
-        
+
         // The starting reference point for most animations and sprite drawing
         public static readonly Vector2 LinkOrigin = new Vector2(8, 13);
 
@@ -51,7 +51,7 @@ namespace Byte.Player
         public Rectangle[] sourceRects { get; set; } = new Rectangle[1];
 
         // the sprite that is active for link
-        public ISprite currentSprite { get; set; } = newSprite;
+        public ISprite? currentSprite { get; set; } = newSprite;
 
         // the sprite batch used for drawing
         public SpriteBatch spriteBatch { get; set; } = newSpriteBatch;
@@ -60,7 +60,7 @@ namespace Byte.Player
         private MouseController mouseControls { get; set; } = (MouseController)mouseControl;
         private KeyboardController kbControls { get; set; } = (KeyboardController)kbControl;
 
-        
+
         // The list of keys pressed
         private Keys[] keys = new Keys[1];
 
@@ -69,7 +69,8 @@ namespace Byte.Player
         {
             // Check which keys are pressed - if they affect idle state update if not set to idle
             keys = kbControls.currentState.GetPressedKeys();
-            if (shouldBeIdle(keys) && !IsAttacking){
+            if (shouldBeIdle(keys) && !IsAttacking)
+            {
                 GetNewState(new PlayerIdleState());
             }
             state.Update(this, gameTime);
@@ -92,7 +93,7 @@ namespace Byte.Player
         public void Attack()
         {
             this.IsAttacking = true;
-            this.MovementSpeed = new Vector2(0,0);
+            this.MovementSpeed = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)
             {
                 this.GetNewState(new PlayerAttackState());
@@ -134,10 +135,10 @@ namespace Byte.Player
 
             return !state;
         }
-        
 
-        
-       
+
+
+
 
 
     }

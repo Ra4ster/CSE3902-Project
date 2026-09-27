@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin DungeonEnemies
+#begin enemySheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -23,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:DungeonEnemies.png
+/build:AssetSheets/enemySheet.png
 
-#begin linkSheet.png
+#begin bossSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -35,7 +35,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:linkSheet.png
+/build:AssetSheets/bossSheet.png
+
+#begin linkSheet2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/linkSheet2.png
 
 #begin LinkSheet3.png
 /importer:TextureImporter
@@ -47,7 +59,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:LinkSheet3.png
+/build:AssetSheets/LinkSheet3.png
 
 #begin LinkSheet4.png
 /importer:TextureImporter
@@ -55,15 +67,6 @@
 /processorParam:ColorKeyColor=116,116,116,255
 /processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:LinkSheet4.png
-
-#begin Roboto.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Roboto.spritefont
