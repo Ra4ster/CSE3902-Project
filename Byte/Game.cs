@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
 using Byte.Item;
 using Byte.Player;
+using Byte.Projectile;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
@@ -31,6 +32,8 @@ public class Game : Microsoft.Xna.Framework.Game
     private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
 
     private BlockManager blockManager = new BlockManager();
+
+    private ProjectileManager projectileManager = new ProjectileManager();
 
     private SpriteBatch? SpritePainter { get; set; }
 
@@ -188,7 +191,7 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
-        ICommand resetCommand = new ResetCommand(this, link, blockManager);
+        ICommand resetCommand = new ResetCommand(this, link, blockManager, projectileManager);
         ICommand nextBlockCommand = new NextBlockCommand(blockManager);
         ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
 
@@ -205,7 +208,23 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.T, previousBlockCommand);
         keybindings.Add(Keys.Y, nextBlockCommand);
 
+        AddProjectileCommands();
+
         base.LoadContent();
+    }
+
+    private void AddProjectileCommands()
+    {
+        ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet);
+
+        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow);
+        ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
+            (position, direction) => projectileFactory.CreateBomb(position));
+        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang);
+
+        keybindings.Add(Keys.D1, useArrowCommand);
+        keybindings.Add(Keys.D2, useBombCommand);
+        keybindings.Add(Keys.D3, useBoomerangCommand);
     }
 
     protected override void Update(GameTime gameTime)
@@ -216,6 +235,7 @@ public class Game : Microsoft.Xna.Framework.Game
         foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
 
         blockManager.Update(gameTime);
+        projectileManager.Update(gameTime);
         link.Update(gameTime);
         base.Update(gameTime);
     }
@@ -242,6 +262,7 @@ public class Game : Microsoft.Xna.Framework.Game
             enemy.Draw(SpritePainter!);
 
         blockManager.Draw(SpritePainter!);
+        projectileManager.Draw(SpritePainter!);
 
         SpritePainter?.End();
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Byte.Block;
 using Byte.Player;
+using Byte.Projectile;
 
 namespace Byte.Command
 {
@@ -11,9 +12,11 @@ namespace Byte.Command
     {
         Link player;
         BlockManager blockManager;
-        public ResetCommand(Game game, Link link, BlockManager blockManager) {
+        ProjectileManager projectileManager;
+        public ResetCommand(Game game, Link link, BlockManager blockManager, ProjectileManager projectileManager) {
             player = link;
             this.blockManager = blockManager;
+            this.projectileManager = projectileManager;
         }
         public void Execute(GameTime gametime)
         {
@@ -25,6 +28,9 @@ namespace Byte.Command
 
             // reset blocks back to the first one
             blockManager.Reset();
+
+            // remove every projectile still in flight
+            projectileManager.Clear();
         }
     }
 }
