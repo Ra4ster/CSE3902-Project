@@ -10,7 +10,7 @@ namespace Byte.Command
         private static readonly TimeSpan RepeatDelay = TimeSpan.FromMilliseconds(250);
 
         private readonly BlockManager blockManager;
-        private TimeSpan lastExecuted = TimeSpan.MinValue;
+        private TimeSpan? lastExecuted;
 
         public PreviousBlockCommand(BlockManager blockManager)
         {
@@ -19,7 +19,7 @@ namespace Byte.Command
 
         public void Execute(GameTime gameTime)
         {
-            if (gameTime.TotalGameTime - lastExecuted < RepeatDelay)
+            if (lastExecuted.HasValue && gameTime.TotalGameTime - lastExecuted.Value < RepeatDelay)
             {
                 return;
             }
