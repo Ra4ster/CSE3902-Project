@@ -47,7 +47,7 @@ namespace Byte.Item
         {
             if (items.Count > 0 && currentIndex < items.Count)
             {
-                items[currentIndex].Update(gameTime);
+                items[currentIndex]?.Update(gameTime);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Byte.Item
         {
             if (items.Count > 0 && currentIndex < items.Count)
             {
-                items[currentIndex].Draw(spriteBatch);
+                items[currentIndex]?.Draw(spriteBatch);
             }
         }
     }
