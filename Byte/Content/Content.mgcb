@@ -83,7 +83,7 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/items.png
 
-#begin blockSheet.png
+#begin AssetSheets/blockSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -93,7 +93,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:blockSheet.png
+/build:AssetSheets/blockSheet.png
 
 #begin Roboto.spritefont
 /importer:FontDescriptionImporter
