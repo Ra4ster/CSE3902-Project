@@ -1,4 +1,8 @@
-﻿using Byte.Command;
+﻿using Byte.Block;
+using Byte.Command;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
 using Byte.Item;
 using Byte.Player;
@@ -17,6 +21,7 @@ public class Game : Microsoft.Xna.Framework.Game
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static Rectangle[] quadrants = new Rectangle[4];
+    private const float SCREEN_FILL_RATIO = 0.85f;
 
     public Link link = null!;
     public ISprite? linkSprite;
@@ -24,6 +29,8 @@ public class Game : Microsoft.Xna.Framework.Game
     private Texture2D? pixelTexture;
 
     private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
+
+    private BlockManager blockManager = new BlockManager();
 
     private SpriteBatch? SpritePainter { get; set; }
 
@@ -45,8 +52,35 @@ public class Game : Microsoft.Xna.Framework.Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        graphicsDeviceManager.PreferredBackBufferWidth = WINDOW_SIZE.Width;
-        graphicsDeviceManager.PreferredBackBufferHeight = WINDOW_SIZE.Height;
+        // WINDOW_SIZE is the virtual resolution; the real window may be smaller and is scaled in Draw.
+        int displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        int windowSide = Math.Min(WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
+        graphicsDeviceManager.PreferredBackBufferWidth = windowSide;
+        graphicsDeviceManager.PreferredBackBufferHeight = windowSide;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChanged;
+    }
+
+    private void OnClientSizeChanged(object? sender, EventArgs e)
+    {
+        graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
+        graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
+        graphicsDeviceManager.ApplyChanges();
+    }
+
+    /// <summary>
+    /// Scales the virtual WINDOW_SIZE to fit the current window, centered with letterboxing.
+    /// </summary>
+    private Matrix GetScreenTransform()
+    {
+        Viewport viewport = GraphicsDevice.Viewport;
+        float scale = Math.Min(
+            viewport.Width / (float)WINDOW_SIZE.Width,
+            viewport.Height / (float)WINDOW_SIZE.Height);
+        float offsetX = (viewport.Width - WINDOW_SIZE.Width * scale) / 2f;
+        float offsetY = (viewport.Height - WINDOW_SIZE.Height * scale) / 2f;
+        return Matrix.CreateScale(scale) * Matrix.CreateTranslation(offsetX, offsetY, 0f);
     }
 
     private void AddEnemies()
@@ -78,6 +112,24 @@ public class Game : Microsoft.Xna.Framework.Game
             new Vector2(800, 900),
             new Vector2(1000, 900)
         ], 200f, 1.5f));
+    }
+
+    private void AddBlocks()
+    {
+        BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
+        Vector2 blockPos = new Vector2(1200, 300);
+
+        blockManager.AddBlock(blockFactory.CreateSquareBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateKeystoneBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStatueLeftBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStatueRightBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateVoidBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateSpeckledFloorBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateWaterBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStairsBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateBrickBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateLadderBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateSandBlock(blockPos));
     }
 
     protected override void LoadContent()
@@ -125,6 +177,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
         link.sourceRects = new Rectangle[10];
         AddEnemies();
+        AddBlocks();
 
 
         ICommand attackCommand = new AttackCommand(this, link);
@@ -133,7 +186,9 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
-        ICommand resetCommand = new ResetCommand(this, link);
+        ICommand resetCommand = new ResetCommand(this, link, blockManager);
+        ICommand nextBlockCommand = new NextBlockCommand(blockManager);
+        ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
 
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -145,6 +200,8 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.Q, resetCommand);
         keybindings.Add(Keys.R, resetCommand);
+        keybindings.Add(Keys.T, previousBlockCommand);
+        keybindings.Add(Keys.Y, nextBlockCommand);
 
         base.LoadContent();
     }
@@ -156,6 +213,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
         foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
 
+        blockManager.Update(gameTime);
         itemManager.Update(gameTime);
         link.Update(gameTime);
         base.Update(gameTime);
@@ -163,12 +221,13 @@ public class Game : Microsoft.Xna.Framework.Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.White);
+        GraphicsDevice.Clear(Color.Black);
 
         SpritePainter?.Begin(
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: GetScreenTransform()
     );
 
         // Quadrants
@@ -180,6 +239,8 @@ public class Game : Microsoft.Xna.Framework.Game
 
         foreach (AbstractEnemy enemy in enemies)
             enemy.Draw(SpritePainter!);
+
+        blockManager.Draw(SpritePainter!);
 
         itemManager.Draw(SpritePainter!);
 

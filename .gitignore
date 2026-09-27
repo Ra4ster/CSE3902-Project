@@ -1,11 +1,6 @@
 Byte/obj/*
 Byte/bin/*
 Byte/Content/obj/*
-Byte/bin/*
-<<<<<<< HEAD
-.vs/
-=======
 .vs/
 bin/
 obj/
->>>>>>> origin/main

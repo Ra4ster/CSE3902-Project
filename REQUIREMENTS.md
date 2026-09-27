@@ -25,6 +25,10 @@
 - Player:
 - Projectiles:
 - Blocks:
+  - [x] Load the dungeon tile sheet and save the bounds for each tile.
+  - [x] Create the 11 block classes with a block factory and manager (only the factory knows the sheet coordinates).
+  - [x] Add t / y keybindings to cycle through the blocks, with a delay so holding the key doesn't skip past blocks.
+  - [x] Hook blocks into the r reset so they go back to the starting block.
 - Items:
 
 ## Sprint 3

@@ -11,13 +11,16 @@ internal sealed class GameAssets
     public Texture2D EnemySheet { get; }
     public Texture2D BossSheet { get; }
     public Texture2D LinkSheet { get; }
+    public Texture2D BlockSheet { get; }
     public Texture2D ItemSheet { get; }
 
+    private GameAssets(Texture2D enemySheet, Texture2D bossSheet, Texture2D linkSheet, Texture2D blockSheet)
     private GameAssets(Texture2D enemySheet, Texture2D bossSheet, Texture2D linkSheet, Texture2D itemSheet)
     {
         EnemySheet = enemySheet;
         BossSheet = bossSheet;
         LinkSheet = linkSheet;
+        BlockSheet = blockSheet;
         ItemSheet = itemSheet;
     }
 
@@ -26,6 +29,8 @@ internal sealed class GameAssets
         instance = new GameAssets(
             content.Load<Texture2D>("AssetSheets/enemySheet"),
             content.Load<Texture2D>("AssetSheets/bossSheet"),
+            content.Load<Texture2D>("AssetSheets/linkSheet2"),
+            content.Load<Texture2D>("AssetSheets/blockSheet"));
             content.Load<Texture2D>("AssetSheets/linkSheet2"),
             content.Load<Texture2D>("AssetSheets/items")
         );
