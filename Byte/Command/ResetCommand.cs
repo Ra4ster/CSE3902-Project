@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Byte.Block;
 using Byte.Player;
 
 namespace Byte.Command
@@ -9,8 +10,10 @@ namespace Byte.Command
     public class ResetCommand : ICommand
     {
         Link player;
-        public ResetCommand(Game game, Link link) {
+        BlockManager blockManager;
+        public ResetCommand(Game game, Link link, BlockManager blockManager) {
             player = link;
+            this.blockManager = blockManager;
         }
         public void Execute(GameTime gametime)
         {
@@ -19,6 +22,9 @@ namespace Byte.Command
             player.Direction = CardinalDirections.South;
             player.IsAttacking = false;
             player.GetNewState(new PlayerIdleState());
+
+            // reset blocks back to the first one
+            blockManager.Reset();
         }
     }
 }

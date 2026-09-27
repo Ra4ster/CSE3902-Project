@@ -1,4 +1,8 @@
-﻿using Byte.Command;
+﻿using Byte.Block;
+using Byte.Command;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
 using Byte.Item;
 using Byte.Player;
@@ -25,6 +29,8 @@ public class Game : Microsoft.Xna.Framework.Game
     private Texture2D? pixelTexture;
 
     private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
+
+    private BlockManager blockManager = new BlockManager();
 
     private SpriteBatch? SpritePainter { get; set; }
 
@@ -106,6 +112,24 @@ public class Game : Microsoft.Xna.Framework.Game
         ], 200f, 1.5f));
     }
 
+    private void AddBlocks()
+    {
+        BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
+        Vector2 blockPos = new Vector2(1200, 300);
+
+        blockManager.AddBlock(blockFactory.CreateSquareBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateKeystoneBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStatueLeftBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStatueRightBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateVoidBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateSpeckledFloorBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateWaterBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStairsBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateBrickBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateLadderBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateSandBlock(blockPos));
+    }
+
     protected override void LoadContent()
     {
         Texture2D itemSheet = Content.Load<Texture2D>("items");
@@ -155,6 +179,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
         link.sourceRects = new Rectangle[10];
         AddEnemies();
+        AddBlocks();
 
 
         ICommand attackCommand = new AttackCommand(this, link);
@@ -163,7 +188,9 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand moveLeftCommand = new MoveLeftCommand(this, link);
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
-        ICommand resetCommand = new ResetCommand(this, link);
+        ICommand resetCommand = new ResetCommand(this, link, blockManager);
+        ICommand nextBlockCommand = new NextBlockCommand(blockManager);
+        ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
 
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -175,6 +202,8 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.Q, resetCommand);
         keybindings.Add(Keys.R, resetCommand);
+        keybindings.Add(Keys.T, previousBlockCommand);
+        keybindings.Add(Keys.Y, nextBlockCommand);
 
         base.LoadContent();
     }
@@ -186,6 +215,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
         foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
 
+        blockManager.Update(gameTime);
         link.Update(gameTime);
         base.Update(gameTime);
     }
@@ -210,6 +240,8 @@ public class Game : Microsoft.Xna.Framework.Game
 
         foreach (AbstractEnemy enemy in enemies)
             enemy.Draw(SpritePainter!);
+
+        blockManager.Draw(SpritePainter!);
 
         SpritePainter?.End();
 
