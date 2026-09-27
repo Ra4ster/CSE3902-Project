@@ -17,6 +17,7 @@ public class Game : Microsoft.Xna.Framework.Game
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static Rectangle[] quadrants = new Rectangle[4];
+    private const float SCREEN_FILL_RATIO = 0.85f;
 
     public Link link = null!;
     public ISprite? linkSprite;
@@ -43,8 +44,35 @@ public class Game : Microsoft.Xna.Framework.Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        graphicsDeviceManager.PreferredBackBufferWidth = WINDOW_SIZE.Width;
-        graphicsDeviceManager.PreferredBackBufferHeight = WINDOW_SIZE.Height;
+        // WINDOW_SIZE is the virtual resolution; the real window may be smaller and is scaled in Draw.
+        int displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        int windowSide = Math.Min(WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
+        graphicsDeviceManager.PreferredBackBufferWidth = windowSide;
+        graphicsDeviceManager.PreferredBackBufferHeight = windowSide;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChanged;
+    }
+
+    private void OnClientSizeChanged(object? sender, EventArgs e)
+    {
+        graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
+        graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
+        graphicsDeviceManager.ApplyChanges();
+    }
+
+    /// <summary>
+    /// Scales the virtual WINDOW_SIZE to fit the current window, centered with letterboxing.
+    /// </summary>
+    private Matrix GetScreenTransform()
+    {
+        Viewport viewport = GraphicsDevice.Viewport;
+        float scale = Math.Min(
+            viewport.Width / (float)WINDOW_SIZE.Width,
+            viewport.Height / (float)WINDOW_SIZE.Height);
+        float offsetX = (viewport.Width - WINDOW_SIZE.Width * scale) / 2f;
+        float offsetY = (viewport.Height - WINDOW_SIZE.Height * scale) / 2f;
+        return Matrix.CreateScale(scale) * Matrix.CreateTranslation(offsetX, offsetY, 0f);
     }
 
     private void AddEnemies()
@@ -164,12 +192,13 @@ public class Game : Microsoft.Xna.Framework.Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.White);
+        GraphicsDevice.Clear(Color.Black);
 
         SpritePainter?.Begin(
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: GetScreenTransform()
     );
 
         // Quadrants
