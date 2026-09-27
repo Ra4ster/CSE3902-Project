@@ -1,4 +1,3 @@
-
 #----------------------------- Global Properties ----------------------------#
 
 /outputDir:bin/$(Platform)
@@ -13,19 +12,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin enemySheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=116,116,116,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:AssetSheets/enemySheet.png
-
-#begin bossSheet.png
+#begin AssetSheets/bossSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -37,7 +24,19 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/bossSheet.png
 
-#begin linkSheet2.png
+#begin AssetSheets/enemySheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/enemySheet.png
+
+#begin AssetSheets/linkSheet2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -49,7 +48,7 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/linkSheet2.png
 
-#begin LinkSheet3.png
+#begin AssetSheets/LinkSheet3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -61,10 +60,11 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/LinkSheet3.png
 
-#begin items.png
+#begin AssetSheets/LinkSheet4.png
 /importer:TextureImporter
 /processor:TextureProcessor
-/processorParam:ColorKeyEnabled=False
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
 /processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
@@ -72,7 +72,7 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/LinkSheet4.png
 
-#begin blockSheet.png
+#begin AssetSheets/items.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyEnabled=False
@@ -81,4 +81,23 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/build:AssetSheets/items.png
+
+#begin AssetSheets/blockSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
 /build:AssetSheets/blockSheet.png
+
+#begin Roboto.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Roboto.spritefont
