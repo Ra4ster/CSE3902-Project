@@ -41,6 +41,8 @@ public class Game : Microsoft.Xna.Framework.Game
     private IController mouseControls;
     private IController kbControls;
 
+    ItemManager itemManager = new ItemManager();
+
     public Game()
     {
         kbControls = new KeyboardController(keybindings);
@@ -132,8 +134,6 @@ public class Game : Microsoft.Xna.Framework.Game
 
     protected override void LoadContent()
     {
-        Texture2D itemSheet = Content.Load<Texture2D>("items");
-
         GameAssets.Load(Content); // TODO: Wrap item sheet in GameAssets
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
@@ -152,13 +152,11 @@ public class Game : Microsoft.Xna.Framework.Game
         int topHeight = WINDOW_SIZE.Height / 2;
         int bottomHeight = WINDOW_SIZE.Height - topHeight;
 
-        //Code dealing with items:
-        Texture2D itemsTexture = Content.Load<Texture2D>("items");
+        //Code dealing with items
+        ItemFactory itemFactory = new ItemFactory();
 
-        ItemFactory itemFactory = new ItemFactory(itemsTexture);
-        ItemManager itemManager = new ItemManager();
 
-        Vector2 spawnPos = new Vector2(500,500);
+        Vector2 spawnPos = new Vector2(700,700);
 
         itemManager.AddItem(itemFactory.CreateRupee(spawnPos));
         itemManager.AddItem(itemFactory.CreateHeart(spawnPos));
@@ -216,6 +214,7 @@ public class Game : Microsoft.Xna.Framework.Game
         foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
 
         blockManager.Update(gameTime);
+        itemManager.Update(gameTime);
         link.Update(gameTime);
         base.Update(gameTime);
     }
@@ -242,6 +241,8 @@ public class Game : Microsoft.Xna.Framework.Game
             enemy.Draw(SpritePainter!);
 
         blockManager.Draw(SpritePainter!);
+
+        itemManager.Draw(SpritePainter!);
 
         SpritePainter?.End();
 
