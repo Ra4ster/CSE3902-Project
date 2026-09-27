@@ -72,3 +72,14 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:AssetSheets/LinkSheet4.png
+
+#begin blockSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/blockSheet.png
