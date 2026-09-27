@@ -13,19 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin enemySheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=116,116,116,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:AssetSheets/enemySheet.png
-
-#begin bossSheet.png
+#begin AssetSheets/bossSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -37,7 +25,19 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/bossSheet.png
 
-#begin linkSheet2.png
+#begin AssetSheets/enemySheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/enemySheet.png
+
+#begin AssetSheets/linkSheet2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -49,7 +49,7 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/linkSheet2.png
 
-#begin LinkSheet3.png
+#begin AssetSheets/LinkSheet3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=116,116,116,255
@@ -61,23 +61,22 @@
 /processorParam:TextureFormat=Color
 /build:AssetSheets/LinkSheet3.png
 
-#begin LinkSheet4.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=116,116,116,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Roboto.spritefont
-
 #begin items.png
 /importer:TextureImporter
 /processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
 /processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:items.png
+/build:AssetSheets/items.png
+
+#begin Roboto.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Roboto.spritefont
+
