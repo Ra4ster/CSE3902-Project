@@ -194,14 +194,18 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
 
         keybindings.Add(Keys.D0, quitCommand);
+        keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
         keybindings.Add(Keys.S, moveDownCommand);
         keybindings.Add(Keys.A, moveLeftCommand);
         keybindings.Add(Keys.D, moveRightCommand);
+        keybindings.Add(Keys.Up, moveUpCommand);
+        keybindings.Add(Keys.Down, moveDownCommand);
+        keybindings.Add(Keys.Left, moveLeftCommand);
+        keybindings.Add(Keys.Right, moveRightCommand);
         rightClickBindings.Add(WINDOW_SIZE, quitCommand);
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
-        keybindings.Add(Keys.Q, resetCommand);
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.T, previousBlockCommand);
         keybindings.Add(Keys.Y, nextBlockCommand);
