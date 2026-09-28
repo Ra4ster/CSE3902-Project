@@ -24,6 +24,15 @@
   - [x] Implement Aquamentus boss.
 - Player:
 - Projectiles:
+  - [x] Create an `IProjectile` interface (`Update`, `Draw`, `IsExpired`) shared by every projectile.
+  - [x] Create a projectile factory that loads the projectile art from the link sheet (only the factory knows the sheet coordinates).
+  - [x] Create a projectile manager that updates and draws every live projectile and removes expired ones.
+  - [x] Arrow: flies straight in Link's facing direction and despawns after a set distance or off screen.
+  - [x] Bomb: placed in front of Link, plays the explosion animation after a short fuse, then despawns.
+  - [x] Boomerang: flies out to its range, returns along the same path, then despawns.
+  - [x] Add 1 / 2 / 3 keybindings to use the arrow, bomb and boomerang, with a delay so holding the key doesn't spam.
+  - [x] Hook projectiles into the r reset so every projectile in flight is cleared.
+  - [ ] Aquamentus fireball projectile (boss attack).
 - Blocks:
   - [x] Load the dungeon tile sheet and save the bounds for each tile.
   - [x] Create the 11 block classes with a block factory and manager (only the factory knows the sheet coordinates).
