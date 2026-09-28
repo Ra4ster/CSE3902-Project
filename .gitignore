@@ -4,3 +4,4 @@ Byte/Content/obj/*
 .vs/
 bin/
 obj/
+.DS_Store
