@@ -9,9 +9,6 @@ using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
@@ -21,13 +18,13 @@ public class Game : Microsoft.Xna.Framework.Game
 
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
-    public static Rectangle[] quadrants = new Rectangle[4];
+    public static Color BG_COLOR = Color.AliceBlue;
     private const float SCREEN_FILL_RATIO = 0.85f;
 
     public Link link = null!;
     public ISprite? linkSprite;
 
-    private Texture2D? pixelTexture;
+    private Texture2D? bgTexture;
 
     private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
 
@@ -55,7 +52,6 @@ public class Game : Microsoft.Xna.Framework.Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        // WINDOW_SIZE is the virtual resolution; the real window may be smaller and is scaled in Draw.
         int displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         int windowSide = Math.Min(WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
         graphicsDeviceManager.PreferredBackBufferWidth = windowSide;
@@ -70,20 +66,6 @@ public class Game : Microsoft.Xna.Framework.Game
         graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
         graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
         graphicsDeviceManager.ApplyChanges();
-    }
-
-    /// <summary>
-    /// Scales the virtual WINDOW_SIZE to fit the current window, centered with letterboxing.
-    /// </summary>
-    private Matrix GetScreenTransform()
-    {
-        Viewport viewport = GraphicsDevice.Viewport;
-        float scale = Math.Min(
-            viewport.Width / (float)WINDOW_SIZE.Width,
-            viewport.Height / (float)WINDOW_SIZE.Height);
-        float offsetX = (viewport.Width - WINDOW_SIZE.Width * scale) / 2f;
-        float offsetY = (viewport.Height - WINDOW_SIZE.Height * scale) / 2f;
-        return Matrix.CreateScale(scale) * Matrix.CreateTranslation(offsetX, offsetY, 0f);
     }
 
     private void AddEnemies()
@@ -137,11 +119,12 @@ public class Game : Microsoft.Xna.Framework.Game
 
     protected override void LoadContent()
     {
-        GameAssets.Load(Content); // TODO: Wrap item sheet in GameAssets
+        GameAssets.Load(Content);
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
-        pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
-        pixelTexture.SetData([Color.White]);
+        bgTexture = new Texture2D(GraphicsDevice, 1, 1);
+
+        bgTexture.SetData([Color.White]);
 
         Vector2 linkPos = new Vector2(220.0f);
         link = new Link(linkPos, new StaticSprite(
@@ -150,16 +133,10 @@ public class Game : Microsoft.Xna.Framework.Game
             SpritePainter, GameAssets.Instance.LinkSheet,
             mouseControls, kbControls);
 
-        int leftWidth = WINDOW_SIZE.Width / 2;
-        int rightWidth = WINDOW_SIZE.Width - leftWidth;
-        int topHeight = WINDOW_SIZE.Height / 2;
-        int bottomHeight = WINDOW_SIZE.Height - topHeight;
-
-        //Code dealing with items
+        // Code dealing with items
         ItemFactory itemFactory = new ItemFactory();
 
-
-        Vector2 spawnPos = new Vector2(700,700);
+        Vector2 spawnPos = new Vector2(700, 700);
 
         itemManager.AddItem(itemFactory.CreateRupee(spawnPos));
         itemManager.AddItem(itemFactory.CreateHeart(spawnPos));
@@ -172,16 +149,9 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.I, NextItemCommand);
         keybindings.Add(Keys.U, PreviousItemCommand);
 
-
-        quadrants[0] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top, leftWidth, topHeight);
-        quadrants[1] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top, rightWidth, topHeight);
-        quadrants[2] = new Rectangle(WINDOW_SIZE.Left, WINDOW_SIZE.Top + topHeight, leftWidth, bottomHeight);
-        quadrants[3] = new Rectangle(WINDOW_SIZE.Left + leftWidth, WINDOW_SIZE.Top + topHeight, rightWidth, bottomHeight);
-
         link.sourceRects = new Rectangle[10];
         AddEnemies();
         AddBlocks();
-
 
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
@@ -246,15 +216,10 @@ public class Game : Microsoft.Xna.Framework.Game
         SpritePainter?.Begin(
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp,
-            transformMatrix: GetScreenTransform()
-    );
+            samplerState: SamplerState.PointClamp
+        );
 
-        // Quadrants
-        SpritePainter?.Draw(pixelTexture, quadrants[0], Color.LightPink);
-        SpritePainter?.Draw(pixelTexture, quadrants[1], Color.LightGreen);
-        SpritePainter?.Draw(pixelTexture, quadrants[2], Color.LightSkyBlue);
-        SpritePainter?.Draw(pixelTexture, quadrants[3], Color.LightGoldenrodYellow);
+        SpritePainter?.Draw(bgTexture, WINDOW_SIZE, BG_COLOR);
         link.state.Draw(link);
 
         foreach (AbstractEnemy enemy in enemies)
