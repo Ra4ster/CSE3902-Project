@@ -29,6 +29,7 @@ public class Game : Microsoft.Xna.Framework.Game
     private ItemManager itemManager = new ItemManager();
 
     private SpriteBatch? SpritePainter { get; set; }
+    private Matrix spriteTransform = Matrix.Identity;
 
     Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
     Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
@@ -59,9 +60,15 @@ public class Game : Microsoft.Xna.Framework.Game
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
     {
-        graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
-        graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
-        graphicsDeviceManager.ApplyChanges();
+        Viewport viewport = GraphicsDevice.Viewport;
+        float scale = Math.Min(
+            viewport.Width / (float)GameConstants.WINDOW_SIZE.Width,
+            viewport.Height / (float)GameConstants.WINDOW_SIZE.Height);
+        float offsetX = (viewport.Width - GameConstants.WINDOW_SIZE.Width * scale) / 2.0f;
+        float offsetY = (viewport.Height - GameConstants.WINDOW_SIZE.Height * scale) / 2.0f;
+
+        spriteTransform = Matrix.CreateScale(scale) * Matrix.CreateTranslation(offsetX, offsetY, 0.0f);
+
     }
 
     protected override void LoadContent()
@@ -151,7 +158,8 @@ public class Game : Microsoft.Xna.Framework.Game
         SpritePainter?.Begin(
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp
+            samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
+            transformMatrix: spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
         );
 
         link.state.Draw(link);
