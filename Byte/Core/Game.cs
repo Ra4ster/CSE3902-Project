@@ -103,7 +103,7 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.S, moveDownCommand);
         keybindings.Add(Keys.A, moveLeftCommand);
         keybindings.Add(Keys.D, moveRightCommand);
-        rightClickBindings.Add(WINDOW_SIZE, quitCommand);
+        rightClickBindings.Add(GameConstants.WINDOW_SIZE, quitCommand);
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
