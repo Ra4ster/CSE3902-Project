@@ -3,6 +3,7 @@ using Byte.Block;
 using Byte.Item;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
+using Byte.Sprite.Enemy.Minion;
 using Microsoft.Xna.Framework;
 
 class Dungeon1 : IDungeon
@@ -31,25 +32,26 @@ class Dungeon1 : IDungeon
     public EnemyManager CreateEnemies()
     {
         List<AbstractEnemy> enemies = [
-            EnemyFactory.Instance.CreateStalfos(
-            [
+            EnemyFactory.Instance.Create<Stalfos>(
+            patrolPath: [
                 new Vector2(100, 100),
                 new Vector2(100, 300),
                 new Vector2(300, 300),
                 new Vector2(300, 100)
-            ], 200f),
-            EnemyFactory.Instance.CreateKeese(
-                new Vector2(500, 600), 200f),
-            EnemyFactory.Instance.CreateGel(
-            [
+            ], speed: 200f),
+            EnemyFactory.Instance.Create<Keese>(
+                null,
+                pos: new Vector2(500, 600), 200f),
+            EnemyFactory.Instance.Create<Gel>(
+            patrolPath: [
                 new Vector2(300, 800),
                 new Vector2(800, 800)
-            ], 200f, 1.5f),
-            EnemyFactory.Instance.CreateAquamentus(
-            [
+            ], speed: 200f, waitDuration: 1.5f),
+            EnemyFactory.Instance.Create<Aquamentus>(
+            patrolPath: [
                 new Vector2(800, 900),
                 new Vector2(1000, 900)
-            ], 200f, 1.5f, 0.5f)
+            ], speed: 200f, waitDuration: 1.0f, frameDuration: 0.5f)
         ];
 
         EnemyManager e_man = new EnemyManager();

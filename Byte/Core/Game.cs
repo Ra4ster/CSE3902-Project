@@ -15,11 +15,7 @@ using Byte.Sprite.Enemy;
 /// </summary>
 public class Game : Microsoft.Xna.Framework.Game
 {
-
     public GraphicsDeviceManager graphicsDeviceManager;
-    public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
-    public static Color BG_COLOR = Color.SkyBlue;
-    private Texture2D? bgTexture;
     private const float SCREEN_FILL_RATIO = 0.85f;
 
     public Link link = null!;
@@ -53,7 +49,7 @@ public class Game : Microsoft.Xna.Framework.Game
         IsMouseVisible = true;
 
         int displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        int windowSide = Math.Min(WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
+        int windowSide = Math.Min(GameConstants.WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
         graphicsDeviceManager.PreferredBackBufferWidth = windowSide;
         graphicsDeviceManager.PreferredBackBufferHeight = windowSide;
 
@@ -76,9 +72,6 @@ public class Game : Microsoft.Xna.Framework.Game
         blockManager = dungeon.CreateBlocks();
 
         SpritePainter = new SpriteBatch(GraphicsDevice);
-
-        bgTexture = new Texture2D(GraphicsDevice, 1, 1);
-        bgTexture.SetData([Color.White]);
 
         Vector2 linkPos = new Vector2(220.0f);
         link = new Link(linkPos, new StaticSprite(
@@ -152,7 +145,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Black);
+        GraphicsDevice.Clear(GameConstants.BG_COLOR);
 
         SpritePainter?.Begin(
             sortMode: SpriteSortMode.Deferred,
@@ -160,7 +153,6 @@ public class Game : Microsoft.Xna.Framework.Game
             samplerState: SamplerState.PointClamp
         );
 
-        SpritePainter?.Draw(bgTexture, WINDOW_SIZE, BG_COLOR);
         link.state.Draw(link);
 
         enemyManager.Draw(SpritePainter!);

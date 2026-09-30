@@ -11,7 +11,8 @@ namespace Byte.Sprite.Enemy
         protected float patrolSpeed { get; }
 
         private Vector2 targetPosition;
-        private readonly Random random = new();
+
+        private static readonly Random random = new();
 
         internal WanderingEnemy(
             Texture2D texture,

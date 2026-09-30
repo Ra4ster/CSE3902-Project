@@ -13,7 +13,8 @@ namespace Byte.Command
         Link player;
         BlockManager blockManager;
         ProjectileManager projectileManager;
-        public ResetCommand(Game game, Link link, BlockManager blockManager, ProjectileManager projectileManager) {
+        public ResetCommand(Game game, Link link, BlockManager blockManager, ProjectileManager projectileManager)
+        {
             player = link;
             this.blockManager = blockManager;
             this.projectileManager = projectileManager;
@@ -21,7 +22,7 @@ namespace Byte.Command
         public void Execute(GameTime gametime)
         {
             // Reset player values to initial state
-            player.Position = Link.startPos;
+            player.Position = GameConstants.LINK_START_POS;
             player.Direction = CardinalDirections.South;
             player.IsAttacking = false;
             player.GetNewState(new PlayerIdleState());

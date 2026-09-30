@@ -28,22 +28,10 @@ namespace Byte.Sprite.Enemy.Minion
                     : SpriteEffects.None;
 
                 flipTimer = 0f;
-            }
-        }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(
-                texture,
-                position,
-                sourceRect[0],
-                color,
-                0f,
-                Vector2.Zero,
-                scale,
-                spriteEffect,
-                0f
-            );
+                if (enemySprite != null)
+                    enemySprite.Effects = spriteEffect;
+            }
         }
     }
 }
