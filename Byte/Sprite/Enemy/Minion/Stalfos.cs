@@ -33,14 +33,9 @@ namespace Byte.Sprite.Enemy.Minion
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 drawPosition = new Vector2(
-                MathF.Round(position.X),
-                MathF.Round(position.Y)
-            );
-
             spriteBatch.Draw(
                 texture,
-                drawPosition,
+                position,
                 sourceRect[0],
                 color,
                 0f,

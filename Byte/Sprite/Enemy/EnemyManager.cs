@@ -6,23 +6,45 @@ namespace Byte.Sprite.Enemy
 {
     public class EnemyManager
     {
-        private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
+        private readonly List<AbstractEnemy> enemies = new List<AbstractEnemy>();
+
+        // Debug-only int; used for cycling through enemies.
+        private int? selectedEnemyIndex = 0;
 
         public void Add(List<AbstractEnemy> enemies)
         {
-            this.enemies = enemies;
+            this.enemies.AddRange(enemies);
+        }
+
+        public void NextEnemy()
+        {
+            if (enemies.Count == 0)
+                return;
+
+            selectedEnemyIndex = selectedEnemyIndex switch
+            {
+                null => 0,
+                int index when index == enemies.Count - 1 => null,
+                int index => index + 1
+            };
         }
 
         public void Draw(SpriteBatch spritePainter)
         {
-            foreach (AbstractEnemy enemy in enemies)
-                enemy.Draw(spritePainter);
+            if (selectedEnemyIndex is int index)
+                enemies[index].Draw(spritePainter);
+            else
+                foreach (AbstractEnemy enemy in enemies)
+                    enemy.Draw(spritePainter);
         }
 
         public void Update(GameTime gameTime)
         {
-            foreach (AbstractEnemy enemy in enemies)
-                enemy.Update(gameTime);
+            if (selectedEnemyIndex is int index)
+                enemies[index].Update(gameTime);
+            else
+                foreach (AbstractEnemy enemy in enemies)
+                    enemy.Update(gameTime);
         }
     }
 }

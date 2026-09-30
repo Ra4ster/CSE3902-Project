@@ -19,12 +19,11 @@ public class Game : Microsoft.Xna.Framework.Game
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static Color BG_COLOR = Color.SkyBlue;
+    private Texture2D? bgTexture;
     private const float SCREEN_FILL_RATIO = 0.85f;
 
     public Link link = null!;
     public ISprite? linkSprite;
-
-    private Texture2D? bgTexture;
 
     private readonly IDungeon dungeon;
 
@@ -46,7 +45,7 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         this.dungeon = dungeon;
 
-        kbControls = new KeyboardController(keybindings);
+        kbControls = new KeyboardController(keybindings, [Keys.E]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -104,20 +103,19 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand resetCommand = new ResetCommand(this, link, blockManager, projectileManager);
         ICommand nextBlockCommand = new NextBlockCommand(blockManager);
         ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
-
+        ICommand cycleEnemyCommand = new CycleEnemyCommand(enemyManager);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
         keybindings.Add(Keys.S, moveDownCommand);
         keybindings.Add(Keys.A, moveLeftCommand);
         keybindings.Add(Keys.D, moveRightCommand);
-        rightClickBindings.Add(WINDOW_SIZE, quitCommand);
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.Q, resetCommand);
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.T, previousBlockCommand);
         keybindings.Add(Keys.Y, nextBlockCommand);
-
+        keybindings.Add(Keys.E, cycleEnemyCommand);
         AddProjectileCommands();
 
         base.LoadContent();

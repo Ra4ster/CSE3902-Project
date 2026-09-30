@@ -39,12 +39,7 @@ class Dungeon1 : IDungeon
                 new Vector2(300, 100)
             ], 200f),
             EnemyFactory.Instance.CreateKeese(
-            [
-                new Vector2(500, 600),
-                new Vector2(350, 450),
-                new Vector2(300, 400),
-                new Vector2(250, 450)
-            ], 200f),
+                new Vector2(500, 600), 200f),
             EnemyFactory.Instance.CreateGel(
             [
                 new Vector2(300, 800),
