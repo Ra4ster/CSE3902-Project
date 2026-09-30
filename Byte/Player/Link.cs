@@ -3,17 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
 using Byte.Sprite;
-using System;
-using System.Collections.Generic;
-
-using System.Text;
 
 namespace Byte.Player
 {
     public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
     {
-        // Contains the starting position for each link
-        public static readonly Vector2 startPos = new Vector2(220.0f);
         public bool isGameStart = true; // Checks if game was just started
 
         // use to see if movement/other needs to be stopped - cant move when attacking

@@ -1,12 +1,12 @@
 
 using Byte.Sprite.Enemy.Minion;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Sprite.Enemy
 {
     internal class EnemyFactory
     {
-        private const float SCALE = 10.0f;
         private const float FRAME_DURATION = 0.08f;
 
         private EnemyFactory() { }
@@ -24,30 +24,27 @@ namespace Byte.Sprite.Enemy
             }
         }
 
-        public AbstractEnemy CreateStalfos(
-            Vector2[] patrolPath,
-            float speed)
+        public AbstractEnemy Create<T>(
+            Vector2[]? patrolPath = null,
+            Vector2 pos = default,
+            float speed = 0.0f,
+            float frameDuration = FRAME_DURATION,
+            float waitDuration = default,
+            float scale = GameConstants.SCALE
+        ) where T : AbstractEnemy
         {
             Vector2 velocity = Vector2.Zero;
-            return new Stalfos(GameAssets.Instance.EnemySheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
-        }
+            Texture2D enemySheet = GameAssets.Instance.EnemySheet;
+            Texture2D bossSheet = GameAssets.Instance.BossSheet;
 
-        public AbstractEnemy CreateKeese(Vector2[] patrolPath, float speed)
-        {
-            Vector2 velocity = Vector2.Zero;
-            return new Keese(GameAssets.Instance.EnemySheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed);
-        }
-
-        public AbstractEnemy CreateGel(Vector2[] patrolPath, float speed, float waitDuration)
-        {
-            Vector2 velocity = Vector2.Zero;
-            return new Gel(GameAssets.Instance.EnemySheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed, waitDuration);
-        }
-
-        public AbstractEnemy CreateAquamentus(Vector2[] patrolPath, float speed, float waitDuration)
-        {
-            Vector2 velocity = Vector2.Zero;
-            return new Aquamentus(GameAssets.Instance.BossSheet, ref patrolPath[0], ref velocity, Color.White, FRAME_DURATION, SCALE, patrolPath, speed, waitDuration);
+            return typeof(T).Name switch
+            {
+                nameof(Stalfos) => new Stalfos(enemySheet, ref patrolPath![0], ref velocity, Color.White, frameDuration, scale, patrolPath!, speed),
+                nameof(Keese) => new Keese(enemySheet, ref pos, ref velocity!, Color.White, frameDuration, scale, speed),
+                nameof(Gel) => new Gel(enemySheet, ref patrolPath![0], ref velocity!, Color.White, frameDuration, scale, patrolPath!, speed, waitDuration!),
+                nameof(Aquamentus) => new Aquamentus(bossSheet, ref patrolPath![0], ref velocity, Color.White, frameDuration, scale, patrolPath!, speed, waitDuration!),
+                _ => throw new ArgumentException($"Enemy type {typeof(T).Name} is not supported by EnemyFactory.")
+            };
         }
     }
 }

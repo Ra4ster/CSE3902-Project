@@ -1,25 +1,22 @@
 ﻿using Byte.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Command
 {
     public class MoveLeftCommand : ICommand
     {
         private Link player;
-       
+
         Game gameGet;
-        
-      
+
+
 
         public MoveLeftCommand(Game game, Link link)
         {
             player = link;
             gameGet = game;
-            
+
         }
 
         public void Execute(GameTime gameTime)
@@ -52,6 +49,6 @@ namespace Byte.Command
             // update position based on direction and time
             player.Position += player.MovementSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
-    
+
     }
 }

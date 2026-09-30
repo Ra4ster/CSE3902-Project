@@ -29,7 +29,7 @@ public class Arrow : IProjectile
         position += velocity * seconds;
         distanceTraveled += SPEED * seconds;
 
-        if (distanceTraveled >= MAX_DISTANCE || !Game.WINDOW_SIZE.Contains(position))
+        if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(position))
         {
             IsExpired = true;
         }

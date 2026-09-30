@@ -45,12 +45,7 @@ public class MovingAnimatedSprite : ISprite
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
-        Vector2 frameOrigin = Origin;
-        if(frameOrigins != null)
-        {
-            frameOrigin = frameOrigins[currentFrame];
-        }
-
+        Vector2 frameOrigin = (frameOrigins == null) ? Origin : frameOrigins[currentFrame];
         spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
     }
 
@@ -60,16 +55,17 @@ public class MovingAnimatedSprite : ISprite
 
         position += velocity * seconds;
 
-      
+
         animationTimer += seconds;
 
         if (animationTimer >= frameDuration)
         {
             animationTimer -= frameDuration;
-            if(currentFrame < sourceRectangles.Length - 1)
+            if (currentFrame < sourceRectangles.Length - 1)
             {
                 currentFrame++;
-            }else if (Loop)
+            }
+            else if (Loop)
             {
                 currentFrame = 0;
             }
@@ -77,7 +73,7 @@ public class MovingAnimatedSprite : ISprite
             {
                 IsFinished = true;
             }
-            
+
         }
     }
 

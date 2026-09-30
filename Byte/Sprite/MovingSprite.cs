@@ -10,7 +10,7 @@ public class MovingSprite : ISprite
 
 {
     public bool Loop { get; set; } = true;
-    public bool IsFinished { get;  set; } = false;
+    public bool IsFinished { get; set; } = false;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private Vector2 position;
     private Texture2D texture;
@@ -36,12 +36,12 @@ public class MovingSprite : ISprite
     {
         float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if (position.X < Game.WINDOW_SIZE.Left || position.X > Game.WINDOW_SIZE.Right - (sourceRectangle.Width * scale))
+        if (position.X < GameConstants.WINDOW_SIZE.Left || position.X > GameConstants.WINDOW_SIZE.Right - (sourceRectangle.Width * scale))
             Velocity = new Vector2(Velocity.X * -1.0f, Velocity.Y);
 
         position.X += Velocity.X * seconds;
 
-        if (position.Y > Game.WINDOW_SIZE.Bottom - (sourceRectangle.Height * scale) || position.Y < Game.WINDOW_SIZE.Top)
+        if (position.Y > GameConstants.WINDOW_SIZE.Bottom - (sourceRectangle.Height * scale) || position.Y < GameConstants.WINDOW_SIZE.Top)
             Velocity = new Vector2(Velocity.X, Velocity.Y * -1.0f);
 
         position.Y += Velocity.Y * seconds;
