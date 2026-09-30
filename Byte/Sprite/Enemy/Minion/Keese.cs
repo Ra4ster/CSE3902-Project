@@ -11,8 +11,8 @@ namespace Byte.Sprite.Enemy
 
         private static readonly Rectangle[] sourceRects =
         {
-            new Rectangle(183, 11, 16, 16),
-            new Rectangle(200, 11, 16, 16)
+            new Rectangle(184, 12, 14, 14),
+            new Rectangle(201, 12, 14, 14)
         };
 
         private float elapsedSeconds;

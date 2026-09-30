@@ -45,14 +45,8 @@ public class MovingAnimatedSprite : ISprite
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
-        Vector2 frameOrigin = Origin;
-        if (frameOrigins != null)
-        {
-            frameOrigin = frameOrigins[currentFrame];
-        }
-
-        Vector2 roundedPosition = new Vector2(MathF.Round(position.X), MathF.Round(position.Y));
-        spriteBatch.Draw(texture, roundedPosition, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
+        Vector2 frameOrigin = (frameOrigins == null) ? Origin : frameOrigins[currentFrame];
+        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
     }
 
     public virtual void Update(GameTime gameTime)

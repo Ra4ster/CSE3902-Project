@@ -49,7 +49,7 @@ class Dungeon1 : IDungeon
             [
                 new Vector2(800, 900),
                 new Vector2(1000, 900)
-            ], 200f, 1.5f)
+            ], 200f, 1.5f, 0.5f)
         ];
 
         EnemyManager e_man = new EnemyManager();
