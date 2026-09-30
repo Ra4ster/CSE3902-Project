@@ -18,7 +18,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
     public GraphicsDeviceManager graphicsDeviceManager;
     public static Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
-    public static Color BG_COLOR = Color.AliceBlue;
+    public static Color BG_COLOR = Color.SkyBlue;
     private const float SCREEN_FILL_RATIO = 0.85f;
 
     public Link link = null!;
@@ -26,11 +26,12 @@ public class Game : Microsoft.Xna.Framework.Game
 
     private Texture2D? bgTexture;
 
-    private List<AbstractEnemy> enemies = new List<AbstractEnemy>();
+    private readonly IDungeon dungeon;
 
+    private EnemyManager enemyManager = new EnemyManager();
     private BlockManager blockManager = new BlockManager();
-
     private ProjectileManager projectileManager = new ProjectileManager();
+    private ItemManager itemManager = new ItemManager();
 
     private SpriteBatch? SpritePainter { get; set; }
 
@@ -41,10 +42,10 @@ public class Game : Microsoft.Xna.Framework.Game
     private IController mouseControls;
     private IController kbControls;
 
-    ItemManager itemManager = new ItemManager();
-
-    public Game()
+    public Game(IDungeon dungeon)
     {
+        this.dungeon = dungeon;
+
         kbControls = new KeyboardController(keybindings);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
@@ -68,62 +69,16 @@ public class Game : Microsoft.Xna.Framework.Game
         graphicsDeviceManager.ApplyChanges();
     }
 
-    private void AddEnemies()
-    {
-        enemies.Add(EnemyFactory.Instance.CreateStalfos(
-        [
-            new Vector2(100, 100),
-            new Vector2(100, 300),
-            new Vector2(300, 300),
-            new Vector2(300, 100)
-        ], 200f));
-
-        enemies.Add(EnemyFactory.Instance.CreateKeese(
-        [
-            new Vector2(500, 600),
-            new Vector2(350, 450),
-            new Vector2(300, 400),
-            new Vector2(250, 450)
-        ], 200f));
-
-        enemies.Add(EnemyFactory.Instance.CreateGel(
-        [
-            new Vector2(300, 800),
-            new Vector2(800, 800)
-        ], 200f, 1.5f));
-
-        enemies.Add(EnemyFactory.Instance.CreateAquamentus(
-        [
-            new Vector2(800, 900),
-            new Vector2(1000, 900)
-        ], 200f, 1.5f));
-    }
-
-    private void AddBlocks()
-    {
-        BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
-        Vector2 blockPos = new Vector2(1200, 300);
-
-        blockManager.AddBlock(blockFactory.CreateSquareBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateKeystoneBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateStatueLeftBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateStatueRightBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateVoidBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateSpeckledFloorBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateWaterBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateStairsBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateBrickBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateLadderBlock(blockPos));
-        blockManager.AddBlock(blockFactory.CreateSandBlock(blockPos));
-    }
-
     protected override void LoadContent()
     {
         GameAssets.Load(Content);
+        enemyManager = dungeon.CreateEnemies();
+        itemManager = dungeon.CreateItems();
+        blockManager = dungeon.CreateBlocks();
+
         SpritePainter = new SpriteBatch(GraphicsDevice);
 
         bgTexture = new Texture2D(GraphicsDevice, 1, 1);
-
         bgTexture.SetData([Color.White]);
 
         Vector2 linkPos = new Vector2(220.0f);
@@ -133,25 +88,12 @@ public class Game : Microsoft.Xna.Framework.Game
             SpritePainter, GameAssets.Instance.LinkSheet,
             mouseControls, kbControls);
 
-        // Code dealing with items
-        ItemFactory itemFactory = new ItemFactory();
-
-        Vector2 spawnPos = new Vector2(700, 700);
-
-        itemManager.AddItem(itemFactory.CreateRupee(spawnPos));
-        itemManager.AddItem(itemFactory.CreateHeart(spawnPos));
-        itemManager.AddItem(itemFactory.CreateBoomerang(spawnPos));
-        itemManager.AddItem(itemFactory.CreateBow(spawnPos));
-        itemManager.AddItem(itemFactory.CreateBomb(spawnPos));
-
         ICommand NextItemCommand = new NextItemCommand(itemManager);
         ICommand PreviousItemCommand = new PreviousItemCommand(itemManager);
         keybindings.Add(Keys.I, NextItemCommand);
         keybindings.Add(Keys.U, PreviousItemCommand);
 
         link.sourceRects = new Rectangle[10];
-        AddEnemies();
-        AddBlocks();
 
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
@@ -200,12 +142,13 @@ public class Game : Microsoft.Xna.Framework.Game
         kbControls.Update(gameTime);
         mouseControls.Update(gameTime);
 
-        foreach (AbstractEnemy enemy in enemies) enemy.Update(gameTime);
-
+        enemyManager.Update(gameTime);
         blockManager.Update(gameTime);
         projectileManager.Update(gameTime);
         itemManager.Update(gameTime);
+
         link.Update(gameTime);
+
         base.Update(gameTime);
     }
 
@@ -222,12 +165,9 @@ public class Game : Microsoft.Xna.Framework.Game
         SpritePainter?.Draw(bgTexture, WINDOW_SIZE, BG_COLOR);
         link.state.Draw(link);
 
-        foreach (AbstractEnemy enemy in enemies)
-            enemy.Draw(SpritePainter!);
-
+        enemyManager.Draw(SpritePainter!);
         blockManager.Draw(SpritePainter!);
         projectileManager.Draw(SpritePainter!);
-
         itemManager.Draw(SpritePainter!);
 
         SpritePainter?.End();
@@ -235,5 +175,5 @@ public class Game : Microsoft.Xna.Framework.Game
         base.Draw(gameTime);
     }
 
-    public static void Main() => new Game().Run();
+    public static void Main() => new Game(new Dungeon1()).Run();
 }
