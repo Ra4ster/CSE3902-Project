@@ -121,6 +121,10 @@ namespace Byte.Player
             Array.Exists(keys, key => key == Keys.A) ||
             Array.Exists(keys, key => key == Keys.S) ||
             Array.Exists(keys, key => key == Keys.D) ||
+            Array.Exists(keys, key => key == Keys.Up) ||
+            Array.Exists(keys, key => key == Keys.Down) ||
+            Array.Exists(keys, key => key == Keys.Left) ||
+            Array.Exists(keys, key => key == Keys.Right) ||
             Array.Exists(keys, key => key == Keys.Z) ||
             Array.Exists(keys, key => key == Keys.I) ||
             Array.Exists(keys, key => key == Keys.U) ||
