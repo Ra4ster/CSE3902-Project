@@ -21,7 +21,8 @@
   - [x] Load enemy art for the 3 enemies + boss, saving the sprite's bounds.
   - [x] Create a path-based approach to each enemy, allowing them to patrol around; possibly using player-tracking.
   - [x] Create a test case in `Game.cs` for showing all enemies' movement (_no hitboxes, dmg, walls, etc. required_).
-  - [x] Implement Aquamentus boss.
+  - [x] Implement Aquamentus boss, different from the smaller enemies.
+  - [x] Create an `EnemyFactory` with _ONE_ method, and move the enemy loading logic to `EnemyManager`.
 - Player:
 - Projectiles:
   - [x] Create an `IProjectile` interface (`Update`, `Draw`, `IsExpired`) shared by every projectile.

@@ -16,13 +16,7 @@ namespace Byte.Sprite.Enemy
         /// <summary>
         /// Eager initialization; we can assume the game has enemies.
         /// </summary>
-        public static EnemyFactory Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        public static EnemyFactory Instance => instance;
 
         public AbstractEnemy Create<T>(
             Vector2[]? patrolPath = null,
