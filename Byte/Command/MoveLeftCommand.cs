@@ -34,7 +34,9 @@ namespace Byte.Command
 
             // if w or s is pressed - prioritize their movement - in original no diagonal - defaults to vertical movement
             if (keyboardState.IsKeyDown(Keys.W) ||
-                keyboardState.IsKeyDown(Keys.S))
+                keyboardState.IsKeyDown(Keys.S) ||
+                keyboardState.IsKeyDown(Keys.Up) ||
+                keyboardState.IsKeyDown(Keys.Down))
             {
                 return;
             }

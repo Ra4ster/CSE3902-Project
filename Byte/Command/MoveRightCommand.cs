@@ -31,7 +31,9 @@ namespace Byte.Command
 
             // check if player is moving up or down - cant move right/left during
             if (keyboardState.IsKeyDown(Keys.W) ||
-                keyboardState.IsKeyDown(Keys.S))
+                keyboardState.IsKeyDown(Keys.S) ||
+                keyboardState.IsKeyDown(Keys.Up) ||
+                keyboardState.IsKeyDown(Keys.Down))
             {
                 return;
             }
