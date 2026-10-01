@@ -59,6 +59,9 @@ public class Game : Microsoft.Xna.Framework.Game
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
     {
+        if (Window.ClientBounds.Width <= 0 || Window.ClientBounds.Height <= 0)
+            return;
+
         graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Width;
         graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Height;
         graphicsDeviceManager.ApplyChanges();
@@ -148,10 +151,16 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         GraphicsDevice.Clear(GameConstants.BG_COLOR);
 
+        // Fit the entire game into the window without stretching it.
+        float scale = Math.Min(
+            GraphicsDevice.Viewport.Width / (float)GameConstants.WINDOW_SIZE.Width,
+            GraphicsDevice.Viewport.Height / (float)GameConstants.WINDOW_SIZE.Height);
+
         SpritePainter?.Begin(
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: Matrix.CreateScale(scale, scale, 1f)
         );
 
         link.state.Draw(link);
