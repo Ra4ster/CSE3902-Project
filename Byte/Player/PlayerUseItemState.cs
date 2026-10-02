@@ -6,38 +6,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Player
 {
-    public class PlayerAttackState : IPlayerState
+    public class PlayerUseItemState : IPlayerState
     {
-        public PlayerAttackState() { }
+        public PlayerUseItemState() { }
 
-        // contains frames for attacking south
-        public Rectangle[] attackSouthFrames =
+        // contains frames for using item south
+        public Rectangle[] useItemSouthFrames =
         {
             new Rectangle(1,47,16,14),
-            new Rectangle(19,47,14,26),
-            new Rectangle(35,47,15,22),
-            new Rectangle(52,47,15,18)
+            
 
         };
 
         // contains frames for attacking east or west(east flipped)
 
-        public Rectangle[] attackEastWestFrames =
+        public Rectangle[] useItemEastWestFrames =
        {
             new Rectangle(1,77,16,16),
-            new Rectangle(18,77,26,16),
-            new Rectangle(46,77,22,16),
-            new Rectangle(70,77,18,16)
+            
 
         };
         // contains frames for attacking north
 
-        public Rectangle[] attackNorthFrames =
+        public Rectangle[] useItemNorthFrames =
        {
             new Rectangle(1,109,16,16),
-            new Rectangle(18,97,14,27),
-            new Rectangle(36,98,14,26),
-            new Rectangle(52,106,14,18)
+           
 
         };
 
@@ -55,7 +49,7 @@ namespace Byte.Player
                          link.Position,
                          link.MovementSpeed,
                         Color.White,
-                        attackNorthFrames,
+                        useItemNorthFrames,
                         .1f,
                         6.0f);
                     // for north update frame origin to prevent sprite moving during animation
@@ -74,7 +68,7 @@ namespace Byte.Player
                          link.Position,
                          link.MovementSpeed,
                         Color.White,
-                        attackSouthFrames,
+                        useItemSouthFrames,
                         .1f,
                         6.0f);
                 }
@@ -85,7 +79,7 @@ namespace Byte.Player
                          link.Position,
                          link.MovementSpeed,
                         Color.White,
-                        attackEastWestFrames,
+                        useItemEastWestFrames,
                         .1f,
                         6.0f);
                 }
@@ -95,10 +89,10 @@ namespace Byte.Player
                          link.Position,
                          link.MovementSpeed,
                         Color.White,
-                        attackEastWestFrames,
+                        useItemEastWestFrames,
                         .1f,
                         6.0f);
-                    // to prevent weird movement when attacking west - update sprite origins
+                    // to prevent weird movement when using item west - update sprite origins
                     link.currentSprite.SetFrameOrigin(new Vector2[]
                     {
                         new Vector2(13, 13),
@@ -113,13 +107,13 @@ namespace Byte.Player
 
                 // set loop to false so animation plays once
                 link.currentSprite.Loop = false;
-                
+
             }
             if (link.currentSprite is MovingAnimatedSprite)
             {
                 MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
-                
-                
+
+
                 // update current sprite
                 sprite.SetPos(link.Position);
                 sprite.Update(gametime);
@@ -130,7 +124,7 @@ namespace Byte.Player
                     link.IsAttacking = false;
                     link.MovementSpeed = Vector2.Zero;
                     link.GetNewState(new PlayerIdleState());
-                    link.state.Update(link,gametime);
+                    link.state.Update(link, gametime);
                 }
 
             }
