@@ -104,6 +104,7 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand nextBlockCommand = new NextBlockCommand(blockManager);
         ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
         ICommand cycleEnemyCommand = new CycleEnemyCommand(enemyManager);
+        ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -116,7 +117,8 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.T, previousBlockCommand);
         keybindings.Add(Keys.Y, nextBlockCommand);
-        keybindings.Add(Keys.E, cycleEnemyCommand);
+        keybindings.Add(Keys.O, cycleEnemyCommand);
+        keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
 
         base.LoadContent();

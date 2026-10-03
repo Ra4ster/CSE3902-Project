@@ -9,13 +9,14 @@ namespace Byte.Sprite;
 /// </summary>
 public class AnimatedSprite : ISprite
 {
+    
     public bool Loop { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private readonly Texture2D texture;
     private readonly Vector2 position;
-    public Color Color { get; set; }
+    public Color Color { get; set; } = Color.White;
     public Vector2 Origin { get; set; } = Vector2.Zero;
 
     private Rectangle[] sourceRectangles;

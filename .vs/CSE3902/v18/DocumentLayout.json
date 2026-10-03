@@ -1,226 +1,157 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\",
+  "WorkspaceRootPath": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\gameassets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\gameassets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\playeruseitemstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\playeruseitemstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\content\\content.mgcb||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\content\\content.mgcb||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\link.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\link.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\sprite\\movinganimatedsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\movinganimatedsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\command\\useprojectilecommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\command\\useprojectilecommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\playerattackstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\playerattackstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\sprite\\animatedsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\animatedsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\core\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\core\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\itemfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\itemfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\sprite\\staticsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\staticsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\command\\previousitemcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\command\\previousitemcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\command\\nextitemcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\command\\nextitemcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\command\\quitcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\command\\quitcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\itemmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\bow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\bow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\iitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\iitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\ethan\\downloads\\cse3902project\\cse3902-project\\byte\\item\\heart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\item\\heart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\playeridlestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\playeridlestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
     {
-      "Orientation": 0,
+      "Orientation": 1,
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "DockedHeight": 200,
+          "SelectedChildIndex": 3,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MovingAnimatedSprite.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Sprite\\MovingAnimatedSprite.cs",
-              "RelativeDocumentMoniker": "Byte\\Sprite\\MovingAnimatedSprite.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Sprite\\MovingAnimatedSprite.cs",
-              "RelativeToolTip": "Byte\\Sprite\\MovingAnimatedSprite.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAABiLwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T20:40:19.087Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Content.mgcb",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Content\\Content.mgcb",
-              "RelativeDocumentMoniker": "Byte\\Content\\Content.mgcb",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Content\\Content.mgcb",
-              "RelativeToolTip": "Byte\\Content\\Content.mgcb",
-              "ViewState": "AgIAADQAAAAAAAAAAAAcwFoAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-09-27T20:33:42.099Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "GameAssets.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\GameAssets.cs",
-              "RelativeDocumentMoniker": "Byte\\GameAssets.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\GameAssets.cs",
-              "RelativeToolTip": "Byte\\GameAssets.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAQwA4AAAAnAAAAAAAAAA==",
+              "Title": "PlayerUseItemState.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\PlayerUseItemState.cs",
+              "RelativeDocumentMoniker": "Byte\\Player\\PlayerUseItemState.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\PlayerUseItemState.cs",
+              "RelativeToolTip": "Byte\\Player\\PlayerUseItemState.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAjwBAAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T20:24:16.417Z",
+              "WhenOpened": "2026-10-02T16:41:23.247Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "QuitCommand.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\QuitCommand.cs",
-              "RelativeDocumentMoniker": "Byte\\Command\\QuitCommand.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\QuitCommand.cs",
-              "RelativeToolTip": "Byte\\Command\\QuitCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "UseProjectileCommand.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Command\\UseProjectileCommand.cs",
+              "RelativeDocumentMoniker": "Byte\\Command\\UseProjectileCommand.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Command\\UseProjectileCommand.cs",
+              "RelativeToolTip": "Byte\\Command\\UseProjectileCommand.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAADwvycAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T20:17:40.842Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PreviousItemCommand.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\PreviousItemCommand.cs",
-              "RelativeDocumentMoniker": "Byte\\Command\\PreviousItemCommand.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\PreviousItemCommand.cs",
-              "RelativeToolTip": "Byte\\Command\\PreviousItemCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T20:17:35.086Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "NextItemCommand.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\NextItemCommand.cs",
-              "RelativeDocumentMoniker": "Byte\\Command\\NextItemCommand.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Command\\NextItemCommand.cs",
-              "RelativeToolTip": "Byte\\Command\\NextItemCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T20:15:30.832Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ItemManager.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\ItemManager.cs",
-              "RelativeDocumentMoniker": "Byte\\Item\\ItemManager.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\ItemManager.cs",
-              "RelativeToolTip": "Byte\\Item\\ItemManager.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAmwD4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T20:08:29.893Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AnimatedSprite.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Sprite\\AnimatedSprite.cs",
-              "RelativeDocumentMoniker": "Byte\\Sprite\\AnimatedSprite.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Sprite\\AnimatedSprite.cs",
-              "RelativeToolTip": "Byte\\Sprite\\AnimatedSprite.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAqwC0AAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T19:20:23.919Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "IItem.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\IItem.cs",
-              "RelativeDocumentMoniker": "Byte\\Item\\IItem.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\IItem.cs",
-              "RelativeToolTip": "Byte\\Item\\IItem.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T19:19:15.571Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Heart.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Heart.cs",
-              "RelativeDocumentMoniker": "Byte\\Item\\Heart.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Heart.cs",
-              "RelativeToolTip": "Byte\\Item\\Heart.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T19:19:14.765Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Bow.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Bow.cs",
-              "RelativeDocumentMoniker": "Byte\\Item\\Bow.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\Bow.cs",
-              "RelativeToolTip": "Byte\\Item\\Bow.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T19:19:10.934Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ItemFactory.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\ItemFactory.cs",
-              "RelativeDocumentMoniker": "Byte\\Item\\ItemFactory.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Item\\ItemFactory.cs",
-              "RelativeToolTip": "Byte\\Item\\ItemFactory.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-27T19:15:04.297Z"
+              "WhenOpened": "2026-10-02T16:39:36.582Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Game.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Game.cs",
-              "RelativeDocumentMoniker": "Byte\\Game.cs",
-              "ToolTip": "C:\\Users\\ethan\\Downloads\\CSE3902Project\\CSE3902-Project\\Byte\\Game.cs",
-              "RelativeToolTip": "Byte\\Game.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAAwGoAAAAhAAAAAAAAAA==",
+              "Title": "PlayerAttackState.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\PlayerAttackState.cs",
+              "RelativeDocumentMoniker": "Byte\\Player\\PlayerAttackState.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\PlayerAttackState.cs",
+              "RelativeToolTip": "Byte\\Player\\PlayerAttackState.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAzwHMAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-24T19:57:49.478Z"
+              "WhenOpened": "2026-10-02T16:37:58.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "StaticSprite.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\StaticSprite.cs",
+              "RelativeDocumentMoniker": "Byte\\Sprite\\StaticSprite.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\StaticSprite.cs",
+              "RelativeToolTip": "Byte\\Sprite\\StaticSprite.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAuwBEAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-02T16:22:23.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PlayerIdleState.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\PlayerIdleState.cs",
+              "RelativeDocumentMoniker": "Byte\\Player\\PlayerIdleState.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\PlayerIdleState.cs",
+              "RelativeToolTip": "Byte\\Player\\PlayerIdleState.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAmwDIAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-02T16:21:03.891Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Game.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\Game.cs",
+              "RelativeDocumentMoniker": "Byte\\Core\\Game.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\Game.cs",
+              "RelativeToolTip": "Byte\\Core\\Game.cs",
+              "ViewState": "AgIAAG4AAAAAAAAAAAAAAHEAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-30T20:20:58.337Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Link.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
+              "RelativeDocumentMoniker": "Byte\\Player\\Link.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
+              "RelativeToolTip": "Byte\\Player\\Link.cs",
+              "ViewState": "AgIAAHQAAAAAAAAAAAAmwIAAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-30T20:07:57.308Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
             }
           ]
         }
