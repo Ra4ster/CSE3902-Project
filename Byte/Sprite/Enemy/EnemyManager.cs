@@ -29,6 +29,19 @@ namespace Byte.Sprite.Enemy
             };
         }
 
+        public void PreviousEnemy()
+        {
+            if (enemies.Count == 0)
+                return;
+
+            selectedEnemyIndex = selectedEnemyIndex switch
+            {
+                null => enemies.Count - 1,
+                0 => null,
+                int index => index - 1
+            };
+        }
+
         public void Draw(SpriteBatch spritePainter)
         {
             if (selectedEnemyIndex is int index)
