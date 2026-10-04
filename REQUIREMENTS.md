@@ -22,7 +22,7 @@
   - [x] Create a path-based approach to each enemy, allowing them to patrol around; possibly using player-tracking.
   - [x] Create a test case in `Game.cs` for showing all enemies' movement (_no hitboxes, dmg, walls, etc. required_).
   - [x] Implement Aquamentus boss, different from the smaller enemies.
-    - [ ] Implementing Projectiles is *TODO*; requires attacks for enemies. See [Sprint 3](#sprint-3).
+    - [x] Aquamentus spits a spread of three fireballs on a timer.
   - [x] Create an `EnemyFactory` with _ONE_ method, and move the enemy loading logic to `EnemyManager`.
 - Player:
 - Projectiles:
@@ -34,7 +34,7 @@
   - [x] Boomerang: flies out to its range, returns along the same path, then despawns.
   - [x] Add 1 / 2 / 3 keybindings to use the arrow, bomb and boomerang, with a delay so holding the key doesn't spam.
   - [x] Hook projectiles into the r reset so every projectile in flight is cleared.
-  - [ ] Aquamentus fireball projectile (boss attack).
+  - [x] Aquamentus fireball projectile (boss attack).
 - Blocks:
   - [x] Load the dungeon tile sheet and save the bounds for each tile.
   - [x] Create the 11 block classes with a block factory and manager (only the factory knows the sheet coordinates).
@@ -43,9 +43,6 @@
 - Items:
 
 ## Sprint 3
-
-- Enemies:
-  - [ ] Aquamentus fireball projectile (boss attack).
 
 ## Sprint 4
 
