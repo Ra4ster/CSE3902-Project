@@ -42,8 +42,8 @@ To ensure code quality and maintain performance budgets, our team utilized sever
 3. **Roslyn Analyzer:** We also used the built-in diagnostic tools in Visual Studio Community Edition to view heap, memory usage, and CPU/GPU performance overall. Roslyn coupling analysis is a *TODO*.
 
 ### Diagnostic Visualizations
-![Diagnostic Trace](Documentation/resources/diagnostic.png)
-![Speedscope Flamegraph](Documentation/resources/speedscope.png)
+![Diagnostic Trace](Documentation/Resources/diagnostic.png)
+![Speedscope Flamegraph](Documentation/Resources/speedscope.png)
 
 ## Visualization of Player States
 
