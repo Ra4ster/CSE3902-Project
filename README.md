@@ -1,66 +1,61 @@
 # CSE3902 Project: Interactive Systems
 > Group 5, AU2026 @ OSU
 
-This is a repository built by Group 5 for [OSU's CSE3902 class: Interactive Systems Project](https://jholewinski.github.io/cse3902/index.html).
-
 ### Authors:
+- Ayush Saggar (saggar.9@osu.edu) - [Podzied](https://github.com/Podzied)
+- Baowen Liu (liu.11884@osu.edu) - [PowerSixxx](https://github.com/PowerSixxx)
+- Ethan Singh (singh.2164@osu.edu) - [ethansingh123](https://github.com/ethansingh123)
+- Jack Rose (rose.1775@osu.edu) - [Ra4ster](https://github.com/ra4ster)
+- Tyler Brown (brown.9452@osu.edu) - [Brownt13487](https://github.com/Brownt13487)
 
-- Ayush Saggar
-  - GitHub: [Podzied](https://github.com/Podzied)
-  - Contact: [saggar.9@osu.edu](mailto:saggar.9@osu.edu)
-- Baowen Liu
-  - GitHub: [PowerSixxx](https://github.com/PowerSixxx)
-  - Contact: [liu.11884@osu.edu](mailto:liu.11884@osu.edu)
-- Ethan Singh
-  - GitHub: [ethansingh123](https://github.com/ethansingh123)
-  - Contact: [singh.2164@osu.edu](mailto:singh.2164@osu.edu)
-- Jack Rose
-  - GitHub: [Ra4ster](https://github.com/ra4ster)
-  - Contact: [rose.1775@osu.edu](mailto:rose.1775@osu.edu)
-- Tyler Brown
-  - GitHub: [Brownt13487](https://github.com/Brownt13487)
-  - Contact: [brown.9452@osu.edu](mailto:brown.9452@osu.edu)
-- ~~Trish Pham~~
+---
 
-For this project we were tasked with implementing the first few features as part of a recreation of the original legend of Zelda and it's first dungeon. As part of the sprint 2 portion of this project this group was tasked with implementing movement and graphics, a player character that can move, attack, and take damage (have some indicator for damage taken), as well as implementing 10 block sprites, multiple enemies, item pickups, and projectiles.
+## Project Description
+This project is a 2D dungeon exploration game framework built in C# using MonoGame. Designed around Agile software development principles, it mimics the mechanics of the original NES Legend of Zelda. The current iteration features a modular entity-component design, a state-machine-driven player character (Link), and extensible interfaces for blocks, enemies, items, and projectiles.
 
-Program Controls:
-Player Movement WASD or Arrow Keys for basic movement of player, Z or N for player attacking
-1,2,3 for 3 different items spawned from the player
-Pressing e causes the player to flash red to indicate taking damage
+## Controls
+**Player Actions**
+* **Movement:** `W`, `A`, `S`, `D` (or Arrow Keys)
+* **Attack (Sword):** `Z` or `N`
+* **Use Item/Projectile:** `1` (Arrow), `2` (Bomb), `3` (Boomerang)
+* **Take Damage (Debug):** `E`
 
-Using the keys u and i you can cycle between the item currently being displayed
-using the t and y keys will cycle the block being displayed
-Using o and p causes the enemy to cycle between an enemy that is being displayed
+**Environment & Debug Cycling**
+* **Cycle Blocks:** `T` (Previous), `Y` (Next)
+* **Cycle Items:** `U` (Previous), `I` (Next)
+* **Cycle Enemies:** `O` (Previous), `P` (Next)
 
-pressing r will restart the simulation to inital values
-pressing q will quit the game
+**System Controls**
+* **Reset Game:** `R` (Resets player state, blocks, and clears active projectiles)
+* **Quit:** `Q`
 
-Current known bugs - sprites do not properly scale with window size and thus objects can be lost if the window is not scaled high enough.
+## Known Bugs
+* **Stalfos Sprite Bleed:** Due to the tightly packed nature of the original NES sprite sheet, the Stalfos bounding box may occasionally show 1 pixel of bleed from adjacent sprites.
+* **Initial Window Resizing (Windows Only):** The MonoGame viewport may require a manual window resize on the first launch to properly scale the internal `spriteTransform` matrix. 
+* *(Add any other specific bugs your team ran into here)*
 
+## Tools & Processes Used
+To ensure code quality and maintain performance budgets, our team utilized several external software analysis tools:
 
-## How to use Git:
+1. **Code Metrics (Tokei):** We utilized Tokei to generate comprehensive codebase metrics, including lines of code, blank lines, and comment ratios across our C# files. The raw output is available in our `Documentation/Resources/` directory.
+2. **Performance Profiling (dotnet-trace & Speedscope):** We captured runtime execution traces of our game loop using `dotnet-trace`. These traces were exported and visualized as interactive flamegraphs via Speedscope to monitor the CPU cycles spent in our `Update()` and `Draw()` methods.
+3. **Roslyn Analyzer:** We also used the built-in diagnostic tools in Visual Studio Community Edition to view heap, memory usage, and CPU/GPU performance overall. Roslyn coupling analysis is a *TODO*.
 
-You can clone the repository using `git clone`. You are also able to publish your changes using the following CLI pattern:
+### Diagnostic Visualizations
+![Diagnostic Trace](Documentation/Resources/diagnostic.png)
+![Speedscope Flamegraph](Documentation/Resources/speedscope.png)
 
-```bash
-# Tell git to track your changes:
-git add .
-# Tell git to save changes:
-git commit -m "[Your message here]"
-# Publish your updates to the group:
-git push -u origin [branch-name]
+## Visualization of Player States
+
+```mermaid
+classDiagram
+    direction LR
+    IPlayerState <|.. PlayerIdleState
+    IPlayerState <|.. PlayerMoveUpState
+    IPlayerState <|.. PlayerAttackState
+    Link o-- IPlayerState
 ```
 
-If you would like to switch branches, run `git checkout [branch-name]`. For creating a new branch, do `git checkout -b [new-branch-name]`.
+---
 
-For any push you are not certain is a 'final push' (but rather still in development), consider checking out a new branch and creating a **pull request** (PR).
-
-If you have not pushed a solution to a problem but still want to write it down, consider creating an **issue**!
-
-## Useful Resources:
-
-- [Class documentation](https://jholewinski.github.io/cse3902/resources.html)
-- [Microsoft XNA (4.0) Docs](https://learn.microsoft.com/en-us/previous-versions/windows/xna/bb203894(v=xnagamestudio.41))
-- [Git CLI cheatsheet](https://git-scm.com/cheat-sheet)
-- [Agile Development, by Atlassian](https://www.atlassian.com/agile)
+> Access CSE3902 resources [here](https://jholewinski.github.io/cse3902/index.html)!

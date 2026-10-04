@@ -22,6 +22,7 @@
   - [x] Create a path-based approach to each enemy, allowing them to patrol around; possibly using player-tracking.
   - [x] Create a test case in `Game.cs` for showing all enemies' movement (_no hitboxes, dmg, walls, etc. required_).
   - [x] Implement Aquamentus boss, different from the smaller enemies.
+    - [ ] Implementing Projectiles is *TODO*; requires attacks for enemies. See [Sprint 3](#sprint-3).
   - [x] Create an `EnemyFactory` with _ONE_ method, and move the enemy loading logic to `EnemyManager`.
 - Player:
 - Projectiles:
@@ -42,6 +43,9 @@
 - Items:
 
 ## Sprint 3
+
+- Enemies:
+  - [ ] Aquamentus fireball projectile (boss attack).
 
 ## Sprint 4
 

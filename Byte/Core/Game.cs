@@ -103,7 +103,8 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand resetCommand = new ResetCommand(this, link, blockManager, projectileManager);
         ICommand nextBlockCommand = new NextBlockCommand(blockManager);
         ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
-        ICommand cycleEnemyCommand = new CycleEnemyCommand(enemyManager);
+        ICommand nextEnemyCommand = new CycleEnemyCommand(enemyManager);
+        ICommand previousEnemyCommand = new PreviousEnemyCommand(enemyManager);
         ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
@@ -117,10 +118,14 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.T, previousBlockCommand);
         keybindings.Add(Keys.Y, nextBlockCommand);
-        keybindings.Add(Keys.O, cycleEnemyCommand);
+        keybindings.Add(Keys.O, previousEnemyCommand);
+        keybindings.Add(Keys.P, nextEnemyCommand);
+        (kbControls as KeyboardController)!.SetPressOnly(Keys.O); // for debugging only
+        (kbControls as KeyboardController)!.SetPressOnly(Keys.P); // for debugging only
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
 
+        OnClientSizeChanged(this, EventArgs.Empty); // Initialize the spriteTransform matrix
         base.LoadContent();
     }
 

@@ -1,7 +1,11 @@
 Byte/obj/*
 Byte/bin/*
 Byte/Content/obj/*
+Byte/Content/bin/*
 .vs/
 bin/
 obj/
 .DS_Store
+Documentation/*.diagsession
+Documentation/*.nettrace*.diagsession
+*.nettrace
