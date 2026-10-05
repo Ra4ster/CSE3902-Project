@@ -1,6 +1,7 @@
 
 using Byte.Block;
 using Byte.Item;
+using Byte.Projectile;
 using Byte.Sprite.Enemy;
 
 /// <summary>
@@ -8,7 +9,7 @@ using Byte.Sprite.Enemy;
 /// </summary>
 public interface IDungeon
 {
-    public EnemyManager CreateEnemies();
+    public EnemyManager CreateEnemies(ProjectileManager projectileManager);
     public ItemManager CreateItems();
     public BlockManager CreateBlocks();
 

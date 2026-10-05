@@ -98,10 +98,10 @@ public class Game : Microsoft.Xna.Framework.Game
         leftClickBindings.Clear();
         rightClickBindings.Clear();
 
-        enemyManager = dungeon.CreateEnemies();
+        projectileManager = new ProjectileManager();
+        enemyManager = dungeon.CreateEnemies(projectileManager);
         itemManager = dungeon.CreateItems();
         blockManager = dungeon.CreateBlocks();
-        projectileManager = new ProjectileManager();
 
         Vector2 linkPos = GameConstants.LINK_START_POS;
         link = new Link(linkPos, new StaticSprite(

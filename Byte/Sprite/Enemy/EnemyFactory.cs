@@ -6,6 +6,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Sprite.Enemy
 {
+    public enum EnemyType
+    {
+        Stalfos,
+        Keese,
+        Gel,
+        Aquamentus
+    }
+
+    struct EnemyDescription
+    {
+        public EnemyType Type { get; set; }
+        public Vector2[]? PatrolPath { get; set; }
+        public Vector2 Position { get; set; }
+        public float Speed { get; set; }
+        public float FrameDuration { get; set; }
+        public float WaitDuration { get; set; }
+        public float Scale { get; set; }
+    }
+
     internal class EnemyFactory
     {
         private const float FRAME_DURATION = 0.08f;
@@ -19,27 +38,28 @@ namespace Byte.Sprite.Enemy
         /// </summary>
         public static EnemyFactory Instance => instance;
 
-        public AbstractEnemy Create<T>(
-            Vector2[]? patrolPath = null,
-            Vector2 pos = default,
-            float speed = 0.0f,
-            float frameDuration = FRAME_DURATION,
-            float waitDuration = default,
-            float scale = GameConstants.SCALE
-        ) where T : AbstractEnemy
+        public AbstractEnemy CreateEnemy(ref EnemyDescription desc, ProjectileManager? projectileManager)
         {
-            Vector2 velocity = Vector2.Zero;
-            Texture2D enemySheet = GameAssets.Instance.EnemySheet;
-            Texture2D bossSheet = GameAssets.Instance.BossSheet;
-            ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, bossSheet);
+            Texture2D enemyTex = GameAssets.Instance.EnemySheet;
+            Texture2D bossTex = GameAssets.Instance.BossSheet;
+            ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
 
-            return typeof(T).Name switch
+            float frameDuration = desc.FrameDuration == 0f ? FRAME_DURATION : desc.FrameDuration;
+            float scale = desc.Scale == 0f ? GameConstants.SCALE : desc.Scale;
+            Vector2 velocity = Vector2.Zero;
+            Vector2 position = desc.PatrolPath is { Length: > 0 } path
+                ? path[0]
+                : desc.Position;
+            Action<Vector2, Vector2> spawnFireball = (fireballPosition, direction) =>
+                projectileManager!.Add(projectileFactory.CreateFireball(fireballPosition, direction));
+
+            return desc.Type switch
             {
-                nameof(Stalfos) => new Stalfos(enemySheet, ref patrolPath![0], ref velocity, Color.White, frameDuration, scale, patrolPath!, speed),
-                nameof(Keese) => new Keese(enemySheet, ref pos, ref velocity!, Color.White, frameDuration, scale, speed),
-                nameof(Gel) => new Gel(enemySheet, ref patrolPath![0], ref velocity!, Color.White, frameDuration, scale, patrolPath!, speed, waitDuration!),
-                nameof(Aquamentus) => new Aquamentus(bossSheet, ref patrolPath![0], ref velocity, Color.White, frameDuration, scale, patrolPath!, speed, waitDuration!, projectileFactory),
-                _ => throw new ArgumentException($"Enemy type {typeof(T).Name} is not supported by EnemyFactory.")
+                EnemyType.Stalfos => new Stalfos(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed),
+                EnemyType.Keese => new Keese(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Speed),
+                EnemyType.Gel => new Gel(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration),
+                EnemyType.Aquamentus => new Aquamentus(bossTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration, spawnFireball),
+                _ => throw new ArgumentException($"Enemy type {desc.Type} is not supported by EnemyFactory.")
             };
         }
     }
