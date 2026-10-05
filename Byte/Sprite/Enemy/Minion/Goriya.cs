@@ -60,6 +60,14 @@ namespace Byte.Sprite.Enemy.Minion
 
         public override void Update(GameTime gameTime)
         {
+            if (boomerang is { IsExpired: true })
+                boomerang = null;
+
+            if (boomerang != null)
+            {
+                velocity = Vector2.Zero;
+                return;
+            }
             base.Update(gameTime);
 
             if (boomerang is { IsExpired: true })
@@ -72,16 +80,20 @@ namespace Byte.Sprite.Enemy.Minion
             {
                 throwTimer = 0f;
                 boomerang = throwBoomerang(position + centerOffset, FacingDirection());
+                velocity = Vector2.Zero;
             }
         }
 
         private void UpdateFacing()
         {
+            if (velocity == Vector2.Zero)
+                return;
+
             Facing newFacing = facing;
-            if (velocity.X > 0) newFacing = Facing.Right;
-            else if (velocity.X < 0) newFacing = Facing.Left;
-            else if (velocity.Y > 0) newFacing = Facing.Down;
-            else newFacing = Facing.Up;
+            if (Math.Abs(velocity.X) > Math.Abs(velocity.Y))
+                newFacing = velocity.X > 0 ? Facing.Right : Facing.Left;
+            else
+                newFacing = velocity.Y > 0 ? Facing.Down : Facing.Up;
 
             if (newFacing == facing)
                 return;
