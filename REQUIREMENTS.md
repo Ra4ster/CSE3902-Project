@@ -63,6 +63,16 @@
 
 ## Sprint 3
 
+### Various Sprint 2 Cleanups:
+
+- [x] Enemy cycling with projectiles causes projectiles to disappear along with previous enemy.
+- [ ] Various enemy classes need implementing
+- [x] Enemy factory needs enemy description (_as per functionality check-in_).
+
+### Sprint 3 Goals:
+
+- ...
+
 ## Sprint 4
 
 > Other sprints are `TODO`...
