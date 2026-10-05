@@ -1,0 +1,4353 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+Block/
+  AbstractBlock.cs
+  BlockFactory.cs
+  BlockManager.cs
+  BrickBlock.cs
+  IBlock.cs
+  KeystoneBlock.cs
+  LadderBlock.cs
+  SandBlock.cs
+  SpeckledFloorBlock.cs
+  SquareBlock.cs
+  StairsBlock.cs
+  StatueLeftBlock.cs
+  StatueRightBlock.cs
+  VoidBlock.cs
+  WaterBlock.cs
+Command/
+  AttackCommand.cs
+  ICommand.cs
+  MoveDownCommand.cs
+  MoveLeftCommand.cs
+  MoveRightCommand.cs
+  MoveUpCommand.cs
+  MovingAnimatedSpriteCommand.cs
+  NextBlockCommand.cs
+  NextEnemyCommand.cs
+  NextItemCommand.cs
+  PlayerTakeDamageCommand.cs
+  PreviousBlockCommand.cs
+  PreviousEnemyCommand.cs
+  PreviousItemCommand.cs
+  QuitCommand.cs
+  ResetCommand.cs
+  SetAnimatedSpriteCommand.cs
+  SetMovingSpriteCommand.cs
+  SetStaticSpriteCommand.cs
+  SetTextSpriteCommand.cs
+  UseProjectileCommand.cs
+Content/
+  AssetSheets/
+    blockSheet.png
+    bossSheet.png
+    enemySheet.png
+    items.png
+    linkSheet.png
+    linkSheet2.png
+    LinkSheet3.png
+    LinkSheet4.png
+  Content.mgcb
+  Roboto-VariableFont_wdth,wght.ttf
+  Roboto.spritefont
+Controller/
+  IController.cs
+  KeyboardController.cs
+  MouseController.cs
+Core/
+  Dungeons/
+    IDungeon.cs
+  Dungeon1.cs
+  Game.cs
+  GameAssets.cs
+  GameConstants.cs
+Item/
+  Bomb.cs
+  Boomerang.cs
+  Bow.cs
+  Heart.cs
+  IItem.cs
+  ItemFactory.cs
+  ItemManager.cs
+  Rupee.cs
+Player/
+  CardinalDirections.cs
+  IPlayerState.cs
+  Link.cs
+  LinkInterface.cs
+  PlayerAttackState.cs
+  PlayerIdleState.cs
+  PlayerMoveDownState.cs
+  PlayerMoveLeftState.cs
+  PlayerMoveRightState.cs
+  PlayerMoveUpState.cs
+  PlayerUseItemState.cs
+Projectile/
+  Arrow.cs
+  Bomb.cs
+  Boomerang.cs
+  Fireball.cs
+  IProjectile.cs
+  ProjectileFactory.cs
+  ProjectileManager.cs
+Sprite/
+  Enemy/
+    Boss/
+      Aquamentus.cs
+    Minion/
+      Gel.cs
+      Goriya.cs
+      Keese.cs
+      Stalfos.cs
+    AbstractEnemy.cs
+    EnemyFactory.cs
+    EnemyManager.cs
+    PatrolEnemy.cs
+    WaitingPatrolEnemy.cs
+    WanderingEnemy.cs
+  AnimatedSprite.cs
+  ISprite.cs
+  MovingAnimatedSprite.cs
+  MovingSprite.cs
+  StaticSprite.cs
+  TextSprite.cs
+Byte.csproj
+dotnet-tools.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="Block/AbstractBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Block;
+
+// shared logic for every block - a sprite drawn at a fixed spot
+public abstract class AbstractBlock : IBlock
+{
+    private readonly ISprite sprite;
+
+    public Vector2 Position { get; }
+
+    protected AbstractBlock(ISprite sprite, Vector2 position)
+    {
+        this.sprite = sprite;
+        Position = position;
+    }
+
+    public void Update(GameTime gameTime) => sprite.Update(gameTime);
+
+    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+}
+</file>
+
+<file path="Block/BlockFactory.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Block;
+
+// makes every block type, only place the sheet coordinates should live
+public class BlockFactory
+{
+    // the single tiles are in a little palette on the sheet
+    // 16x16 tiles spaced 17px apart starting at (984, 11)
+    private const int TILE_SIZE = 16;
+    private const int TILE_PITCH = 17;
+    private const int PALETTE_X = 984;
+    private const int PALETTE_Y = 11;
+    private const float BLOCK_SCALE = 6.0f;
+
+    private readonly Texture2D blockSheet;
+
+    public BlockFactory(Texture2D blockSheet)
+    {
+        this.blockSheet = blockSheet;
+    }
+
+    private StaticSprite CreateSprite(int column, int row, Vector2 position)
+    {
+        Rectangle source = new Rectangle(
+            PALETTE_X + TILE_PITCH * column,
+            PALETTE_Y + TILE_PITCH * row,
+            TILE_SIZE, TILE_SIZE);
+        return new StaticSprite(blockSheet, position, Color.White, source, BLOCK_SCALE);
+    }
+
+    public IBlock CreateSquareBlock(Vector2 position) => new SquareBlock(CreateSprite(0, 0, position), position);
+
+    public IBlock CreateKeystoneBlock(Vector2 position) => new KeystoneBlock(CreateSprite(1, 0, position), position);
+
+    public IBlock CreateStatueLeftBlock(Vector2 position) => new StatueLeftBlock(CreateSprite(2, 0, position), position);
+
+    public IBlock CreateStatueRightBlock(Vector2 position) => new StatueRightBlock(CreateSprite(3, 0, position), position);
+
+    public IBlock CreateVoidBlock(Vector2 position) => new VoidBlock(CreateSprite(0, 1, position), position);
+
+    public IBlock CreateSpeckledFloorBlock(Vector2 position) => new SpeckledFloorBlock(CreateSprite(1, 1, position), position);
+
+    public IBlock CreateWaterBlock(Vector2 position) => new WaterBlock(CreateSprite(2, 1, position), position);
+
+    public IBlock CreateStairsBlock(Vector2 position) => new StairsBlock(CreateSprite(3, 1, position), position);
+
+    public IBlock CreateBrickBlock(Vector2 position) => new BrickBlock(CreateSprite(0, 2, position), position);
+
+    public IBlock CreateLadderBlock(Vector2 position) => new LadderBlock(CreateSprite(1, 2, position), position);
+
+    public IBlock CreateSandBlock(Vector2 position) => new SandBlock(CreateSprite(2, 2, position), position);
+}
+</file>
+
+<file path="Block/BlockManager.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+
+namespace Byte.Block;
+
+// holds all the blocks and draws whichever one is selected, t/y cycle through them
+public class BlockManager
+{
+    private readonly List<IBlock> blocks = new List<IBlock>();
+    private int currentIndex;
+
+    public void AddBlock(IBlock block) => blocks.Add(block);
+
+    public void NextBlock()
+    {
+        if (blocks.Count > 0)
+        {
+            currentIndex = (currentIndex + 1) % blocks.Count;
+        }
+    }
+
+    public void PreviousBlock()
+    {
+        if (blocks.Count > 0)
+        {
+            currentIndex = (currentIndex - 1 + blocks.Count) % blocks.Count;
+        }
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        if (blocks.Count > 0)
+        {
+            blocks[currentIndex].Update(gameTime);
+        }
+    }
+
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        if (blocks.Count > 0)
+        {
+            blocks[currentIndex].Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Block/BrickBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class BrickBlock : AbstractBlock
+{
+    public BrickBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/IBlock.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Block;
+
+// a tile that just sits there and draws, no interaction this sprint
+public interface IBlock
+{
+    void Update(GameTime gameTime);
+
+    void Draw(SpriteBatch spriteBatch);
+}
+</file>
+
+<file path="Block/KeystoneBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class KeystoneBlock : AbstractBlock
+{
+    public KeystoneBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/LadderBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class LadderBlock : AbstractBlock
+{
+    public LadderBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/SandBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class SandBlock : AbstractBlock
+{
+    public SandBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/SpeckledFloorBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class SpeckledFloorBlock : AbstractBlock
+{
+    public SpeckledFloorBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/SquareBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class SquareBlock : AbstractBlock
+{
+    public SquareBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/StairsBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class StairsBlock : AbstractBlock
+{
+    public StairsBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/StatueLeftBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class StatueLeftBlock : AbstractBlock
+{
+    public StatueLeftBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/StatueRightBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class StatueRightBlock : AbstractBlock
+{
+    public StatueRightBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/VoidBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class VoidBlock : AbstractBlock
+{
+    public VoidBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Block/WaterBlock.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Block;
+
+public class WaterBlock : AbstractBlock
+{
+    public WaterBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+}
+</file>
+
+<file path="Command/AttackCommand.cs">
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Command
+{
+    public class AttackCommand : ICommand
+    {
+        private Link player;
+        Game gameGet;
+
+
+
+        public AttackCommand(Game game, Link link)
+        {
+            player = link;
+            gameGet = game;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            // cause player to attack
+            player.Attack();
+           
+            
+            
+            
+        }
+    }
+}
+</file>
+
+<file path="Command/ICommand.cs">
+using Microsoft.Xna.Framework;
+
+public interface ICommand
+{
+    /// <summary>
+    /// Executes the command assigned to this.
+    /// </summary>
+    public void Execute(GameTime gameTime);
+}
+</file>
+
+<file path="Command/MoveDownCommand.cs">
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Command
+{
+    public class MoveDownCommand : ICommand
+    {
+        private Link player;
+        Game gameGet;
+
+        
+
+        public MoveDownCommand(Game game, Link link)
+        {
+            player = link;
+            gameGet = game;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            // check if player is attacking - cant move during
+            if (player.IsAttacking)
+            {
+                return;
+            }
+
+
+
+            //update player direction and move player
+            player.Direction = CardinalDirections.South;
+
+            player.MovementSpeed = new Vector2(0, 200);
+            if (player.state is not PlayerMoveDownState)
+            {
+                player.GetNewState(new PlayerMoveDownState());
+            }
+            player.Position += player.MovementSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+    }
+}
+</file>
+
+<file path="Command/MoveLeftCommand.cs">
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+
+namespace Byte.Command
+{
+    public class MoveLeftCommand : ICommand
+    {
+        private Link player;
+
+        Game gameGet;
+
+
+
+        public MoveLeftCommand(Game game, Link link)
+        {
+            player = link;
+            gameGet = game;
+
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            // Check if player is attacking - disable movement
+            if (player.IsAttacking)
+            {
+                return;
+            }
+            // check keyboard state
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            // if w or s is pressed - prioritize their movement - in original no diagonal - defaults to vertical movement
+            if (keyboardState.IsKeyDown(Keys.W) ||
+                keyboardState.IsKeyDown(Keys.S) ||
+                keyboardState.IsKeyDown(Keys.Up) ||
+                keyboardState.IsKeyDown(Keys.Down))
+            {
+                return;
+            }
+            // update direction
+            player.Direction = CardinalDirections.West;
+
+            //check if already moving left - if not create new moving left state
+            player.MovementSpeed = new Vector2(-200, 0);
+            if (player.state is not PlayerMoveLeftState)
+            {
+                player.GetNewState(new PlayerMoveLeftState());
+            }
+            // update position based on direction and time
+            player.Position += player.MovementSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+    }
+}
+</file>
+
+<file path="Command/MoveRightCommand.cs">
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Command
+{
+    public class MoveRightCommand : ICommand
+    {
+        private Link player;
+        Game gameGet;
+    
+
+        public MoveRightCommand(Game game, Link link)
+        {
+            player = link;
+            gameGet = game;
+            player.MovementSpeed = new Vector2(0, -200);
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            // check if player is attacking and stop command if so
+            if (player.IsAttacking)
+            {
+                return;
+            }
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            // check if player is moving up or down - cant move right/left during
+            if (keyboardState.IsKeyDown(Keys.W) ||
+                keyboardState.IsKeyDown(Keys.S) ||
+                keyboardState.IsKeyDown(Keys.Up) ||
+                keyboardState.IsKeyDown(Keys.Down))
+            {
+                return;
+            }
+            player.Direction = CardinalDirections.East;
+
+            // update player direction and begin moving
+            player.MovementSpeed = new Vector2(200,0);
+            if (player.state is not PlayerMoveRightState)
+            {
+                player.GetNewState(new PlayerMoveRightState());
+            }
+            player.Position += player.MovementSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+    }
+}
+</file>
+
+<file path="Command/MoveUpCommand.cs">
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Timers;
+
+namespace Byte.Command
+{
+    public class MoveUpCommand : ICommand
+    {
+        private Link player;
+        Game gameGet; 
+        
+
+
+        public MoveUpCommand(Game game, Link link) {
+            player= link;
+            gameGet = game;
+            player.MovementSpeed = new Vector2(0, -200);
+        }
+         
+        public void Execute(GameTime gameTime)
+        {
+            // Check if player is attacking and stop if so
+            if (player.IsAttacking)
+            {
+                return;
+            }
+
+            // update direction and move player
+            player.Direction = CardinalDirections.North;
+            
+            player.MovementSpeed = new Vector2(0, -200);
+            if (player.state is not PlayerMoveUpState)
+            {
+                player.GetNewState(new PlayerMoveUpState());
+            }
+            player.Position += player.MovementSpeed *(float)gameTime.ElapsedGameTime.TotalSeconds;
+            
+        }
+    }
+}
+</file>
+
+<file path="Command/MovingAnimatedSpriteCommand.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+/// <summary>
+/// Moving and animated sprite.
+/// </summary>
+public class MovingAnimatedSpriteCommand : ICommand
+{
+    private Game game;
+    private Texture2D texture;
+    private Vector2 position;
+    private Vector2 velocity;
+    private Color color;
+    private Rectangle[] sourceRects;
+    private float frameDuration;
+    private float scale;
+
+    public MovingAnimatedSpriteCommand(Game game, Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, Rectangle[] sourceRects, float frameDuration, float scale = 1f)
+    {
+        this.game = game;
+        this.texture = texture;
+        this.position = position;
+        this.velocity = velocity;
+        this.color = color;
+        this.sourceRects = sourceRects;
+        this.frameDuration = frameDuration;
+        this.scale = scale;
+    }
+
+    public void Execute(GameTime gameTime) => game.linkSprite = new MovingAnimatedSprite(texture, position, velocity, color, sourceRects, frameDuration, scale);
+}
+</file>
+
+<file path="Command/NextBlockCommand.cs">
+using Byte.Block;
+using Microsoft.Xna.Framework;
+using System;
+
+namespace Byte.Command
+{
+    public class NextBlockCommand : ICommand
+    {
+        // controller runs held keys every frame so this spaces out the repeats
+        private static readonly TimeSpan RepeatDelay = TimeSpan.FromMilliseconds(250);
+
+        private readonly BlockManager blockManager;
+        private TimeSpan? lastExecuted;
+
+        public NextBlockCommand(BlockManager blockManager)
+        {
+            this.blockManager = blockManager;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            if (lastExecuted.HasValue && gameTime.TotalGameTime - lastExecuted.Value < RepeatDelay)
+            {
+                return;
+            }
+            lastExecuted = gameTime.TotalGameTime;
+            blockManager.NextBlock();
+        }
+    }
+}
+</file>
+
+<file path="Command/NextEnemyCommand.cs">
+using Byte.Sprite.Enemy;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Command
+{
+    class NextEnemyCommand : ICommand
+    {
+        private readonly EnemyManager enemyManager;
+
+        public NextEnemyCommand(EnemyManager enemyManager)
+        {
+            this.enemyManager = enemyManager;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            enemyManager.NextEnemy();
+        }
+    }
+}
+</file>
+
+<file path="Command/NextItemCommand.cs">
+using Byte.Item;
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+public class NextItemCommand : ICommand
+{
+
+    private readonly ItemManager itemManager;
+    private double cooldownTimer = 0f;
+    private readonly double cooldownTime = 0.2f; 
+
+    public NextItemCommand(ItemManager itemManager)
+    {
+        this.itemManager = itemManager;
+    }
+
+    public void Execute(GameTime gameTime)
+    {
+        if (cooldownTimer > 0)
+        {
+            cooldownTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            return;
+        }
+
+        itemManager.NextItem();
+
+
+        cooldownTimer = cooldownTime;
+    }
+}
+</file>
+
+<file path="Command/PlayerTakeDamageCommand.cs">
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Byte.Player;
+
+namespace Byte.Command
+{
+    public class PlayerTakeDamageCommand : ICommand
+    {
+        Link player;
+        public PlayerTakeDamageCommand(Link link) {
+            player = link;
+        }
+        public void Execute(GameTime gameTime)
+        {
+            player.TakeDamage();
+        }
+    }
+}
+</file>
+
+<file path="Command/PreviousBlockCommand.cs">
+using Byte.Block;
+using Microsoft.Xna.Framework;
+using System;
+
+namespace Byte.Command
+{
+    public class PreviousBlockCommand : ICommand
+    {
+        // controller runs held keys every frame so this spaces out the repeats
+        private static readonly TimeSpan RepeatDelay = TimeSpan.FromMilliseconds(250);
+
+        private readonly BlockManager blockManager;
+        private TimeSpan? lastExecuted;
+
+        public PreviousBlockCommand(BlockManager blockManager)
+        {
+            this.blockManager = blockManager;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            if (lastExecuted.HasValue && gameTime.TotalGameTime - lastExecuted.Value < RepeatDelay)
+            {
+                return;
+            }
+            lastExecuted = gameTime.TotalGameTime;
+            blockManager.PreviousBlock();
+        }
+    }
+}
+</file>
+
+<file path="Command/PreviousEnemyCommand.cs">
+using Byte.Sprite.Enemy;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Command
+{
+    class PreviousEnemyCommand : ICommand
+    {
+        private readonly EnemyManager enemyManager;
+
+        public PreviousEnemyCommand(EnemyManager enemyManager)
+        {
+            this.enemyManager = enemyManager;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            enemyManager.PreviousEnemy();
+        }
+    }
+}
+</file>
+
+<file path="Command/PreviousItemCommand.cs">
+using Byte.Item;
+using Byte.Player;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+public class PreviousItemCommand : ICommand
+{
+
+    private readonly ItemManager itemManager;
+
+    private double cooldownTimer = 0f;
+    private readonly double cooldownTime = 0.2f;
+
+    public PreviousItemCommand(ItemManager itemManager)
+    {
+        this.itemManager = itemManager;
+
+    }
+    public void Execute(GameTime gameTime)
+    {
+        if (cooldownTimer > 0)
+        {
+            cooldownTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            return;
+        }
+
+        itemManager.PreviousItem();
+
+
+        cooldownTimer = cooldownTime;
+    }
+}
+</file>
+
+<file path="Command/QuitCommand.cs">
+using Microsoft.Xna.Framework;
+
+public class QuitCommand : ICommand
+{
+    private Game game;
+
+    public QuitCommand(Game game) => this.game = game;
+
+    public void Execute(GameTime gameTime) => game.Exit();
+}
+</file>
+
+<file path="Command/ResetCommand.cs">
+using Microsoft.Xna.Framework;
+
+namespace Byte.Command
+{
+    // reloads the whole level, every object is rebuilt from the dungeon
+    public class ResetCommand : ICommand
+    {
+        private readonly Game game;
+
+        public ResetCommand(Game game)
+        {
+            this.game = game;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            game.RequestReset();
+        }
+    }
+}
+</file>
+
+<file path="Command/SetAnimatedSpriteCommand.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+public class SetAnimatedSpriteCommand : ICommand
+{
+    private Game game;
+
+    private Texture2D texture;
+    private Vector2 position;
+    private Color color;
+    private Rectangle[] sourceRects;
+    private float frameDuration;
+    private float scale;
+
+    public SetAnimatedSpriteCommand(Game game, Texture2D texture, ref Vector2 position, Color color, Rectangle[] sourceRects, float frameDuration, float scale = 1f)
+    {
+        this.game = game;
+        this.texture = texture;
+        this.position = position;
+        this.color = color;
+        this.sourceRects = sourceRects;
+        this.frameDuration = frameDuration;
+        this.scale = scale;
+    }
+
+    public void Execute(GameTime gameTime) => game.linkSprite = new AnimatedSprite(texture, ref position, color, sourceRects, frameDuration, scale);
+}
+</file>
+
+<file path="Command/SetMovingSpriteCommand.cs">
+using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+public class SetMovingSpriteCommand : ICommand
+{
+    private Game game;
+    private Texture2D texture;
+    private Vector2 position;
+    private Color color;
+    private Vector2 velocity;
+    private Rectangle sourceRect;
+    private float scale;
+
+    public SetMovingSpriteCommand(Game game, Texture2D texture, ref Vector2 position, Color color, ref Vector2 velocity, ref Rectangle sourceRect, float scale = 1f)
+    {
+        this.game = game;
+        this.texture = texture;
+        this.position = position;
+        this.color = color;
+        this.velocity = velocity;
+        this.sourceRect = sourceRect;
+        this.scale = scale;
+    }
+
+    public void Execute(GameTime gameTime) => game.linkSprite = new MovingSprite(texture, ref position, ref velocity, color, ref sourceRect, scale);
+}
+</file>
+
+<file path="Command/SetStaticSpriteCommand.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+public class SetStaticSpriteCommand : ICommand
+{
+    private Game game;
+    private Texture2D texture;
+    private Vector2 position;
+    private Color color;
+    private Rectangle rectangle;
+    private float scale;
+
+    public SetStaticSpriteCommand(Game game, Texture2D texture, ref Vector2 position, Color color, ref Rectangle rectangle, float scale = 1f)
+    {
+        this.game = game;
+        this.texture = texture;
+        this.position = position;
+        this.color = color;
+        this.rectangle = rectangle;
+        this.scale = scale;
+    }
+
+    public void Execute(GameTime gameTime) => game.linkSprite = new StaticSprite(texture, position, color, rectangle, scale);
+}
+</file>
+
+<file path="Command/SetTextSpriteCommand.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+public class SetTextSpriteCommand : ICommand
+{
+    private Game game;
+
+    private SpriteFont spriteFont;
+    private string text;
+    private Vector2 position;
+    private Color color;
+    private float scale;
+
+    public SetTextSpriteCommand(Game game, SpriteFont spriteFont, string text, ref Vector2 position, Color color, float scale = 1f)
+    {
+        this.game = game;
+        this.spriteFont = spriteFont;
+        this.text = text;
+        this.position = position;
+        this.color = color;
+        this.scale = scale;
+    }
+    public void Execute(GameTime gameTime) => game.linkSprite = new TextSprite(spriteFont, text, ref position, color, scale);
+}
+</file>
+
+<file path="Command/UseProjectileCommand.cs">
+using Byte.Player;
+using Byte.Projectile;
+using Microsoft.Xna.Framework;
+using System;
+
+namespace Byte.Command
+{
+    // spawns a projectile in front of link, facing the way link faces
+    public class UseProjectileCommand : ICommand
+    {
+        // the controller fires every frame a key is held, so limit how often items can be used
+        private static readonly TimeSpan COOLDOWN = TimeSpan.FromSeconds(0.3);
+
+        // link's position is near his feet, move up to the middle of his body
+        private static readonly Vector2 LINK_CENTER_OFFSET = new Vector2(0, -30);
+        private const float SPAWN_DISTANCE = 60f;
+
+        private readonly Link player;
+        private readonly ProjectileManager projectileManager;
+        private readonly Func<Vector2, Vector2, IProjectile> createProjectile;
+        private TimeSpan? lastUsed;
+
+        // createProjectile takes a spawn position and a screen-space direction
+        public UseProjectileCommand(Link link, ProjectileManager projectileManager, Func<Vector2, Vector2, IProjectile> createProjectile)
+        {
+            player = link;
+            this.projectileManager = projectileManager;
+            this.createProjectile = createProjectile;
+        }
+
+        public void Execute(GameTime gameTime)
+        {
+            if (lastUsed.HasValue && gameTime.TotalGameTime - lastUsed.Value < COOLDOWN)
+            {
+                return;
+            }
+            lastUsed = gameTime.TotalGameTime;
+
+            // CardinalDirections.North is +Y, but on screen up is -Y
+            player.UseItem();
+            Vector2 direction = new Vector2(player.Direction.X, -player.Direction.Y);
+            Vector2 spawnPosition = player.Position + LINK_CENTER_OFFSET + direction * SPAWN_DISTANCE;
+            projectileManager.Add(createProjectile(spawnPosition, direction));
+        }
+    }
+}
+</file>
+
+<file path="Content/Content.mgcb">
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
+
+#begin AssetSheets/bossSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/bossSheet.png
+
+#begin AssetSheets/enemySheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/enemySheet.png
+
+#begin AssetSheets/linkSheet2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/linkSheet2.png
+
+#begin AssetSheets/LinkSheet3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/LinkSheet3.png
+
+#begin AssetSheets/LinkSheet4.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=116,116,116,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/LinkSheet4.png
+
+#begin AssetSheets/items.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/items.png
+
+#begin AssetSheets/blockSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AssetSheets/blockSheet.png
+
+#begin Roboto.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Roboto.spritefont
+</file>
+
+<file path="Content/Roboto.spritefont">
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="Graphics:FontDescription">
+    <FontName>Roboto-VariableFont_wdth,wght.ttf</FontName>
+    <Size>28</Size>
+    <Spacing>0</Spacing>
+    <UseKerning>true</UseKerning>
+    <Style>Regular</Style>
+    <DefaultCharacter>*</DefaultCharacter>
+    <CharacterRegions>
+      <CharacterRegion>
+        <Start>&#32;</Start>
+        <End>&#126;</End>
+      </CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>
+</file>
+
+<file path="Controller/IController.cs">
+using Microsoft.Xna.Framework;
+
+namespace Byte.Controller;
+
+public interface IController
+{
+    /// <summary>
+    /// For each input, executes its command.
+    /// </summary>
+    void Update(GameTime gameTime);
+}
+</file>
+
+<file path="Controller/KeyboardController.cs">
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Controller;
+
+/// <summary>
+/// Controls key input.
+/// </summary>
+public class KeyboardController : IController
+{
+    private Dictionary<Keys, ICommand> keyboardCommands;
+    private HashSet<Keys> pressOnlyCommands = new HashSet<Keys>();
+
+    public KeyboardState currentState;
+
+    private KeyboardState previousState;
+
+    public KeyboardController(Dictionary<Keys, ICommand> keyboardCommands)
+    {
+        this.keyboardCommands = keyboardCommands;
+        currentState = Keyboard.GetState();
+    }
+
+    public KeyboardController(Dictionary<Keys, ICommand> keyboardCommands, Keys[] pressOnlyKeys) : this(keyboardCommands)
+    {
+        foreach (Keys k in pressOnlyKeys)
+            pressOnlyCommands.Add(k);
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        previousState = currentState;
+        currentState = Keyboard.GetState();
+
+        foreach (KeyValuePair<Keys, ICommand> pair in keyboardCommands)
+        {
+            if (currentState.IsKeyDown(pair.Key))
+            {
+                if (!pressOnlyCommands.Contains(pair.Key))
+                    pair.Value.Execute(gameTime);
+                else if (!previousState.IsKeyDown(pair.Key))
+                    pair.Value.Execute(gameTime);
+            }
+        }
+    }
+
+    public void AddKey(Keys key, ICommand handler) => keyboardCommands.Add(key, handler);
+
+    public void SetPressOnly(Keys key)
+    {
+        pressOnlyCommands.Add(key);
+    }
+}
+</file>
+
+<file path="Controller/MouseController.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+
+namespace Byte.Controller;
+
+/// <summary>
+/// Controls mouse input (excluding scroll/move).
+/// </summary>
+public class MouseController : IController
+{
+    private Dictionary<Rectangle, ICommand> leftClickMapping;
+    private Dictionary<Rectangle, ICommand> rightClickMapping;
+
+    private MouseState CurrentState { get; set; }
+    private MouseState PreviousState { get; set; }
+
+    public MouseController(Dictionary<Rectangle, ICommand> leftClickMapping, Dictionary<Rectangle, ICommand> rightClickMapping)
+    {
+        this.leftClickMapping = leftClickMapping;
+        this.rightClickMapping = rightClickMapping;
+        CurrentState = Mouse.GetState();
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        PreviousState = CurrentState;
+        CurrentState = Mouse.GetState();
+
+        // Checks only for NEW commands, not holding down a mouse state.
+        foreach (KeyValuePair<Rectangle, ICommand> mouseCmd in leftClickMapping)
+        {
+            if (CurrentState.LeftButton == ButtonState.Pressed &&
+            PreviousState.LeftButton != ButtonState.Pressed &&
+            mouseCmd.Key.Contains(new Point(CurrentState.X, CurrentState.Y)))
+            {
+                mouseCmd.Value.Execute(gameTime);
+            }
+        }
+
+        foreach (KeyValuePair<Rectangle, ICommand> mouseCmd in rightClickMapping)
+        {
+            if (CurrentState.RightButton == ButtonState.Pressed &&
+            PreviousState.RightButton != ButtonState.Pressed &&
+            mouseCmd.Key.Contains(new Point(CurrentState.X, CurrentState.Y)))
+            {
+                mouseCmd.Value.Execute(gameTime);
+            }
+        }
+    }
+}
+</file>
+
+<file path="Core/Dungeons/IDungeon.cs">
+using Byte.Block;
+using Byte.Item;
+using Byte.Projectile;
+using Byte.Sprite.Enemy;
+
+/// <summary>
+/// Extensible dungeon interface; this will allow for multiple dungeons to be created and, more importantly, for entity serialization.
+/// </summary>
+public interface IDungeon
+{
+    public EnemyManager CreateEnemies(ProjectileManager projectileManager);
+    public ItemManager CreateItems();
+    public BlockManager CreateBlocks();
+
+}
+</file>
+
+<file path="Core/Dungeon1.cs">
+using Byte.Block;
+using Byte.Item;
+using Byte.Projectile;
+using Byte.Sprite;
+using Byte.Sprite.Enemy;
+using Byte.Sprite.Enemy.Minion;
+using Microsoft.Xna.Framework;
+
+class Dungeon1 : IDungeon
+{
+
+    public BlockManager CreateBlocks()
+    {
+        BlockManager blockManager = new BlockManager();
+        BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
+        Vector2 blockPos = new Vector2(1200, 300);
+
+        blockManager.AddBlock(blockFactory.CreateSquareBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateKeystoneBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStatueLeftBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStatueRightBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateVoidBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateSpeckledFloorBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateWaterBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateStairsBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateBrickBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateLadderBlock(blockPos));
+        blockManager.AddBlock(blockFactory.CreateSandBlock(blockPos));
+        return blockManager;
+    }
+
+    public EnemyManager CreateEnemies(ProjectileManager projectileManager)
+    {
+
+        EnemyDescription stalfosDesc = new EnemyDescription
+        {
+            Type = EnemyType.Stalfos,
+            PatrolPath =
+            [
+                new Vector2(100, 100),
+                new Vector2(100, 300),
+                new Vector2(300, 300),
+                new Vector2(300, 100)
+            ],
+            Speed = 200f
+        };
+        EnemyDescription keeseDesc = new EnemyDescription
+        {
+            Type = EnemyType.Keese,
+            Position = new Vector2(500, 600),
+            Speed = 200f
+        };
+        EnemyDescription gelDesc = new EnemyDescription
+        {
+            Type = EnemyType.Gel,
+            PatrolPath = [
+                new Vector2(300, 800),
+                new Vector2(800, 800)
+            ],
+            Speed = 200f,
+            WaitDuration = 1.5f
+        };
+
+        EnemyDescription aquamentusDesc = new EnemyDescription
+        {
+            Type = EnemyType.Aquamentus,
+            PatrolPath = [
+                new Vector2(800, 900),
+                new Vector2(1000, 900)
+            ],
+            Speed = 200f,
+            WaitDuration = 1.0f,
+            FrameDuration = 0.5f
+        };
+
+        List<AbstractEnemy> enemies = new List<AbstractEnemy> {
+            EnemyFactory.Instance.CreateEnemy(ref stalfosDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref keeseDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref gelDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref aquamentusDesc, projectileManager) };
+
+        EnemyManager e_man = new EnemyManager();
+        e_man.Add(enemies);
+
+        return e_man;
+    }
+
+    public ItemManager CreateItems()
+    {
+        ItemFactory itemFactory = new ItemFactory();
+        ItemManager itemManager = new ItemManager();
+        Vector2 spawnPos = new Vector2(700, 700);
+
+        itemManager.AddItem(itemFactory.CreateRupee(spawnPos));
+        itemManager.AddItem(itemFactory.CreateHeart(spawnPos));
+        itemManager.AddItem(itemFactory.CreateBoomerang(spawnPos));
+        itemManager.AddItem(itemFactory.CreateBow(spawnPos));
+        itemManager.AddItem(itemFactory.CreateBomb(spawnPos));
+
+        return itemManager;
+    }
+}
+</file>
+
+<file path="Core/Game.cs">
+using Byte.Block;
+using Byte.Command;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Byte.Controller;
+using Byte.Item;
+using Byte.Player;
+using Byte.Projectile;
+using Byte.Sprite;
+using Byte.Sprite.Enemy;
+
+/// <summary>
+/// Class representing the game, containing the graphics device and sprite painter.
+/// </summary>
+public class Game : Microsoft.Xna.Framework.Game
+{
+    public GraphicsDeviceManager graphicsDeviceManager;
+    private const float SCREEN_FILL_RATIO = 0.85f;
+
+    public Link link = null!;
+    public ISprite? linkSprite;
+
+    private readonly IDungeon dungeon;
+
+    private EnemyManager enemyManager = new EnemyManager();
+    private BlockManager blockManager = new BlockManager();
+    private ProjectileManager projectileManager = new ProjectileManager();
+    private ItemManager itemManager = new ItemManager();
+
+    private SpriteBatch? SpritePainter { get; set; }
+    private Matrix spriteTransform = Matrix.Identity;
+
+    Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
+    Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
+    Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
+
+    private IController mouseControls;
+    private IController kbControls;
+
+    private bool resetRequested = false;
+
+    public Game(IDungeon dungeon)
+    {
+        this.dungeon = dungeon;
+
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.O, Keys.P]);
+        mouseControls = new MouseController(leftClickBindings, rightClickBindings);
+
+        graphicsDeviceManager = new GraphicsDeviceManager(this);
+        Content.RootDirectory = "Content";
+        IsMouseVisible = true;
+
+        int displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        int windowSide = Math.Min(GameConstants.WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
+        graphicsDeviceManager.PreferredBackBufferWidth = windowSide;
+        graphicsDeviceManager.PreferredBackBufferHeight = windowSide;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChanged;
+    }
+
+    private void OnClientSizeChanged(object? sender, EventArgs e)
+    {
+        Viewport viewport = GraphicsDevice.Viewport;
+        float scale = Math.Min(
+            viewport.Width / (float)GameConstants.WINDOW_SIZE.Width,
+            viewport.Height / (float)GameConstants.WINDOW_SIZE.Height);
+        float offsetX = (viewport.Width - GameConstants.WINDOW_SIZE.Width * scale) / 2.0f;
+        float offsetY = (viewport.Height - GameConstants.WINDOW_SIZE.Height * scale) / 2.0f;
+
+        spriteTransform = Matrix.CreateScale(scale) * Matrix.CreateTranslation(offsetX, offsetY, 0.0f);
+
+    }
+
+    protected override void LoadContent()
+    {
+        GameAssets.Load(Content);
+        SpritePainter = new SpriteBatch(GraphicsDevice);
+
+        BuildLevel();
+
+        OnClientSizeChanged(this, EventArgs.Empty); // Initialize the spriteTransform matrix
+        base.LoadContent();
+    }
+
+    /// <summary>
+    /// Asks for a full level reload; it runs after input is handled so the keybindings aren't rebuilt mid-loop.
+    /// </summary>
+    public void RequestReset() => resetRequested = true;
+
+    /// <summary>
+    /// Builds every object in the level from the dungeon, along with the commands bound to them.
+    /// </summary>
+    private void BuildLevel()
+    {
+        keybindings.Clear();
+        leftClickBindings.Clear();
+        rightClickBindings.Clear();
+
+        projectileManager = new ProjectileManager();
+        enemyManager = dungeon.CreateEnemies(projectileManager);
+        itemManager = dungeon.CreateItems();
+        blockManager = dungeon.CreateBlocks();
+
+        Vector2 linkPos = GameConstants.LINK_START_POS;
+        link = new Link(linkPos, new StaticSprite(
+            GameAssets.Instance.LinkSheet, linkPos,
+            Color.White, new Rectangle(1, 11, 16, 16), 6.0f),
+            SpritePainter!, GameAssets.Instance.LinkSheet,
+            mouseControls, kbControls);
+
+        ICommand NextItemCommand = new NextItemCommand(itemManager);
+        ICommand PreviousItemCommand = new PreviousItemCommand(itemManager);
+        keybindings.Add(Keys.I, NextItemCommand);
+        keybindings.Add(Keys.U, PreviousItemCommand);
+
+        link.sourceRects = new Rectangle[10];
+
+        ICommand attackCommand = new AttackCommand(this, link);
+        ICommand moveUpCommand = new MoveUpCommand(this, link);
+        ICommand moveDownCommand = new MoveDownCommand(this, link);
+        ICommand moveLeftCommand = new MoveLeftCommand(this, link);
+        ICommand moveRightCommand = new MoveRightCommand(this, link);
+        ICommand quitCommand = new QuitCommand(this);
+        ICommand resetCommand = new ResetCommand(this);
+        ICommand nextBlockCommand = new NextBlockCommand(blockManager);
+        ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
+        ICommand nextEnemyCommand = new NextEnemyCommand(enemyManager);
+        ICommand previousEnemyCommand = new PreviousEnemyCommand(enemyManager);
+        ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
+        keybindings.Add(Keys.D0, quitCommand);
+        keybindings.Add(Keys.Q, quitCommand);
+        keybindings.Add(Keys.W, moveUpCommand);
+        keybindings.Add(Keys.S, moveDownCommand);
+        keybindings.Add(Keys.A, moveLeftCommand);
+        keybindings.Add(Keys.D, moveRightCommand);
+        keybindings.Add(Keys.Up, moveUpCommand);
+        keybindings.Add(Keys.Down, moveDownCommand);
+        keybindings.Add(Keys.Left, moveLeftCommand);
+        keybindings.Add(Keys.Right, moveRightCommand);
+        rightClickBindings.Add(GameConstants.WINDOW_SIZE, quitCommand);
+        keybindings.Add(Keys.Z, attackCommand);
+        keybindings.Add(Keys.N, attackCommand);
+        keybindings.Add(Keys.R, resetCommand);
+        keybindings.Add(Keys.T, previousBlockCommand);
+        keybindings.Add(Keys.Y, nextBlockCommand);
+        keybindings.Add(Keys.O, previousEnemyCommand);
+        keybindings.Add(Keys.P, nextEnemyCommand);
+        keybindings.Add(Keys.E, PlayerTakeDamageCommand);
+        AddProjectileCommands();
+    }
+
+    private void AddProjectileCommands()
+    {
+        ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, GameAssets.Instance.BossSheet);
+
+        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow);
+        ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
+            (position, direction) => projectileFactory.CreateBomb(position));
+        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang);
+
+        keybindings.Add(Keys.D1, useArrowCommand);
+        keybindings.Add(Keys.D2, useBombCommand);
+        keybindings.Add(Keys.D3, useBoomerangCommand);
+    }
+
+    protected override void Update(GameTime gameTime)
+    {
+        kbControls.Update(gameTime);
+        mouseControls.Update(gameTime);
+
+        if (resetRequested)
+        {
+            resetRequested = false;
+            BuildLevel();
+        }
+
+        enemyManager.Update(gameTime);
+        blockManager.Update(gameTime);
+        projectileManager.Update(gameTime);
+        itemManager.Update(gameTime);
+
+        link.Update(gameTime);
+
+        base.Update(gameTime);
+    }
+
+    protected override void Draw(GameTime gameTime)
+    {
+        GraphicsDevice.Clear(GameConstants.BG_COLOR);
+
+        SpritePainter?.Begin(
+            sortMode: SpriteSortMode.Deferred,
+            blendState: BlendState.NonPremultiplied,
+            samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
+            transformMatrix: spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
+        );
+
+        link.state.Draw(link);
+
+        enemyManager.Draw(SpritePainter!);
+        blockManager.Draw(SpritePainter!);
+        projectileManager.Draw(SpritePainter!);
+        itemManager.Draw(SpritePainter!);
+
+        SpritePainter?.End();
+
+        base.Draw(gameTime);
+    }
+
+    public static void Main() => new Game(new Dungeon1()).Run();
+}
+</file>
+
+<file path="Core/GameAssets.cs">
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+
+internal sealed class GameAssets
+{
+    private static GameAssets? instance;
+
+    public static GameAssets Instance => instance
+        ?? throw new InvalidOperationException("GameAssets.Load must be called before accessing assets.");
+
+    public Texture2D EnemySheet { get; }
+    public Texture2D BossSheet { get; }
+    public Texture2D LinkSheet { get; }
+    public Texture2D BlockSheet { get; }
+    public Texture2D ItemSheet { get; }
+
+    private GameAssets(Texture2D enemySheet, Texture2D bossSheet, Texture2D linkSheet, Texture2D blockSheet, Texture2D itemSheet)
+    {
+        EnemySheet = enemySheet;
+        BossSheet = bossSheet;
+        LinkSheet = linkSheet;
+        BlockSheet = blockSheet;
+        ItemSheet = itemSheet;
+    }
+
+    public static void Load(ContentManager content)
+    {
+        instance = new GameAssets(
+            content.Load<Texture2D>("AssetSheets/enemySheet"),
+            content.Load<Texture2D>("AssetSheets/bossSheet"),
+            content.Load<Texture2D>("AssetSheets/linkSheet2"),
+            content.Load<Texture2D>("AssetSheets/blockSheet"),
+            content.Load<Texture2D>("AssetSheets/items")
+        );
+
+    }
+}
+</file>
+
+<file path="Core/GameConstants.cs">
+using Microsoft.Xna.Framework;
+
+public static class GameConstants
+{
+    public const float SCALE = 10.0f;
+    public const int TILE_SIZE = 16;
+
+    public static readonly Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
+    public static readonly Rectangle MIN_WINDOW_SIZE = new Rectangle(0, 0, 800, 600);
+    public static readonly Color BG_COLOR = Color.SkyBlue;
+
+    public static readonly Vector2 LINK_START_POS = new Vector2(220.0f, 220.0f);
+}
+</file>
+
+<file path="Item/Bomb.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    internal class Bomb : IItem
+    {
+        public Vector2 Position { get; set; }
+        private readonly StaticSprite sprite;
+
+        public Bomb(StaticSprite sprite, Vector2 position)
+        {
+            this.sprite = sprite;
+            Position = position;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            sprite.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            sprite.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Item/Boomerang.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    internal class Boomerang : IItem
+    {
+        public Vector2 Position { get; set; }
+        private readonly AnimatedSprite sprite;
+
+        public Boomerang(AnimatedSprite sprite, Vector2 position)
+        {
+            this.sprite = sprite;
+            Position = position;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            sprite.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            sprite.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Item/Bow.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    internal class Bow : IItem
+    {
+        public Vector2 Position { get; set; }
+        private readonly StaticSprite sprite;
+
+        public Bow(StaticSprite sprite, Vector2 position)
+        {
+            this.sprite = sprite;
+            Position = position;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            sprite.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            sprite.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Item/Heart.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    internal class Heart : IItem
+    {
+        public Vector2 Position { get; set; }
+        private readonly AnimatedSprite sprite;
+
+        public Heart(AnimatedSprite sprite, Vector2 position)
+        {
+            this.sprite = sprite;
+            Position = position;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            sprite.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            sprite.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Item/IItem.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    public interface IItem
+    {
+        void Update(GameTime gametime);
+        void Draw(SpriteBatch spriteBatch);
+        Vector2 Position { get; set; }
+    }
+}
+</file>
+
+<file path="Item/ItemFactory.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    internal class ItemFactory
+    {
+        private readonly Texture2D tileSheet = GameAssets.Instance.ItemSheet;
+
+        public ItemFactory()
+        {
+        }
+
+        public IItem CreateRupee(Vector2 position)
+        {
+            Rectangle[] rupeeFrames = new Rectangle[]
+            {
+                new Rectangle(72, 0, 8, 16),  
+                new Rectangle(72, 16, 8, 16)   
+            };
+
+            AnimatedSprite rupeeSprite = new AnimatedSprite(
+                tileSheet,
+                ref position,
+                Color.White,
+                rupeeFrames,
+                1f,
+                5f
+            );
+
+            return new Rupee(rupeeSprite, position);
+        }
+        
+        public IItem CreateHeart(Vector2 position)
+        {
+            Rectangle[] heartFrames = new Rectangle[]
+            {
+                new Rectangle(0, 0, 7, 7), //red frame
+                new Rectangle(0, 8, 7, 7) //blue frame
+            };
+
+
+            AnimatedSprite HeartSprite = new AnimatedSprite(
+                tileSheet,
+                ref position,
+                Color.White,
+                heartFrames,
+                1f, 
+                5f
+            );
+
+            return new Heart(HeartSprite, position);
+        }
+        public IItem CreateBomb(Vector2 position)
+        {
+            Rectangle bombFrame = new Rectangle(136, 0, 8, 16);
+            StaticSprite BombSprite = new StaticSprite(
+                tileSheet,
+                position,
+                Color.White,
+                bombFrame,
+                5f
+            );
+
+            return new Bomb(BombSprite, position);
+        }
+        public IItem CreateBow(Vector2 position)
+        {
+            Rectangle bowFrame = new Rectangle(144, 0, 8, 16);
+            StaticSprite BowSprite = new StaticSprite(
+                tileSheet,
+                position,
+                Color.White,
+                bowFrame,
+                5f
+            );
+            return new Bow(BowSprite, position);
+        }
+
+        public IItem CreateBoomerang(Vector2 position)
+        {
+            Rectangle[] boomerangFrames = new Rectangle[]
+            {
+                new Rectangle(129, 3, 5, 8), // brown frame
+                new Rectangle(129, 19, 5, 8) //blue frame
+            };
+
+            AnimatedSprite boomerangSprite = new AnimatedSprite(
+                tileSheet,
+                ref position,
+                Color.White,
+                boomerangFrames,
+                1f,
+                5f
+            );
+
+            return new Boomerang(boomerangSprite, position);
+        }
+
+    }
+}
+</file>
+
+<file path="Item/ItemManager.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    public class ItemManager
+    {
+        private List<IItem> items;
+        private int currentIndex;
+
+        public ItemManager()
+        {
+            items = new List<IItem>();
+            currentIndex = 0;
+        }
+
+        public void AddItem(IItem item)
+        {
+            items.Add(item);
+        }
+
+        public void RemoveItem(IItem item)
+        {
+            items.Remove(item);
+        }
+
+        public void NextItem()
+        {
+            if (items.Count > 0)
+            {
+                currentIndex = (currentIndex + 1) % items.Count;
+            }
+        }
+
+        public void PreviousItem()
+        {
+            if (items.Count > 0)
+            {
+                currentIndex = (currentIndex - 1 + items.Count) % items.Count;
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (items.Count > 0 && currentIndex < items.Count)
+            {
+                items[currentIndex]?.Update(gameTime);
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            if (items.Count > 0 && currentIndex < items.Count)
+            {
+                items[currentIndex]?.Draw(spriteBatch);
+            }
+        }
+    }
+}
+</file>
+
+<file path="Item/Rupee.cs">
+using Byte.Sprite;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Item
+{
+    internal class Rupee : IItem
+    {
+        public Vector2 Position { get; set; }
+        private readonly AnimatedSprite sprite;
+
+        public Rupee(AnimatedSprite sprite, Vector2 position)
+        {
+            this.sprite = sprite;
+            Position = position;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            sprite.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            sprite.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/CardinalDirections.cs">
+using System.Numerics;
+
+// Contains the directions that link can face
+public static class CardinalDirections
+{
+    public static readonly Vector2 North = new Vector2(0, 1);
+    public static readonly Vector2 South = new Vector2(0, -1);
+    public static readonly Vector2 East = new Vector2(1, 0);
+    public static readonly Vector2 West = new Vector2(-1, 0);
+}
+</file>
+
+<file path="Player/IPlayerState.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
+
+namespace Byte.Player
+{
+    public interface IPlayerState
+    {
+        // Update the player based on the current state
+        public IPlayerState Update(Link link, GameTime gameTime);
+
+        // draw the current state
+        public void Draw(Link link);
+    }
+}
+</file>
+
+<file path="Player/Link.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Byte.Controller;
+using Byte.Sprite;
+
+namespace Byte.Player
+{
+    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
+    {
+        public bool isDamaged = false; // Checks if link has taken damage
+        private float damageTimer = 0f;
+        private const float DamageDuration = 0.5f;
+        public bool isGameStart = true; // Checks if game was just started
+
+        // use to see if movement/other needs to be stopped - cant move when attacking
+        public bool IsAttacking { get; set; } = false;
+
+        // The starting reference point for most animations and sprite drawing
+        public static readonly Vector2 LinkOrigin = new Vector2(8, 13);
+
+        // Misleading name - direction sprite should be moving
+        public Vector2 MovementSpeed { get; set; } = Vector2.Zero;
+
+        // current health
+        public float Health { get; set; } = 3;
+
+        // maximum health
+        public float MaximumHealth { get; set; } = 20;
+
+        // Current position of the character
+        public Vector2 Position { get; set; } = position;
+
+        // Direction that link is facing
+        public Vector2 Direction { get; set; } = CardinalDirections.South;
+
+
+        // The sprite sheet with link textures
+        public Texture2D SpriteSheet { get; set; } = sheet;
+
+        // The time in between each frame of animation
+        public TimeSpan TimeDelay { get; set; } = TimeSpan.FromMilliseconds(100);
+
+        // the current state link is in
+        public IPlayerState state { get; set; } = new PlayerIdleState();
+
+        // the current frames that need to be drawn
+        public Rectangle[] sourceRects { get; set; } = new Rectangle[1];
+
+        // the sprite that is active for link
+        public ISprite? currentSprite { get; set; } = newSprite;
+
+        // the sprite batch used for drawing
+        public SpriteBatch spriteBatch { get; set; } = newSpriteBatch;
+
+        // controllers for input
+        private MouseController mouseControls { get; set; } = (MouseController)mouseControl;
+        private KeyboardController kbControls { get; set; } = (KeyboardController)kbControl;
+
+
+        // The list of keys pressed
+        private Keys[] keys = new Keys[1];
+
+
+        public void Update(GameTime gameTime)
+        {
+            // Check which keys are pressed - if they affect idle state update if not set to idle
+            keys = kbControls.currentState.GetPressedKeys();
+            if (shouldBeIdle(keys) && !IsAttacking)
+            {
+                GetNewState(new PlayerIdleState());
+            }
+            state.Update(this, gameTime);
+            if (isDamaged)
+            {
+                damageTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (currentSprite != null)
+                {
+                    currentSprite.Color = Color.Red;
+                }
+
+                if (damageTimer <= 0)
+                {
+                    isDamaged = false;
+
+                    if (currentSprite != null)
+                    {
+                        currentSprite.Color = Color.White;
+                    }
+                }
+            }
+        }
+
+        // Show damage texture
+        public void TakeDamage()
+        {
+            isDamaged = true;
+            damageTimer = DamageDuration;
+            Health--;
+            
+        }
+
+        // update player position
+        public void Move(GameTime gameTime)
+        {
+            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Position += MovementSpeed * seconds;
+        }
+
+        // apply the attack animation and disable movment until attack is finished
+        public void Attack()
+        {
+            this.IsAttacking = true;
+            this.MovementSpeed = new Vector2(0, 0);
+            if (this.state is not PlayerAttackState)
+            {
+                this.GetNewState(new PlayerAttackState());
+            }
+        }
+
+        // display the item currently being used
+        public void UseItem()
+        {
+            this.IsAttacking = true;
+            this.MovementSpeed = new Vector2(0, 0);
+            if (this.state is not PlayerUseItemState)
+            {
+                this.GetNewState(new PlayerUseItemState());
+            }
+        }
+
+        // update state to the new type that is being passed
+        public void GetNewState(IPlayerState state)
+        {
+            // if the state passed is the same as current state dont do anything
+            if (this.state.GetType() != state.GetType())
+            {
+
+
+                this.state = state;
+                this.currentSprite = null;
+            }
+        }
+
+        // check if a key that is pressed has a different state attached to it
+        public bool shouldBeIdle(Keys[] keys)
+        {
+            bool state =
+            Array.Exists(keys, key => key == Keys.W) ||
+            Array.Exists(keys, key => key == Keys.A) ||
+            Array.Exists(keys, key => key == Keys.S) ||
+            Array.Exists(keys, key => key == Keys.D) ||
+            Array.Exists(keys, key => key == Keys.Up) ||
+            Array.Exists(keys, key => key == Keys.Down) ||
+            Array.Exists(keys, key => key == Keys.Left) ||
+            Array.Exists(keys, key => key == Keys.Right) ||
+            Array.Exists(keys, key => key == Keys.Z) ||
+            Array.Exists(keys, key => key == Keys.I) ||
+            Array.Exists(keys, key => key == Keys.U) ||
+            Array.Exists(keys, key => key == Keys.N);
+
+
+            return !state;
+        }
+
+
+
+
+
+
+    }
+}
+</file>
+
+<file path="Player/LinkInterface.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+namespace Byte.Player
+{
+
+    public interface LinkInterface
+    {
+        // current health
+        public float Health { get; set; }
+
+        // maximum health
+        public float MaximumHealth { get; set; }
+
+        public Vector2 Position { get; set; }
+
+        // direction link is facing
+        public Vector2 Direction { get; set; }
+
+        // current sprite link has
+        public ISprite currentSprite { get; set; }
+
+        // sprite batch to draw
+        public SpriteBatch spriteBatch { get; set; }
+
+        // update link state
+        public void Update(GameTime gameTime);
+
+        // take damage
+        public void TakeDamage();
+
+        // move player
+        public void Move(GameTime gameTime);
+
+        // cause player to attack
+        public void Attack();
+
+        // make player use item
+        public void UseItem();
+
+
+        // update player state
+        public void GetNewState(IPlayerState state);
+
+
+
+    }
+}
+</file>
+
+<file path="Player/PlayerAttackState.cs">
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Player
+{
+    public class PlayerAttackState : IPlayerState
+    {
+        public PlayerAttackState() { }
+
+        // contains frames for attacking south
+        public Rectangle[] attackSouthFrames =
+        {
+            new Rectangle(1,47,16,14),
+            new Rectangle(19,47,14,26),
+            new Rectangle(35,47,15,22),
+            new Rectangle(52,47,15,18)
+
+        };
+
+        // contains frames for attacking east or west(east flipped)
+
+        public Rectangle[] attackEastWestFrames =
+       {
+            new Rectangle(1,77,16,16),
+            new Rectangle(18,77,26,16),
+            new Rectangle(46,77,22,16),
+            new Rectangle(70,77,18,16)
+
+        };
+        // contains frames for attacking north
+
+        public Rectangle[] attackNorthFrames =
+       {
+            new Rectangle(1,109,16,16),
+            new Rectangle(18,97,14,27),
+            new Rectangle(36,98,14,26),
+            new Rectangle(52,106,14,18)
+
+        };
+
+
+
+        public IPlayerState Update(Link link, GameTime gametime)
+        {
+            // check if link is already in an attacking animation
+            if (link.currentSprite is not MovingAnimatedSprite)
+            {
+                // depending on direction set link attack animation
+                if (link.Direction == CardinalDirections.North)
+                {
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        attackNorthFrames,
+                        .1f,
+                        6.0f);
+                    // for north update frame origin to prevent sprite moving during animation
+                    link.currentSprite.SetFrameOrigin(new Vector2[]
+                    {
+                        new Vector2(8, 15),
+                        new Vector2(7, 25),
+                        new Vector2(7, 23),
+                        new Vector2(7, 14)
+                    });
+                }
+
+                else if (link.Direction == CardinalDirections.South)
+                {
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        attackSouthFrames,
+                        .1f,
+                        6.0f);
+                }
+                else if (link.Direction == CardinalDirections.East)
+                {
+
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        attackEastWestFrames,
+                        .1f,
+                        6.0f);
+                }
+                else
+                {
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        attackEastWestFrames,
+                        .1f,
+                        6.0f);
+                    // to prevent weird movement when attacking west - update sprite origins
+                    link.currentSprite.SetFrameOrigin(new Vector2[]
+                    {
+                        new Vector2(13, 13),
+                        new Vector2(18, 13),
+                        new Vector2(15,13),
+                        new Vector2(13,13)
+                    });
+                    // flip sprite for west
+                    link.currentSprite.Effects = SpriteEffects.FlipHorizontally;
+                }
+                link.currentSprite.MoveOrigin(Link.LinkOrigin);
+
+                // set loop to false so animation plays once
+                link.currentSprite.Loop = false;
+                
+            }
+            if (link.currentSprite is MovingAnimatedSprite)
+            {
+                MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
+                
+                
+                // update current sprite
+                sprite.SetPos(link.Position);
+                sprite.Update(gametime);
+
+                // if animation finishes update IsAttacking, player state, and movementSpeed
+                if (sprite.IsFinished)
+                {
+                    link.IsAttacking = false;
+                    link.MovementSpeed = Vector2.Zero;
+                    link.GetNewState(new PlayerIdleState());
+                    link.state.Update(link,gametime);
+                }
+
+            }
+
+
+
+            return this;
+        }
+
+        public void Draw(Link link)
+        {
+
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/PlayerIdleState.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+namespace Byte.Player
+{
+    public class PlayerIdleState : IPlayerState
+
+    {
+        // contains the frames for idle state
+        public Rectangle[] IdleFrames =
+       {
+            new Rectangle(1, 11, 16, 16), // Idle South
+            new Rectangle(35, 11, 16, 16), // Idle East  - flip for West
+            new Rectangle(69, 11, 16,16) // idle North,
+        };
+        public PlayerIdleState()
+        {
+
+        }
+        public IPlayerState Update(Link link, GameTime gameTime)
+        {
+            
+            // update gameStart so new sprite is only made when game starts
+                link.isGameStart = false;
+
+            // check given direction and update sourceRect to correct frame
+                if (link.Direction == CardinalDirections.South)
+                {
+                    link.sourceRects[0] = IdleFrames[0];
+
+
+                }
+                else if (link.Direction == CardinalDirections.North)
+                {
+                    link.sourceRects[0] = IdleFrames[2];
+
+
+
+                }
+                else if (link.Direction == CardinalDirections.East || link.Direction == CardinalDirections.West)
+                {
+                    link.sourceRects[0] = IdleFrames[1];
+
+
+
+                }
+                // Create sprite for idle
+                link.currentSprite = new StaticSprite(link.SpriteSheet, link.Position, Color.White, link.sourceRects[0], 6.0f);
+
+            // if facing west flip the sprite
+                if (link.Direction == CardinalDirections.West)
+                {
+                    link.currentSprite.Effects = SpriteEffects.FlipHorizontally;
+                }
+                // update sprite origin to keep aligned when using animations
+                link.currentSprite.MoveOrigin(Link.LinkOrigin);
+            
+            
+            return this;
+        }
+
+        public void Draw(Link link)
+        {
+            // draw in current spritebatch
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/PlayerMoveDownState.cs">
+using Microsoft.Xna.Framework;
+using Byte.Sprite;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Player
+{
+    public class PlayerMoveDownState : IPlayerState
+    {
+        // frames for walking south animation
+        Rectangle[] southFrames =
+        {
+            new Rectangle(1, 11, 16, 16),
+            new Rectangle(18,11,16,16)
+        };
+        public PlayerMoveDownState()
+        {
+
+
+        }
+        public IPlayerState Update(Link link, GameTime gametime)
+        {
+            // check if in walking sprite already
+            if (link.currentSprite is not MovingAnimatedSprite)
+            {
+                // create new walking sprite
+                link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                     link.Position,
+                     link.MovementSpeed,
+                    Color.White,
+                    southFrames,
+                    .1f,
+                    6.0f);
+                
+            }
+            if (link.currentSprite is MovingAnimatedSprite)
+            {
+                // update current position
+                MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
+
+                sprite.SetPos(link.Position);
+                sprite.Update(gametime);
+            }
+            // update origin for sprite
+            link.currentSprite.MoveOrigin(Link.LinkOrigin);
+            return this;
+        }
+        public void Draw(Link link)
+        {
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/PlayerMoveLeftState.cs">
+using Microsoft.Xna.Framework;
+using Byte.Sprite;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Player
+{
+    public class PlayerMoveLeftState : IPlayerState
+    {
+        // contains frames for walking west 
+        Rectangle[] westFrames =
+        {
+            new Rectangle(35, 11, 16, 16),
+            new Rectangle(52,11,16,16)
+        };
+        public PlayerMoveLeftState()
+        {
+
+
+        }
+        public IPlayerState Update(Link link, GameTime gametime)
+        {
+            // check if already walking
+            if (link.currentSprite is not MovingAnimatedSprite)
+            {
+                //start walking if not already
+                link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                     link.Position,
+                     link.MovementSpeed,
+                    Color.White,
+                    westFrames,
+                    .1f,
+                    6.0f);
+                // flip for west walking
+                link.currentSprite.Effects = SpriteEffects.FlipHorizontally;
+            }
+            if (link.currentSprite is MovingAnimatedSprite)
+            {
+                MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
+
+                sprite.SetPos(link.Position);
+                sprite.Update(gametime);
+                sprite.Effects = SpriteEffects.FlipHorizontally;
+            }
+            link.currentSprite.MoveOrigin(Link.LinkOrigin);
+            return this;
+        }
+        public void Draw(Link link)
+        {
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/PlayerMoveRightState.cs">
+using Microsoft.Xna.Framework;
+using Byte.Sprite;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Player
+{
+    public class PlayerMoveRightState : IPlayerState
+    {
+
+        // Contains walking east frames
+        Rectangle[] eastFrames =
+        {
+            new Rectangle(35, 11, 16, 16),
+            new Rectangle(52,11,16,16)
+        };
+        public PlayerMoveRightState()
+        {
+
+
+        }
+        public IPlayerState Update(Link link, GameTime gametime)
+        {
+            // check if already walking if not start walking
+            if (link.currentSprite is not MovingAnimatedSprite)
+            {
+                link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                     link.Position,
+                     link.MovementSpeed,
+                    Color.White,
+                    eastFrames,
+                    .1f,
+                    6.0f);
+            }
+            if (link.currentSprite is MovingAnimatedSprite)
+            {
+                // if walking update position
+                MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
+
+                sprite.SetPos(link.Position);
+                sprite.Update(gametime);
+            }
+            link.currentSprite.MoveOrigin(Link.LinkOrigin);
+            return this;
+        }
+        public void Draw(Link link)
+        {
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/PlayerMoveUpState.cs">
+using Microsoft.Xna.Framework;
+using Byte.Sprite;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Byte.Player
+{
+    public class PlayerMoveUpState : IPlayerState
+    {
+        
+        // frames for north walking
+        Rectangle[] northFrames =
+        {
+            new Rectangle(69, 11, 16,16),
+            new Rectangle(86,11,16,16)
+        };
+        public PlayerMoveUpState()
+        {
+
+
+        }
+        public IPlayerState Update(Link link, GameTime gametime)
+        {
+            
+            // Check if already walking if not start
+            if (link.currentSprite is not MovingAnimatedSprite )
+            {
+                link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                     link.Position,
+                     link.MovementSpeed,
+                    Color.White,
+                    northFrames,
+                    .1f,
+                    6.0f);
+            }
+            if (link.currentSprite is MovingAnimatedSprite)
+            {
+                MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
+
+                sprite.SetPos(link.Position);
+                sprite.Update(gametime);
+            }
+            link.currentSprite.MoveOrigin(Link.LinkOrigin);
+            return this;
+        }
+        public void Draw(Link link)
+        {
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Player/PlayerUseItemState.cs">
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Player
+{
+    public class PlayerUseItemState : IPlayerState
+    {
+        public PlayerUseItemState() { }
+
+        // contains frames for using item south
+        public Rectangle[] useItemSouthFrames =
+        {
+            new Rectangle(1,47,16,14),
+            
+
+        };
+
+        // contains frames for attacking east or west(east flipped)
+
+        public Rectangle[] useItemEastWestFrames =
+       {
+            new Rectangle(1,77,16,16),
+            
+
+        };
+        // contains frames for attacking north
+
+        public Rectangle[] useItemNorthFrames =
+       {
+            new Rectangle(1,109,16,16),
+           
+
+        };
+
+
+
+        public IPlayerState Update(Link link, GameTime gametime)
+        {
+            // check if link is already in an attacking animation
+            if (link.currentSprite is not MovingAnimatedSprite)
+            {
+                // depending on direction set link attack animation
+                if (link.Direction == CardinalDirections.North)
+                {
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        useItemNorthFrames,
+                        .1f,
+                        6.0f);
+                    // for north update frame origin to prevent sprite moving during animation
+                    link.currentSprite.SetFrameOrigin(new Vector2[]
+                    {
+                        new Vector2(8, 15),
+                        new Vector2(7, 25),
+                        new Vector2(7, 23),
+                        new Vector2(7, 14)
+                    });
+                }
+
+                else if (link.Direction == CardinalDirections.South)
+                {
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        useItemSouthFrames,
+                        .1f,
+                        6.0f);
+                }
+                else if (link.Direction == CardinalDirections.East)
+                {
+
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        useItemEastWestFrames,
+                        .1f,
+                        6.0f);
+                }
+                else
+                {
+                    link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
+                         link.Position,
+                         link.MovementSpeed,
+                        Color.White,
+                        useItemEastWestFrames,
+                        .1f,
+                        6.0f);
+                    // to prevent weird movement when using item west - update sprite origins
+                    link.currentSprite.SetFrameOrigin(new Vector2[]
+                    {
+                        new Vector2(13, 13),
+                        new Vector2(18, 13),
+                        new Vector2(15,13),
+                        new Vector2(13,13)
+                    });
+                    // flip sprite for west
+                    link.currentSprite.Effects = SpriteEffects.FlipHorizontally;
+                }
+                link.currentSprite.MoveOrigin(Link.LinkOrigin);
+
+                // set loop to false so animation plays once
+                link.currentSprite.Loop = false;
+
+            }
+            if (link.currentSprite is MovingAnimatedSprite)
+            {
+                MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
+
+
+                // update current sprite
+                sprite.SetPos(link.Position);
+                sprite.Update(gametime);
+
+                // if animation finishes update IsAttacking, player state, and movementSpeed
+                if (sprite.IsFinished)
+                {
+                    link.IsAttacking = false;
+                    link.MovementSpeed = Vector2.Zero;
+                    link.GetNewState(new PlayerIdleState());
+                    link.state.Update(link, gametime);
+                }
+
+            }
+
+
+
+            return this;
+        }
+
+        public void Draw(Link link)
+        {
+
+            link.currentSprite.Draw(link.spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Projectile/Arrow.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Projectile;
+
+// flies straight in one direction and disappears after a set distance or off screen
+public class Arrow : IProjectile
+{
+    private const float SPEED = 800f;
+    private const float MAX_DISTANCE = 700f;
+
+    private readonly MovingAnimatedSprite sprite;
+    private readonly Vector2 velocity;
+    private Vector2 position;
+    private float distanceTraveled;
+
+    public bool IsExpired { get; private set; }
+
+    public Arrow(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+    {
+        this.sprite = sprite;
+        this.position = position;
+        velocity = direction * SPEED;
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        position += velocity * seconds;
+        distanceTraveled += SPEED * seconds;
+
+        if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(position))
+        {
+            IsExpired = true;
+        }
+
+        sprite.SetPos(position);
+        sprite.Update(gameTime);
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+}
+</file>
+
+<file path="Projectile/Bomb.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Projectile;
+
+// sits where it was placed until the fuse runs out, then plays the explosion once and disappears
+public class Bomb : IProjectile
+{
+    private const float FUSE_SECONDS = 1.0f;
+
+    private readonly MovingAnimatedSprite bombSprite;
+    private readonly MovingAnimatedSprite explosionSprite;
+    private float fuseTimer;
+    private bool hasExploded;
+
+    public bool IsExpired => hasExploded && explosionSprite.IsFinished;
+
+    public Bomb(MovingAnimatedSprite bombSprite, MovingAnimatedSprite explosionSprite, Vector2 position)
+    {
+        this.bombSprite = bombSprite;
+        this.explosionSprite = explosionSprite;
+        bombSprite.SetPos(position);
+        explosionSprite.SetPos(position);
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        if (hasExploded)
+        {
+            explosionSprite.Update(gameTime);
+            return;
+        }
+
+        fuseTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        hasExploded = fuseTimer >= FUSE_SECONDS;
+        bombSprite.Update(gameTime);
+    }
+
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        if (hasExploded)
+        {
+            explosionSprite.Draw(spriteBatch);
+        }
+        else
+        {
+            bombSprite.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Projectile/Boomerang.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Projectile;
+
+// flies out to its range, turns around, and disappears when it gets back to where it was thrown
+public class Boomerang : IProjectile
+{
+    private const float SPEED = 600f;
+    private const float RANGE = 450f;
+
+    private readonly MovingAnimatedSprite sprite;
+    private Vector2 velocity;
+    private Vector2 position;
+    private float distanceTraveled;
+    private bool isReturning;
+
+    public bool IsExpired { get; private set; }
+
+    public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+    {
+        this.sprite = sprite;
+        this.position = position;
+        velocity = direction * SPEED;
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        position += velocity * seconds;
+        distanceTraveled += SPEED * seconds;
+
+        if (!isReturning && distanceTraveled >= RANGE)
+        {
+            isReturning = true;
+            velocity = -velocity;
+        }
+        else if (isReturning && distanceTraveled >= 2 * RANGE)
+        {
+            IsExpired = true;
+        }
+
+        sprite.SetPos(position);
+        sprite.Update(gameTime);
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+}
+</file>
+
+<file path="Projectile/Fireball.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Projectile;
+
+// aquamentus's attack, flies straight and disappears after a set distance or off screen
+public class Fireball : IProjectile
+{
+    private const float SPEED = 400f;
+    private const float MAX_DISTANCE = 1200f;
+
+    private readonly MovingAnimatedSprite sprite;
+    private readonly Vector2 velocity;
+    private Vector2 position;
+    private float distanceTraveled;
+
+    public bool IsExpired { get; private set; }
+
+    public Fireball(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+    {
+        this.sprite = sprite;
+        this.position = position;
+        velocity = Vector2.Normalize(direction) * SPEED;
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        position += velocity * seconds;
+        distanceTraveled += SPEED * seconds;
+
+        if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(position))
+        {
+            IsExpired = true;
+        }
+
+        sprite.SetPos(position);
+        sprite.Update(gameTime);
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+}
+</file>
+
+<file path="Projectile/IProjectile.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Projectile;
+
+// something that is fired or thrown, moves on its own, and goes away when it's done
+public interface IProjectile
+{
+    // true once the projectile is finished and should be removed
+    bool IsExpired { get; }
+
+    void Update(GameTime gameTime);
+
+    void Draw(SpriteBatch spriteBatch);
+}
+</file>
+
+<file path="Projectile/ProjectileFactory.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Projectile;
+
+// makes every projectile, only place the sheet coordinates should live
+public class ProjectileFactory
+{
+    // projectile sprites are in the "Other Weapons/Items" row of the link sheet
+    private static readonly Rectangle ARROW_UP = new Rectangle(1, 185, 8, 16);
+    private static readonly Rectangle ARROW_RIGHT = new Rectangle(10, 185, 16, 16);
+    private static readonly Rectangle[] BOOMERANG_FRAMES =
+    {
+        new Rectangle(64, 185, 8, 16),
+        new Rectangle(73, 185, 8, 16),
+        new Rectangle(82, 185, 8, 16)
+    };
+    private static readonly Rectangle BOMB = new Rectangle(129, 185, 8, 16);
+    private static readonly Rectangle[] EXPLOSION_FRAMES =
+    {
+        new Rectangle(138, 185, 16, 16),
+        new Rectangle(155, 185, 16, 16),
+        new Rectangle(172, 185, 16, 16)
+    };
+
+    // aquamentus's fireball cycles through four colors, on the boss sheet
+    private static readonly Rectangle[] FIREBALL_FRAMES =
+    {
+        new Rectangle(101, 14, 8, 10),
+        new Rectangle(110, 14, 8, 10),
+        new Rectangle(119, 14, 8, 10),
+        new Rectangle(128, 14, 8, 10)
+    };
+
+    private const float SCALE = 6.0f;
+    private const float BOOMERANG_FRAME_DURATION = 0.08f;
+    private const float EXPLOSION_FRAME_DURATION = 0.1f;
+    private const float FIREBALL_FRAME_DURATION = 0.05f;
+
+    private readonly Texture2D sheet;
+    private readonly Texture2D bossSheet;
+
+    public ProjectileFactory(Texture2D sheet, Texture2D bossSheet)
+    {
+        this.sheet = sheet;
+        this.bossSheet = bossSheet;
+    }
+
+    // direction is a unit vector in screen space (+Y is down)
+    public IProjectile CreateArrow(Vector2 position, Vector2 direction)
+    {
+        bool isHorizontal = direction.X != 0;
+        SpriteEffects flip = SpriteEffects.None;
+        if (direction.X < 0)
+        {
+            flip = SpriteEffects.FlipHorizontally;
+        }
+        else if (direction.Y > 0)
+        {
+            flip = SpriteEffects.FlipVertically;
+        }
+
+        MovingAnimatedSprite sprite = CreateSprite(new[] { isHorizontal ? ARROW_RIGHT : ARROW_UP }, 1f, position);
+        sprite.Effects = flip;
+        return new Arrow(sprite, position, direction);
+    }
+
+    public IProjectile CreateBoomerang(Vector2 position, Vector2 direction)
+    {
+        MovingAnimatedSprite sprite = CreateSprite(BOOMERANG_FRAMES, BOOMERANG_FRAME_DURATION, position);
+        return new Boomerang(sprite, position, direction);
+    }
+
+    public IProjectile CreateBomb(Vector2 position)
+    {
+        MovingAnimatedSprite bombSprite = CreateSprite(new[] { BOMB }, 1f, position);
+        MovingAnimatedSprite explosionSprite = CreateSprite(EXPLOSION_FRAMES, EXPLOSION_FRAME_DURATION, position);
+        explosionSprite.Loop = false;
+        return new Bomb(bombSprite, explosionSprite, position);
+    }
+
+    public IProjectile CreateFireball(Vector2 position, Vector2 direction)
+    {
+        MovingAnimatedSprite sprite = CreateSprite(FIREBALL_FRAMES, FIREBALL_FRAME_DURATION, position, bossSheet);
+        return new Fireball(sprite, position, direction);
+    }
+
+    // sprites are centered on the projectile's position
+    private MovingAnimatedSprite CreateSprite(Rectangle[] frames, float frameDuration, Vector2 position)
+        => CreateSprite(frames, frameDuration, position, sheet);
+
+    private MovingAnimatedSprite CreateSprite(Rectangle[] frames, float frameDuration, Vector2 position, Texture2D texture)
+    {
+        MovingAnimatedSprite sprite = new MovingAnimatedSprite(texture, position, Vector2.Zero, Color.White, frames, frameDuration, SCALE);
+        sprite.MoveOrigin(new Vector2(frames[0].Width / 2f, frames[0].Height / 2f));
+        return sprite;
+    }
+}
+</file>
+
+<file path="Projectile/ProjectileManager.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+
+namespace Byte.Projectile;
+
+// holds every projectile currently in the world and removes them once they expire
+public class ProjectileManager
+{
+    private readonly List<IProjectile> projectiles = new List<IProjectile>();
+
+    public void Add(IProjectile projectile) => projectiles.Add(projectile);
+
+    public void Update(GameTime gameTime)
+    {
+        foreach (IProjectile projectile in projectiles)
+        {
+            projectile.Update(gameTime);
+        }
+        projectiles.RemoveAll(projectile => projectile.IsExpired);
+    }
+
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        foreach (IProjectile projectile in projectiles)
+        {
+            projectile.Draw(spriteBatch);
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/Boss/Aquamentus.cs">
+using Byte.Projectile;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+
+namespace Byte.Sprite.Enemy
+{
+    internal class Aquamentus : WaitingPatrolEnemy
+    {
+        private static Rectangle[] sourceRects =
+        {
+            new Rectangle(2, 12, 23, 31),
+            new Rectangle(27, 12, 23, 31)
+        };
+
+        private const float FIRE_INTERVAL = 2.0f;
+
+        // where the mouth is on the unscaled sprite, fireballs spawn here
+        private static readonly Vector2 MOUTH_OFFSET = new Vector2(2, 8);
+
+        // aquamentus faces left and spits three fireballs in a spread
+        private static readonly Vector2[] FIREBALL_DIRECTIONS =
+        {
+            new Vector2(-1, -0.3f),
+            new Vector2(-1, 0),
+            new Vector2(-1, 0.3f)
+        };
+        private readonly Action<Vector2, Vector2> spawnFireball;
+
+        private readonly Vector2 mouthOffset;
+        private float fireTimer;
+
+        internal Aquamentus(
+            Texture2D texture, ref Vector2 position, ref Vector2 velocity,
+            Color color,
+            float frameDuration, float scale,
+            Vector2[] patrolPath, float patrolSpeed,
+            float waitDuration,
+            Action<Vector2, Vector2> spawnFireball)
+            : base(texture, ref position, ref velocity, color, sourceRects, frameDuration, scale, patrolPath, patrolSpeed, waitDuration)
+        {
+            this.spawnFireball = spawnFireball;
+            mouthOffset = MOUTH_OFFSET * scale;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            fireTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (fireTimer >= FIRE_INTERVAL)
+            {
+                fireTimer = 0f;
+                Fire();
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+        }
+
+        private void Fire()
+        {
+            foreach (Vector2 direction in FIREBALL_DIRECTIONS)
+                spawnFireball(position + mouthOffset, direction);
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/Minion/Gel.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy.Minion
+{
+    internal class Gel : WaitingPatrolEnemy
+    {
+        private static readonly Rectangle[] sourceRects = {
+    new Rectangle(2, 12, 6, 14),
+    new Rectangle(11, 12, 6, 14)
+};
+
+        internal Gel(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed, float waitingDuration)
+            : base(texture, ref position, ref velocity, color, sourceRects, frameDuration, scale, patrolPath, patrolSpeed, waitingDuration)
+        {
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/Minion/Goriya.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy.Minion
+{
+    internal class Goriya : WaitingPatrolEnemy
+    {
+
+        private static readonly Rectangle[] sourceRects =
+        [
+            new Rectangle(222, 11, 15, 15), // Down
+            new Rectangle(239, 11, 15, 15), // Up
+            new Rectangle(256, 11, 15, 15), // Side
+            new Rectangle(273, 11, 15, 15) // Side
+        ];
+        internal Goriya(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed, float waitDuration) : base(texture, ref position, ref velocity, color, sourceRects, frameDuration, scale, patrolPath, patrolSpeed, waitDuration)
+        {
+        }
+
+
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/Minion/Keese.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy
+{
+    internal class Keese : WanderingEnemy
+    {
+        private const float SpeedRampDurationSeconds = 2f;
+        private const float StartingSpeedMultiplier = 0.1f;
+        private const float MaximumSpeedMultiplier = 2f;
+
+        private static readonly Rectangle[] sourceRects =
+        {
+            new Rectangle(184, 12, 14, 14),
+            new Rectangle(201, 12, 14, 14)
+        };
+
+        private float elapsedSeconds;
+
+        internal Keese(
+            Texture2D texture,
+            ref Vector2 position,
+            ref Vector2 velocity,
+            Color color,
+            float frameDuration,
+            float scale,
+            float speed)
+    : base(
+        texture,
+        ref position,
+        ref velocity,
+        color,
+        sourceRects,
+        frameDuration,
+        scale,
+        speed)
+        {
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            elapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            base.Update(gameTime);
+        }
+
+        protected override float GetPatrolSpeed(GameTime gameTime)
+        {
+            float progress = MathHelper.Clamp(
+                elapsedSeconds / SpeedRampDurationSeconds,
+                0f,
+                1f);
+
+            return patrolSpeed * MathHelper.Lerp(
+                StartingSpeedMultiplier,
+                MaximumSpeedMultiplier,
+                progress);
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/Minion/Stalfos.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy.Minion
+{
+    internal class Stalfos : PatrolEnemy
+    {
+
+        private static readonly Rectangle[] sourceRect = {
+            new Rectangle(2, 59, 15, 16)
+        };
+
+        private float flipTimer = 0f;
+        private const float FLIP_INTERVAL = 0.25f; // Flip every 0.25 seconds
+        private SpriteEffects spriteEffect = SpriteEffects.None;
+
+        internal Stalfos(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed)
+            : base(texture, ref position, ref velocity, color, sourceRect, frameDuration, scale, patrolPath, patrolSpeed)
+        { }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            flipTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (flipTimer >= FLIP_INTERVAL)
+            {
+                spriteEffect = (spriteEffect == SpriteEffects.None)
+                    ? SpriteEffects.FlipHorizontally
+                    : SpriteEffects.None;
+
+                flipTimer = 0f;
+
+                if (enemySprite != null)
+                    enemySprite.Effects = spriteEffect;
+            }
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/AbstractEnemy.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy;
+
+/// <summary>
+/// An abstract enemy; an instance of a moving, animated sprite with a vengeance...
+/// </summary>
+public abstract class AbstractEnemy
+{
+	protected int health { get; set; }
+
+	protected Vector2 position;
+	protected Vector2 velocity;
+
+	protected ISprite enemySprite;
+	protected abstract void Move(GameTime gameTime);
+
+	// on-screen size of the largest frame, used to keep the whole sprite inside the window
+	private readonly Vector2 size;
+
+	public virtual void Draw(SpriteBatch spriteBatch)
+	{
+		enemySprite.Draw(spriteBatch);
+	}
+
+	public virtual void Update(GameTime gameTime)
+	{
+		Move(gameTime);
+
+		float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+		position = ClampToWindow(position + velocity * seconds);
+
+		if (enemySprite is MovingAnimatedSprite movingSprite)
+			movingSprite.SetPos(position);
+
+		enemySprite.Update(gameTime);
+	}
+
+	// Uses inherited constructor
+	protected AbstractEnemy(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
+	Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
+	{
+		foreach (Rectangle frame in sourceRectangles)
+			size = Vector2.Max(size, new Vector2(frame.Width, frame.Height) * scale);
+
+		this.position = ClampToWindow(position);
+		this.velocity = velocity;
+		enemySprite = new MovingAnimatedSprite(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale);
+	}
+
+	/// <summary>
+	/// Moves a point so the sprite drawn there stays fully inside GameConstants.WINDOW_SIZE.
+	/// </summary>
+	protected Vector2 ClampToWindow(Vector2 point)
+	{
+		Rectangle window = GameConstants.WINDOW_SIZE;
+		Vector2 min = new Vector2(window.Left, window.Top);
+		Vector2 max = Vector2.Max(min, new Vector2(window.Right, window.Bottom) - size);
+		return Vector2.Clamp(point, min, max);
+	}
+}
+</file>
+
+<file path="Sprite/Enemy/EnemyFactory.cs">
+using Byte.Projectile;
+using Byte.Sprite.Enemy.Minion;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy
+{
+    public enum EnemyType
+    {
+        Stalfos,
+        Keese,
+        Gel,
+        Aquamentus
+    }
+
+    struct EnemyDescription
+    {
+        public EnemyType Type { get; set; }
+        public Vector2[]? PatrolPath { get; set; }
+        public Vector2 Position { get; set; }
+        public float Speed { get; set; }
+        public float FrameDuration { get; set; }
+        public float WaitDuration { get; set; }
+        public float Scale { get; set; }
+    }
+
+    internal class EnemyFactory
+    {
+        private const float FRAME_DURATION = 0.08f;
+
+        private EnemyFactory() { }
+
+        private static EnemyFactory instance = new EnemyFactory();
+
+        /// <summary>
+        /// Eager initialization; we can assume the game has enemies.
+        /// </summary>
+        public static EnemyFactory Instance => instance;
+
+        public AbstractEnemy CreateEnemy(ref EnemyDescription desc, ProjectileManager? projectileManager)
+        {
+            Texture2D enemyTex = GameAssets.Instance.EnemySheet;
+            Texture2D bossTex = GameAssets.Instance.BossSheet;
+            ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
+
+            float frameDuration = desc.FrameDuration == 0f ? FRAME_DURATION : desc.FrameDuration;
+            float scale = desc.Scale == 0f ? GameConstants.SCALE : desc.Scale;
+            Vector2 velocity = Vector2.Zero;
+            Vector2 position = desc.PatrolPath is { Length: > 0 } path
+                ? path[0]
+                : desc.Position;
+            Action<Vector2, Vector2> spawnFireball = (fireballPosition, direction) =>
+                projectileManager!.Add(projectileFactory.CreateFireball(fireballPosition, direction));
+
+            return desc.Type switch
+            {
+                EnemyType.Stalfos => new Stalfos(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed),
+                EnemyType.Keese => new Keese(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Speed),
+                EnemyType.Gel => new Gel(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration),
+                EnemyType.Aquamentus => new Aquamentus(bossTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration, spawnFireball),
+                _ => throw new ArgumentException($"Enemy type {desc.Type} is not supported by EnemyFactory.")
+            };
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/EnemyManager.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy
+{
+    // holds all the enemies and shows whichever one is selected, o/p cycle through them
+    public class EnemyManager
+    {
+        private readonly List<AbstractEnemy> enemies = new List<AbstractEnemy>();
+        private int selectedEnemyIndex = 0;
+
+        public void Add(List<AbstractEnemy> enemies)
+        {
+            this.enemies.AddRange(enemies);
+        }
+
+        public void NextEnemy()
+        {
+            if (enemies.Count > 0)
+                selectedEnemyIndex = (selectedEnemyIndex + 1) % enemies.Count;
+        }
+
+        public void PreviousEnemy()
+        {
+            if (enemies.Count > 0)
+                selectedEnemyIndex = (selectedEnemyIndex - 1 + enemies.Count) % enemies.Count;
+        }
+
+        public void Draw(SpriteBatch spritePainter)
+        {
+            if (enemies.Count > 0)
+                enemies[selectedEnemyIndex].Draw(spritePainter);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (enemies.Count > 0)
+                enemies[selectedEnemyIndex].Update(gameTime);
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/PatrolEnemy.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy
+{
+    /// <summary>
+    /// An enemy that patrols cardinal directions.
+    /// </summary>
+    /// <seealso cref="SeekingEnemy"/>
+    internal class PatrolEnemy : AbstractEnemy
+    {
+        protected readonly Vector2[] patrolPath;
+        protected int currentWaypoint;
+        protected float patrolSpeed { get; }
+
+        internal PatrolEnemy(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
+            Rectangle[] sourceRectangles, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed)
+            : base(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale)
+        {
+            this.patrolPath = Array.ConvertAll(patrolPath, ClampToWindow);
+            this.patrolSpeed = patrolSpeed;
+            currentWaypoint = 0;
+        }
+
+        protected override void Move(GameTime gameTime)
+        {
+            Vector2 target = patrolPath[currentWaypoint];
+
+            float dx = target.X - position.X;
+            float dy = target.Y - position.Y;
+
+            const float threshold = 2f;
+
+            if (Math.Abs(dx) + Math.Abs(dy) <= threshold)
+            {
+                position = target;
+                currentWaypoint = (currentWaypoint + 1) % patrolPath.Length;
+
+                target = patrolPath[currentWaypoint];
+                dx = target.X - position.X;
+                dy = target.Y - position.Y;
+            }
+
+            if (Math.Abs(dx) > threshold)
+                velocity = new Vector2(Math.Sign(dx) * patrolSpeed, 0f);
+            else if (Math.Abs(dy) > threshold)
+            {
+                position.X = target.X;
+                velocity = new Vector2(0f, Math.Sign(dy) * patrolSpeed);
+            }
+            else
+                velocity = Vector2.Zero;
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/WaitingPatrolEnemy.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy
+{
+    internal class WaitingPatrolEnemy : PatrolEnemy
+    {
+        private float waitDuration;
+        private float waitTimer = 0.0f;
+        private bool waiting = false;
+
+        internal WaitingPatrolEnemy(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, Rectangle[] sourceRectangles, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed, float waitDuration)
+            : base(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale, patrolPath, patrolSpeed)
+        {
+            this.waitDuration = waitDuration;
+        }
+
+
+        protected override void Move(GameTime gameTime)
+        {
+            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Waiting at waypoint
+            if (waiting)
+            {
+                velocity = Vector2.Zero;
+                waitTimer += seconds;
+
+                if (waitTimer >= waitDuration)
+                {
+                    waitTimer = 0f;
+                    waiting = false;
+
+                    currentWaypoint = (currentWaypoint + 1) % patrolPath.Length;
+                }
+
+                return;
+            }
+
+            Vector2 target = patrolPath[currentWaypoint];
+
+            float dx = target.X - position.X;
+            float dy = target.Y - position.Y;
+
+            const float threshold = 2f;
+
+            if (Math.Abs(dx) + Math.Abs(dy) <= threshold)
+            {
+                position = target;
+                velocity = Vector2.Zero;
+                waiting = true;
+                return;
+            }
+
+            if (Math.Abs(dx) > threshold)
+                velocity = new Vector2(Math.Sign(dx) * patrolSpeed, 0f);
+            else if (Math.Abs(dy) > threshold)
+            {
+                position.X = target.X;
+                velocity = new Vector2(0f, Math.Sign(dy) * patrolSpeed);
+            }
+            else
+                velocity = Vector2.Zero;
+        }
+    }
+}
+</file>
+
+<file path="Sprite/Enemy/WanderingEnemy.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite.Enemy
+{
+    /// <summary>
+    /// An enemy that wanders toward randomly selected positions.
+    /// </summary>
+    internal class WanderingEnemy : AbstractEnemy
+    {
+        protected float patrolSpeed { get; }
+
+        private Vector2 targetPosition;
+
+        private static readonly Random random = new();
+
+        internal WanderingEnemy(
+            Texture2D texture,
+            ref Vector2 position,
+            ref Vector2 velocity,
+            Color color,
+            Rectangle[] sourceRectangles,
+            float frameDuration,
+            float scale,
+            float patrolSpeed)
+            : base(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale)
+        {
+            this.patrolSpeed = patrolSpeed;
+            PickNewTarget();
+        }
+
+        protected virtual float GetPatrolSpeed(GameTime gameTime)
+        {
+            return patrolSpeed;
+        }
+
+        protected override void Move(GameTime gameTime)
+        {
+            float speed = GetPatrolSpeed(gameTime);
+
+            Vector2 direction = targetPosition - position;
+
+            if (direction.LengthSquared() < 25f)
+            {
+                PickNewTarget();
+                return;
+            }
+
+            direction.Normalize();
+            velocity = direction * speed;
+        }
+
+        private void PickNewTarget()
+        {
+            targetPosition = ClampToWindow(position + new Vector2(
+                random.Next(-150, 151),
+                random.Next(-150, 151)
+            ));
+        }
+    }
+}
+</file>
+
+<file path="Sprite/AnimatedSprite.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite;
+
+
+/// <summary>
+/// Non-moving, animated sprite
+/// </summary>
+public class AnimatedSprite : ISprite
+{
+    
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get; set; } = false;
+    private Vector2[]? frameOrigins;
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
+    private readonly Texture2D texture;
+    private readonly Vector2 position;
+    public Color Color { get; set; } = Color.White;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
+
+    private Rectangle[] sourceRectangles;
+    private float scale;
+    private readonly double frameDuration;
+
+    private int currentFrame;
+    private float animationTimer = 0;
+
+    public AnimatedSprite(Texture2D texture, ref Vector2 position, Color color, Rectangle[] sourceRectangles, float frameDuration, float scale = 1f)
+    {
+        this.position = position;
+        this.texture = texture;
+        Color = color;
+        this.scale = scale;
+        this.sourceRectangles = sourceRectangles;
+        this.frameDuration = frameDuration;
+    }
+
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        Vector2 frameOrigin = Origin;
+        if (frameOrigins != null)
+        {
+            frameOrigin = frameOrigins[currentFrame];
+        }
+
+        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
+    }
+    public void Update(GameTime gameTime)
+    {
+        animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (animationTimer >= frameDuration)
+        {
+            currentFrame = (currentFrame + 1) % sourceRectangles.Length; // loop around
+            animationTimer = 0;
+        }
+    }
+
+    public void MoveOrigin(Vector2 origin)
+    {
+
+        Origin = origin;
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        frameOrigins = Origins;
+    }
+}
+</file>
+
+<file path="Sprite/ISprite.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite;
+
+public interface ISprite
+{
+    public Color Color { get; set; }
+    public SpriteEffects Effects { get; set; }
+    /// <summary>
+    /// Draws this to the screen using the sprite batch.
+    /// </summary>
+    /// <param name="spriteBatch">Sprite batch, REQUIRES: Begin() has been called.</param>
+    public void Draw(SpriteBatch spriteBatch);
+
+    /// <summary>
+    /// Updates this sprite according to timed events.
+    /// </summary>
+    /// <param name="gameTime">Time in the game.</param>
+    public void Update(GameTime gameTime);
+
+    // Updates position to draw sprite
+    public void MoveOrigin(Vector2 origin);
+
+    // Allows each frame to have its own origin to help prevent movment across screen by single sprites
+    public void SetFrameOrigin(Vector2[] Origins);
+
+    // Loop and Is finished used for animations that don't loop such as attacking - can be used to stop animations
+    public bool Loop { get; set; }
+    public bool IsFinished {  get; set; }
+}
+</file>
+
+<file path="Sprite/MovingAnimatedSprite.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+/// <summary>
+/// Moving, animating sprite
+/// </summary>
+public class MovingAnimatedSprite : ISprite
+{
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get; set; } = false;
+    private Vector2[]? frameOrigins;
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
+    protected Vector2 position;
+    protected Vector2 velocity;
+    protected Texture2D texture;
+    public Color Color { get; set; }
+    protected Color color { get => Color; set => Color = value; }
+
+    public float scale;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
+
+    private Rectangle[] sourceRectangles;
+
+    public int currentFrame;
+    private float animationTimer = 0;
+    private float frameDuration;
+
+    public MovingAnimatedSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
+        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f, SpriteEffects spriteEffects = SpriteEffects.None)
+    {
+        this.position = position;
+        this.velocity = velocity;
+        this.texture = texture;
+        Color = color;
+        this.sourceRectangles = sourceRectangles;
+        this.frameDuration = frameDuration;
+        this.scale = scale;
+        Effects = spriteEffects;
+    }
+
+    public MovingAnimatedSprite(Texture2D texture, Vector2 position, Vector2 velocity, Color color,
+        Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f)
+        : this(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale) { }
+
+    public virtual void Draw(SpriteBatch spriteBatch)
+    {
+        Vector2 frameOrigin = (frameOrigins == null) ? Origin : frameOrigins[currentFrame];
+        spriteBatch.Draw(texture, position, sourceRectangles[currentFrame], Color, 0f, frameOrigin, scale, Effects, 0f);
+    }
+
+    public virtual void Update(GameTime gameTime)
+    {
+        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        position += velocity * seconds;
+
+
+        animationTimer += seconds;
+
+        if (animationTimer >= frameDuration)
+        {
+            animationTimer -= frameDuration;
+            if (currentFrame < sourceRectangles.Length - 1)
+            {
+                currentFrame++;
+            }
+            else if (Loop)
+            {
+                currentFrame = 0;
+            }
+            else
+            {
+                IsFinished = true;
+            }
+
+        }
+    }
+
+    public void SetPos(Vector2 position)
+    {
+        this.position = position;
+
+    }
+    public void MoveOrigin(Vector2 origin)
+    {
+
+        Origin = origin;
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        frameOrigins = Origins;
+    }
+}
+</file>
+
+<file path="Sprite/MovingSprite.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+/// <summary>
+/// Moving, non-animating sprite.
+/// </summary>
+public class MovingSprite : ISprite
+
+{
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get; set; } = false;
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
+    private Vector2 position;
+    private Texture2D texture;
+    public Vector2 Velocity { get; set; }
+    public Color Color { get; set; }
+    private float scale;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
+    public readonly Rectangle sourceRectangle;
+
+    public MovingSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, ref Rectangle sourceRectangle, float scale = 1f)
+    {
+        this.position = position;
+        Color = color;
+        this.texture = texture;
+        Velocity = velocity;
+        this.sourceRectangle = sourceRectangle;
+        this.scale = scale;
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangle, Color, 0f, Origin, scale, SpriteEffects.None, 0f);
+
+    public void Update(GameTime gameTime)
+    {
+        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if (position.X < GameConstants.WINDOW_SIZE.Left || position.X > GameConstants.WINDOW_SIZE.Right - (sourceRectangle.Width * scale))
+            Velocity = new Vector2(Velocity.X * -1.0f, Velocity.Y);
+
+        position.X += Velocity.X * seconds;
+
+        if (position.Y > GameConstants.WINDOW_SIZE.Bottom - (sourceRectangle.Height * scale) || position.Y < GameConstants.WINDOW_SIZE.Top)
+            Velocity = new Vector2(Velocity.X, Velocity.Y * -1.0f);
+
+        position.Y += Velocity.Y * seconds;
+    }
+
+    public void SetPos(int x, int y)
+    {
+        position.X = x;
+        position.Y = y;
+    }
+    public void MoveOrigin(Vector2 origin)
+    {
+
+        Origin = origin;
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        // does nothing
+    }
+}
+</file>
+
+<file path="Sprite/StaticSprite.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Byte.Sprite;
+
+/// <summary>
+/// Non-moving, non-animating sprite.
+/// </summary>
+public class StaticSprite : ISprite
+{
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get;  set; } = false;
+    private readonly Texture2D texture;
+    private readonly Vector2 position;
+    public Color Color { get; set; }
+    private float scale;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
+    private readonly Rectangle sourceRectangle;
+
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
+
+    public StaticSprite(Texture2D texture, Vector2 position, Color color, Rectangle sourceRectangle, float scale = 1f)
+    {
+        this.texture = texture;
+        this.position = position;
+        Color = color;
+        this.scale = scale;
+        this.sourceRectangle = sourceRectangle;
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangle, Color, 0f, Origin, scale, Effects, 0f);
+
+    public void Update(GameTime gameTime)
+    {
+        // Does nothing! It is not moving or animating.
+    }
+    public void MoveOrigin(Vector2 origin)
+    {
+
+        Origin = origin;
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        //does nothing
+    }
+}
+</file>
+
+<file path="Sprite/TextSprite.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Byte.Sprite;
+
+/// <summary>
+/// Sprite containing string to be rendered with font.
+/// </summary>
+public class TextSprite : ISprite
+{
+    public bool Loop { get; set; } = true;
+    public bool IsFinished { get;  set; } = false;
+    public Vector2 Origin { get; set; } = Vector2.Zero;
+    public SpriteEffects Effects { get; set; } = SpriteEffects.None;
+    private readonly SpriteFont font;
+    public string Text { get; set; }
+    private readonly Vector2 position;
+    public Color Color { get; set; } = Color.White;
+    private float scale;
+
+
+    public TextSprite(SpriteFont font, string text, ref Vector2 position, Color color, float scale = 1f)
+    {
+        this.font = font;
+        Text = text;
+        this.position = position;
+        this.Color = color;
+        this.scale = scale;
+    }
+
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.DrawString(font, Text, position, Color, 0f, Origin, scale, SpriteEffects.None, 0f);
+
+    public void Update(GameTime gameTime) {/* This doesn't animate */}
+
+    public void MoveOrigin(Vector2 origin)
+    {
+
+       // Does nothing in this iSprite  
+    }
+    public void SetFrameOrigin(Vector2[] Origins)
+    {
+        // does nothing
+    }
+}
+</file>
+
+<file path="Byte.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <MonoGameContentReference Include="Content\Content.mgcb" />
+    </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.5.1" />
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
+    </ItemGroup>
+</Project>
+</file>
+
+<file path="dotnet-tools.json">
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-mgcb": {
+      "version": "3.8.5.1",
+      "commands": [ "mgcb" ]
+    },
+    "dotnet-mgcb-editor": {
+      "version": "3.8.5.1",
+      "commands": [ "mgcb-editor" ]
+    },
+    "dotnet-mgcb-editor-windows": {
+      "version": "3.8.5.1",
+      "commands": [ "mgcb-editor-windows" ]
+    },
+    "dotnet-mgcb-editor-mac": {
+      "version": "3.8.5.1",
+      "commands": [ "mgcb-editor-mac" ]
+    },
+    "dotnet-mgcb-editor-linux": {
+      "version": "3.8.5.1",
+      "commands": [ "mgcb-editor-linux" ]
+    }
+  }
+}
+</file>
+
+</files>

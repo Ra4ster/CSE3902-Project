@@ -11,6 +11,7 @@ namespace Byte.Sprite.Enemy
         Stalfos,
         Keese,
         Gel,
+        Goriya,
         Aquamentus
     }
 
@@ -53,11 +54,19 @@ namespace Byte.Sprite.Enemy
             Action<Vector2, Vector2> spawnFireball = (fireballPosition, direction) =>
                 projectileManager!.Add(projectileFactory.CreateFireball(fireballPosition, direction));
 
+            Func<Vector2, Vector2, IProjectile> throwBoomerang = (boomerangPosition, direction) =>
+            {
+                IProjectile thrown = projectileFactory.CreateBoomerang(boomerangPosition, direction);
+                projectileManager!.Add(thrown);
+                return thrown;
+            };
+
             return desc.Type switch
             {
                 EnemyType.Stalfos => new Stalfos(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed),
                 EnemyType.Keese => new Keese(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Speed),
                 EnemyType.Gel => new Gel(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration),
+                EnemyType.Goriya => new Goriya(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration, throwBoomerang),
                 EnemyType.Aquamentus => new Aquamentus(bossTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.PatrolPath!, desc.Speed, desc.WaitDuration, spawnFireball),
                 _ => throw new ArgumentException($"Enemy type {desc.Type} is not supported by EnemyFactory.")
             };

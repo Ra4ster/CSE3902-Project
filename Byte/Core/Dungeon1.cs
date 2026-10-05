@@ -61,7 +61,13 @@ class Dungeon1 : IDungeon
             Speed = 200f,
             WaitDuration = 1.5f
         };
-
+        EnemyDescription goriyaDesc = new EnemyDescription
+        {
+            Type = EnemyType.Goriya,
+            PatrolPath = [new Vector2(400, 400), new Vector2(800, 400), new Vector2(800, 700)],
+            Speed = 150f,
+            WaitDuration = 0.5f
+        };
         EnemyDescription aquamentusDesc = new EnemyDescription
         {
             Type = EnemyType.Aquamentus,
@@ -78,6 +84,7 @@ class Dungeon1 : IDungeon
             EnemyFactory.Instance.CreateEnemy(ref stalfosDesc, projectileManager),
             EnemyFactory.Instance.CreateEnemy(ref keeseDesc, projectileManager),
             EnemyFactory.Instance.CreateEnemy(ref gelDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref goriyaDesc, projectileManager),
             EnemyFactory.Instance.CreateEnemy(ref aquamentusDesc, projectileManager) };
 
         EnemyManager e_man = new EnemyManager();

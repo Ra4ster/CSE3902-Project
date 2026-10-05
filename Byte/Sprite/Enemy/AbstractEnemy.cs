@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Sprite;
+namespace Byte.Sprite.Enemy;
 
 /// <summary>
 /// An abstract enemy; an instance of a moving, animated sprite with a vengeance...
