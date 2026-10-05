@@ -52,10 +52,10 @@ namespace Byte.Sprite.Enemy
 
         private void PickNewTarget()
         {
-            targetPosition = position + new Vector2(
+            targetPosition = ClampToWindow(position + new Vector2(
                 random.Next(-150, 151),
                 random.Next(-150, 151)
-            );
+            ));
         }
     }
 }

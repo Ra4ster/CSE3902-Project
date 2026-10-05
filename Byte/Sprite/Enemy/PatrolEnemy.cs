@@ -17,7 +17,7 @@ namespace Byte.Sprite.Enemy
             Rectangle[] sourceRectangles, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed)
             : base(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale)
         {
-            this.patrolPath = patrolPath;
+            this.patrolPath = Array.ConvertAll(patrolPath, ClampToWindow);
             this.patrolSpeed = patrolSpeed;
             currentWaypoint = 0;
         }

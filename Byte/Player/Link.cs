@@ -8,6 +8,9 @@ namespace Byte.Player
 {
     public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
     {
+        public bool isDamaged = false; // Checks if link has taken damage
+        private float damageTimer = 0f;
+        private const float DamageDuration = 0.5f;
         public bool isGameStart = true; // Checks if game was just started
 
         // use to see if movement/other needs to be stopped - cant move when attacking
@@ -68,12 +71,34 @@ namespace Byte.Player
                 GetNewState(new PlayerIdleState());
             }
             state.Update(this, gameTime);
+            if (isDamaged)
+            {
+                damageTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (currentSprite != null)
+                {
+                    currentSprite.Color = Color.Red;
+                }
+
+                if (damageTimer <= 0)
+                {
+                    isDamaged = false;
+
+                    if (currentSprite != null)
+                    {
+                        currentSprite.Color = Color.White;
+                    }
+                }
+            }
         }
 
         // Show damage texture
         public void TakeDamage()
         {
-
+            isDamaged = true;
+            damageTimer = DamageDuration;
+            Health--;
+            
         }
 
         // update player position
@@ -97,7 +122,12 @@ namespace Byte.Player
         // display the item currently being used
         public void UseItem()
         {
-
+            this.IsAttacking = true;
+            this.MovementSpeed = new Vector2(0, 0);
+            if (this.state is not PlayerUseItemState)
+            {
+                this.GetNewState(new PlayerUseItemState());
+            }
         }
 
         // update state to the new type that is being passed

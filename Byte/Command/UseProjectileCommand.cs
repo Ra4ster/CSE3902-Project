@@ -37,6 +37,7 @@ namespace Byte.Command
             lastUsed = gameTime.TotalGameTime;
 
             // CardinalDirections.North is +Y, but on screen up is -Y
+            player.UseItem();
             Vector2 direction = new Vector2(player.Direction.X, -player.Direction.Y);
             Vector2 spawnPosition = player.Position + LINK_CENTER_OFFSET + direction * SPAWN_DISTANCE;
             projectileManager.Add(createProjectile(spawnPosition, direction));

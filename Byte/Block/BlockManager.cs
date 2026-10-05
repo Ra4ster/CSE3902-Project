@@ -28,9 +28,6 @@ public class BlockManager
         }
     }
 
-    // go back to the first block when the game resets
-    public void Reset() => currentIndex = 0;
-
     public void Update(GameTime gameTime)
     {
         if (blocks.Count > 0)

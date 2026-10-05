@@ -11,7 +11,7 @@ namespace Byte.Player
         public PlayerAttackState() { }
 
         // contains frames for attacking south
-        Rectangle[] attackSouthFrames =
+        public Rectangle[] attackSouthFrames =
         {
             new Rectangle(1,47,16,14),
             new Rectangle(19,47,14,26),
@@ -22,7 +22,7 @@ namespace Byte.Player
 
         // contains frames for attacking east or west(east flipped)
 
-        Rectangle[] attackEastWestFrames =
+        public Rectangle[] attackEastWestFrames =
        {
             new Rectangle(1,77,16,16),
             new Rectangle(18,77,26,16),
@@ -32,7 +32,7 @@ namespace Byte.Player
         };
         // contains frames for attacking north
 
-        Rectangle[] attackNorthFrames =
+        public Rectangle[] attackNorthFrames =
        {
             new Rectangle(1,109,16,16),
             new Rectangle(18,97,14,27),

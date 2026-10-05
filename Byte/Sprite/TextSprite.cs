@@ -14,19 +14,20 @@ public class TextSprite : ISprite
     private readonly SpriteFont font;
     public string Text { get; set; }
     private readonly Vector2 position;
-    private readonly Color color;
+    public Color Color { get; set; } = Color.White;
     private float scale;
+
 
     public TextSprite(SpriteFont font, string text, ref Vector2 position, Color color, float scale = 1f)
     {
         this.font = font;
         Text = text;
         this.position = position;
-        this.color = color;
+        this.Color = color;
         this.scale = scale;
     }
 
-    public void Draw(SpriteBatch spriteBatch) => spriteBatch.DrawString(font, Text, position, color, 0f, Origin, scale, SpriteEffects.None, 0f);
+    public void Draw(SpriteBatch spriteBatch) => spriteBatch.DrawString(font, Text, position, Color, 0f, Origin, scale, SpriteEffects.None, 0f);
 
     public void Update(GameTime gameTime) {/* This doesn't animate */}
 

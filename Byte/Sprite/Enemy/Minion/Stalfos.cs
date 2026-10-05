@@ -5,7 +5,10 @@ namespace Byte.Sprite.Enemy.Minion
 {
     internal class Stalfos : PatrolEnemy
     {
-        private static readonly Rectangle[] sourceRect = { new Rectangle(2, 59, 15, 15) };
+
+        private static readonly Rectangle[] sourceRect = {
+            new Rectangle(2, 59, 15, 16)
+        };
 
         private float flipTimer = 0f;
         private const float FLIP_INTERVAL = 0.25f; // Flip every 0.25 seconds
