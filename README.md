@@ -29,17 +29,21 @@ This project is a 2D dungeon exploration game framework built in C# using MonoGa
 * **Reset Game:** `R` (Full level reload: rebuilds the player, blocks, items, enemies, and projectiles from the dungeon)
 * **Quit:** `Q`
 
+## Documents
+* [Requirements](REQUIREMENTS.md)
+* [Design document](DESIGN.md): how each component works and which design patterns it uses
+* [Sprint 2 reflection](SPRINT2REFLECTION.md)
+
 ## Known Bugs
 * **Stalfos Sprite Bleed:** Due to the tightly packed nature of the original NES sprite sheet, the Stalfos bounding box may occasionally show 1 pixel of bleed from adjacent sprites.
-* **Initial Window Resizing (Windows Only):** The MonoGame viewport may require a manual window resize on the first launch to properly scale the internal `spriteTransform` matrix. 
-* *(Add any other specific bugs your team ran into here)*
+* **No interaction yet:** Objects do not collide or respond to each other; this is intended for Sprint 2 and comes in Sprint 3.
 
 ## Tools & Processes Used
 To ensure code quality and maintain performance budgets, our team utilized several external software analysis tools:
 
 1. **Code Metrics (Tokei):** We utilized Tokei to generate comprehensive codebase metrics, including lines of code, blank lines, and comment ratios across our C# files. The raw output is available in our `Documentation/Resources/` directory.
 2. **Performance Profiling (dotnet-trace & Speedscope):** We captured runtime execution traces of our game loop using `dotnet-trace`. These traces were exported and visualized as interactive flamegraphs via Speedscope to monitor the CPU cycles spent in our `Update()` and `Draw()` methods.
-3. **Roslyn Analyzer:** We also used the built-in diagnostic tools in Visual Studio Community Edition to view heap, memory usage, and CPU/GPU performance overall. Roslyn coupling analysis is a *TODO*.
+3. **Visual Studio Diagnostic Tools:** We also used the built-in diagnostic tools in Visual Studio Community Edition to view heap, memory usage, and CPU/GPU performance overall.
 
 ### Diagnostic Visualizations
 ![Diagnostic Trace](Documentation/Resources/diagnostic.png)
@@ -52,7 +56,11 @@ classDiagram
     direction LR
     IPlayerState <|.. PlayerIdleState
     IPlayerState <|.. PlayerMoveUpState
+    IPlayerState <|.. PlayerMoveDownState
+    IPlayerState <|.. PlayerMoveLeftState
+    IPlayerState <|.. PlayerMoveRightState
     IPlayerState <|.. PlayerAttackState
+    IPlayerState <|.. PlayerUseItemState
     Link o-- IPlayerState
 ```
 
