@@ -1,6 +1,7 @@
 
 using Byte.Block;
 using Byte.Item;
+using Byte.Projectile;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
 using Byte.Sprite.Enemy.Minion;
@@ -29,30 +30,62 @@ class Dungeon1 : IDungeon
         return blockManager;
     }
 
-    public EnemyManager CreateEnemies()
+    public EnemyManager CreateEnemies(ProjectileManager projectileManager)
     {
-        List<AbstractEnemy> enemies = [
-            EnemyFactory.Instance.Create<Stalfos>(
-            patrolPath: [
+
+        EnemyDescription stalfosDesc = new EnemyDescription
+        {
+            Type = EnemyType.Stalfos,
+            PatrolPath =
+            [
                 new Vector2(100, 100),
                 new Vector2(100, 300),
                 new Vector2(300, 300),
                 new Vector2(300, 100)
-            ], speed: 200f),
-            EnemyFactory.Instance.Create<Keese>(
-                null,
-                pos: new Vector2(500, 600), 200f),
-            EnemyFactory.Instance.Create<Gel>(
-            patrolPath: [
+            ],
+            Speed = 200f
+        };
+        EnemyDescription keeseDesc = new EnemyDescription
+        {
+            Type = EnemyType.Keese,
+            Position = new Vector2(500, 600),
+            Speed = 200f
+        };
+        EnemyDescription gelDesc = new EnemyDescription
+        {
+            Type = EnemyType.Gel,
+            PatrolPath = [
                 new Vector2(300, 800),
                 new Vector2(800, 800)
-            ], speed: 200f, waitDuration: 1.5f),
-            EnemyFactory.Instance.Create<Aquamentus>(
-            patrolPath: [
+            ],
+            Speed = 200f,
+            WaitDuration = 1.5f
+        };
+        EnemyDescription goriyaDesc = new EnemyDescription
+        {
+            Type = EnemyType.Goriya,
+            PatrolPath = [new Vector2(400, 400), new Vector2(800, 400), new Vector2(800, 700)],
+            Speed = 150f,
+            WaitDuration = 0.5f
+        };
+        EnemyDescription aquamentusDesc = new EnemyDescription
+        {
+            Type = EnemyType.Aquamentus,
+            PatrolPath = [
                 new Vector2(800, 900),
                 new Vector2(1000, 900)
-            ], speed: 200f, waitDuration: 1.0f, frameDuration: 0.5f)
-        ];
+            ],
+            Speed = 200f,
+            WaitDuration = 1.0f,
+            FrameDuration = 0.5f
+        };
+
+        List<AbstractEnemy> enemies = new List<AbstractEnemy> {
+            EnemyFactory.Instance.CreateEnemy(ref stalfosDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref keeseDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref gelDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref goriyaDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref aquamentusDesc, projectileManager) };
 
         EnemyManager e_man = new EnemyManager();
         e_man.Add(enemies);
