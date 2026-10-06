@@ -3,9 +3,12 @@ Byte/bin/*
 Byte/Content/obj/*
 Byte/Content/bin/*
 .vs/
+.vscode/
 bin/
 obj/
 .DS_Store
 Documentation/*.diagsession
 Documentation/*.nettrace*.diagsession
 *.nettrace
+
+.fake
