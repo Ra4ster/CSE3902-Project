@@ -7,14 +7,6 @@ namespace Byte.Sprite.Enemy.Minion
 {
     internal class Goriya : WaitingPatrolEnemy
     {
-        private static readonly Rectangle DOWN_FRAME = new Rectangle(223, 12, 15, 15);
-        private static readonly Rectangle UP_FRAME = new Rectangle(240, 12, 15, 15);
-        private static readonly Rectangle[] SIDE_FRAMES = { new Rectangle(257, 12, 15, 15), new Rectangle(274, 12, 15, 15) };
-        private static readonly Rectangle[] ALL_FRAMES = { DOWN_FRAME, UP_FRAME, SIDE_FRAMES[0], SIDE_FRAMES[1] };
-
-        private const float WALK_FLIP_INTERVAL = 0.15f;
-        private const float THROW_INTERVAL = 3.0f;
-
         private readonly MovingAnimatedSprite downSprite;
         private readonly MovingAnimatedSprite upSprite;
         private readonly MovingAnimatedSprite sideSprite;
@@ -30,18 +22,24 @@ namespace Byte.Sprite.Enemy.Minion
         internal Goriya(Texture2D texture,
             ref Vector2 position, ref Vector2 velocity,
             Color color,
-            float frameDuration, float scale,
-            Vector2[] patrolPath, float patrolSpeed,
-            float waitDuration,
+            float? frameDuration, float? scale,
+            Vector2[]? patrolPath, float patrolSpeed,
+            float? waitDuration,
             Func<Vector2, Vector2, IProjectile> throwBoomerang)
-            : base(texture, ref position, ref velocity, color, ALL_FRAMES, frameDuration, scale, patrolPath, patrolSpeed, waitDuration)
+            : base(texture, ref position, ref velocity, color,
+            EnemyConstants.Goriya.ALL_FRAMES,
+            frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION,
+            scale ?? GameConstants.SCALE,
+            patrolPath ?? EnemyConstants.Goriya.REL_PATHS, patrolSpeed,
+            waitDuration ?? EnemyConstants.Goriya.WAIT_DURATION)
         {
             this.throwBoomerang = throwBoomerang;
-            centerOffset = new Vector2(DOWN_FRAME.Width, DOWN_FRAME.Height) * scale / 2.0f;
+            centerOffset = new Vector2(EnemyConstants.Goriya.DOWN_FRAME.Width, EnemyConstants.Goriya.DOWN_FRAME.Height) * (scale ?? GameConstants.SCALE) / 2.0f;
+            Vector2 v = Vector2.Zero;
 
-            downSprite = new MovingAnimatedSprite(texture, this.position, Vector2.Zero, color, [DOWN_FRAME], frameDuration, scale);
-            upSprite = new MovingAnimatedSprite(texture, this.position, Vector2.Zero, color, [UP_FRAME], frameDuration, scale);
-            sideSprite = new MovingAnimatedSprite(texture, this.position, Vector2.Zero, color, SIDE_FRAMES, frameDuration, scale);
+            downSprite = new MovingAnimatedSprite(texture, ref this.position, ref v, color, [EnemyConstants.Goriya.DOWN_FRAME], frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION, scale ?? GameConstants.SCALE);
+            upSprite = new MovingAnimatedSprite(texture, ref this.position, ref v, color, [EnemyConstants.Goriya.UP_FRAME], frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION, scale ?? GameConstants.SCALE);
+            sideSprite = new MovingAnimatedSprite(texture, ref this.position, ref v, color, EnemyConstants.Goriya.SIDE_FRAMES, frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION, scale ?? GameConstants.SCALE);
 
             enemySprite = downSprite;
         }
@@ -76,7 +74,7 @@ namespace Byte.Sprite.Enemy.Minion
                 return;
 
             throwTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (throwTimer >= THROW_INTERVAL)
+            if (throwTimer >= EnemyConstants.Goriya.THROW_INTERVAL)
             {
                 throwTimer = 0f;
                 boomerang = throwBoomerang(position + centerOffset, FacingDirection());
@@ -115,9 +113,9 @@ namespace Byte.Sprite.Enemy.Minion
                 return;
 
             flipTimer += seconds;
-            if (flipTimer >= WALK_FLIP_INTERVAL)
+            if (flipTimer >= EnemyConstants.Goriya.WALK_FLIP_INTERVAL)
             {
-                flipTimer -= WALK_FLIP_INTERVAL;
+                flipTimer -= EnemyConstants.Goriya.WALK_FLIP_INTERVAL;
                 enemySprite.Effects ^= SpriteEffects.FlipHorizontally;
             }
         }

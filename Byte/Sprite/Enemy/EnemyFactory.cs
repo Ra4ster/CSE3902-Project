@@ -17,65 +17,109 @@ namespace Byte.Sprite.Enemy
         Aquamentus
     }
 
-    struct EnemyDescription
+    public static class EnemyFactory
     {
-        public EnemyType Type { get; set; }
-        public Vector2[]? Paths { get; set; }
-
-        public Vector2 Position { get; set; }
-        public float Speed { get; set; }
-        public float FrameDuration { get; set; }
-        public float WaitDuration { get; set; }
-        public float Scale { get; set; }
-    }
-
-    internal class EnemyFactory
-    {
-        private const float FRAME_DURATION = 0.08f;
-
-        private EnemyFactory() { }
-
-        private static EnemyFactory instance = new EnemyFactory();
-
-        /// <summary>
-        /// Eager initialization; we can assume the game has enemies.
-        /// </summary>
-        public static EnemyFactory Instance => instance;
-
-        public AbstractEnemy CreateEnemy(ref EnemyDescription desc, ProjectileManager? projectileManager)
+        /// <param name="at">Initial world position.</param>
+        /// <param name="path">
+        /// Optional route offsets. Patrol routes are translated so their first point is <paramref name="at"/>;
+        /// mechanical-enemy paths are endpoint offsets from <paramref name="at"/>.
+        /// </param>
+        public static AbstractEnemy CreateEnemy(
+            EnemyType type,
+            Vector2 at,
+            ProjectileManager? projectileManager = null,
+            Vector2[]? path = null,
+            float? speed = null,
+            float? frameDuration = null,
+            float? waitDuration = null,
+            float? scale = null)
         {
+            if (type is EnemyType.Goriya or EnemyType.Aquamentus)
+                RequireProjectileManager(projectileManager, type);
+
             Texture2D enemyTex = GameAssets.Instance.EnemySheet;
             Texture2D bossTex = GameAssets.Instance.BossSheet;
-            ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
-
-            float frameDuration = desc.FrameDuration == 0f ? FRAME_DURATION : desc.FrameDuration;
-            float scale = desc.Scale == 0f ? GameConstants.SCALE : desc.Scale;
             Vector2 velocity = Vector2.Zero;
-            Vector2 position = desc.Paths is { Length: > 0 } path
-                ? path[0]
-                : desc.Position;
-            Vector2 bladeTrapHomePosition = desc.Position;
+            float resolvedScale = scale ?? GameConstants.SCALE;
+            float resolvedFrameDuration = frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION;
+            Vector2[]? defaultPath = type switch
+            {
+                EnemyType.Stalfos => EnemyConstants.Stalfos.REL_PATHS,
+                EnemyType.Wallmaster => EnemyConstants.Wallmaster.REL_PATHS,
+                EnemyType.Gel => EnemyConstants.Gel.REL_PATHS,
+                EnemyType.Goriya => EnemyConstants.Goriya.REL_PATHS,
+                EnemyType.Aquamentus => EnemyConstants.Aquamentus.REL_PATHS,
+                _ => null
+            };
+            Vector2[]? patrolPath = path is not null
+                ? TranslatePatrolPath(at, path)
+                : defaultPath is not null
+                    ? TranslatePatrolPath(at, defaultPath)
+                    : null;
+            ProjectileFactory? projectileFactory = null;
             Action<Vector2, Vector2> spawnFireball = (fireballPosition, direction) =>
-                projectileManager!.Add(projectileFactory.CreateFireball(fireballPosition, direction));
+            {
+                ProjectileManager manager = RequireProjectileManager(projectileManager, type);
+                ProjectileFactory factory = projectileFactory ??=
+                    new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
+                manager.Add(factory.CreateFireball(fireballPosition, direction));
+            };
 
             Func<Vector2, Vector2, IProjectile> throwBoomerang = (boomerangPosition, direction) =>
             {
-                IProjectile thrown = projectileFactory.CreateBoomerang(boomerangPosition, direction);
-                projectileManager!.Add(thrown);
+                ProjectileManager manager = RequireProjectileManager(projectileManager, type);
+                ProjectileFactory factory = projectileFactory ??=
+                    new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
+                IProjectile thrown = factory.CreateBoomerang(boomerangPosition, direction);
+                manager.Add(thrown);
                 return thrown;
             };
 
-            return desc.Type switch
+            return type switch
             {
-                EnemyType.Stalfos => new Stalfos(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Paths!, desc.Speed),
-                EnemyType.Wallmaster => new Wallmaster(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Paths!, desc.Speed),
-                EnemyType.Keese => new Keese(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Speed),
-                EnemyType.Gel => new Gel(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Paths!, desc.Speed, desc.WaitDuration),
-                EnemyType.Goriya => new Goriya(enemyTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Paths!, desc.Speed, desc.WaitDuration, throwBoomerang),
-                EnemyType.Aquamentus => new Aquamentus(bossTex, ref position, ref velocity, Color.White, frameDuration, scale, desc.Paths!, desc.Speed, desc.WaitDuration, spawnFireball),
-                EnemyType.BladeTrap => new BladeTrap(enemyTex, ref bladeTrapHomePosition, desc.Paths!, ref velocity, Color.White, desc.Speed, scale),
-                _ => throw new ArgumentException($"Enemy type {desc.Type} is not supported by EnemyFactory.")
+                EnemyType.Stalfos => new Stalfos(enemyTex, ref at, ref velocity, Color.White,
+                    resolvedFrameDuration, resolvedScale, patrolPath, speed ?? EnemyConstants.Stalfos.SPEED),
+                EnemyType.Wallmaster => new Wallmaster(enemyTex, ref at, ref velocity, Color.White,
+                    frameDuration ?? EnemyConstants.Wallmaster.FRAME_DURATION, resolvedScale, patrolPath,
+                    speed ?? EnemyConstants.Wallmaster.SPEED),
+                EnemyType.Keese => new Keese(enemyTex, ref at, ref velocity, Color.White,
+                    resolvedFrameDuration, resolvedScale, speed ?? EnemyConstants.Keese.SPEED),
+                EnemyType.Gel => new Gel(enemyTex, ref at, ref velocity, Color.White,
+                    resolvedFrameDuration, resolvedScale, patrolPath, speed ?? EnemyConstants.Gel.SPEED,
+                    waitDuration ?? EnemyConstants.Gel.WAIT_DURATION),
+                EnemyType.Goriya => new Goriya(enemyTex, ref at, ref velocity, Color.White,
+                    resolvedFrameDuration, resolvedScale, patrolPath, speed ?? EnemyConstants.Goriya.SPEED,
+                    waitDuration ?? EnemyConstants.Goriya.WAIT_DURATION, throwBoomerang),
+                EnemyType.Aquamentus => new Aquamentus(bossTex, ref at, ref velocity, Color.White,
+                    frameDuration ?? EnemyConstants.Aquamentus.FRAME_DURATION, resolvedScale, patrolPath,
+                    speed ?? EnemyConstants.Aquamentus.SPEED,
+                    waitDuration ?? EnemyConstants.Aquamentus.WAIT_DURATION, spawnFireball),
+                EnemyType.BladeTrap => new BladeTrap(enemyTex, ref at,
+                    TranslateEndpoints(at, path ?? EnemyConstants.BladeTrap.REL_PATHS), ref velocity,
+                    Color.White, speed ?? EnemyConstants.BladeTrap.SPEED, resolvedScale),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unsupported enemy type.")
             };
         }
+
+        private static Vector2[] TranslatePatrolPath(Vector2 at, Vector2[] path)
+        {
+            if (path.Length == 0)
+                throw new ArgumentException("A patrol path must contain at least one point.", nameof(path));
+
+            Vector2 origin = path[0];
+            return Array.ConvertAll(path, point => at + (point - origin));
+        }
+
+        private static Vector2[] TranslateEndpoints(Vector2 at, Vector2[] offsets)
+        {
+            if (offsets.Length == 0)
+                throw new ArgumentException("A mechanical enemy must have at least one endpoint.", nameof(offsets));
+
+            return Array.ConvertAll(offsets, offset => at + offset);
+        }
+
+        private static ProjectileManager RequireProjectileManager(ProjectileManager? projectileManager, EnemyType type) =>
+            projectileManager ?? throw new ArgumentNullException(
+                nameof(projectileManager), $"{type} requires a projectile manager.");
     }
 }

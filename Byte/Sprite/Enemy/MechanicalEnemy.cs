@@ -15,7 +15,7 @@ namespace Byte.Sprite.Enemy
         private bool goingHome;
 
         public MechanicalEnemy(Texture2D texture, ref Vector2 homePosition, Vector2[] endPositions,
-            ref Vector2 velocity, Color color, ref Rectangle sourceRectangle, float movementSpeed, float scale = 1)
+            ref Vector2 velocity, Color color, Rectangle sourceRectangle, float movementSpeed, float scale = 1)
             : base(ref homePosition, ref velocity, sourceRectangle, scale)
         {
             if (endPositions is null || endPositions.Length == 0)
