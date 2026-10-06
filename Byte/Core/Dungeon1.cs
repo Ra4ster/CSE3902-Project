@@ -36,7 +36,7 @@ class Dungeon1 : IDungeon
         EnemyDescription stalfosDesc = new EnemyDescription
         {
             Type = EnemyType.Stalfos,
-            PatrolPath =
+            Paths =
             [
                 new Vector2(100, 100),
                 new Vector2(100, 300),
@@ -54,7 +54,7 @@ class Dungeon1 : IDungeon
         EnemyDescription gelDesc = new EnemyDescription
         {
             Type = EnemyType.Gel,
-            PatrolPath = [
+            Paths = [
                 new Vector2(300, 800),
                 new Vector2(800, 800)
             ],
@@ -64,14 +64,14 @@ class Dungeon1 : IDungeon
         EnemyDescription goriyaDesc = new EnemyDescription
         {
             Type = EnemyType.Goriya,
-            PatrolPath = [new Vector2(400, 400), new Vector2(800, 400), new Vector2(800, 700)],
+            Paths = [new Vector2(400, 400), new Vector2(800, 400), new Vector2(800, 700)],
             Speed = 150f,
             WaitDuration = 0.5f
         };
         EnemyDescription aquamentusDesc = new EnemyDescription
         {
             Type = EnemyType.Aquamentus,
-            PatrolPath = [
+            Paths = [
                 new Vector2(800, 900),
                 new Vector2(1000, 900)
             ],
@@ -79,13 +79,35 @@ class Dungeon1 : IDungeon
             WaitDuration = 1.0f,
             FrameDuration = 0.5f
         };
+        EnemyDescription wallmasterDesc = new EnemyDescription
+        {
+            Type = EnemyType.Wallmaster,
+            Paths = [
+                new Vector2(1200, 1000),
+                new Vector2(1100, 1200),
+                new Vector2(1000, 1300)
+            ],
+            Speed = 100f,
+            FrameDuration = 0.25f // slow
+        };
+        EnemyDescription bladetrapDesc = new EnemyDescription
+        {
+            Type = EnemyType.BladeTrap,
+            Position = new Vector2(GameConstants.WINDOW_SIZE.Right, GameConstants.WINDOW_SIZE.Bottom),
+            Paths = [
+                new Vector2(GameConstants.WINDOW_SIZE.Left, GameConstants.WINDOW_SIZE.Bottom)
+            ],
+            Speed = 800f
+        };
 
         List<AbstractEnemy> enemies = new List<AbstractEnemy> {
             EnemyFactory.Instance.CreateEnemy(ref stalfosDesc, projectileManager),
             EnemyFactory.Instance.CreateEnemy(ref keeseDesc, projectileManager),
             EnemyFactory.Instance.CreateEnemy(ref gelDesc, projectileManager),
             EnemyFactory.Instance.CreateEnemy(ref goriyaDesc, projectileManager),
-            EnemyFactory.Instance.CreateEnemy(ref aquamentusDesc, projectileManager) };
+            EnemyFactory.Instance.CreateEnemy(ref aquamentusDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref wallmasterDesc, projectileManager),
+            EnemyFactory.Instance.CreateEnemy(ref bladetrapDesc, projectileManager) };
 
         EnemyManager e_man = new EnemyManager();
         e_man.Add(enemies);
