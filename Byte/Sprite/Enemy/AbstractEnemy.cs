@@ -13,7 +13,7 @@ public abstract class AbstractEnemy
 	protected Vector2 position;
 	protected Vector2 velocity;
 
-	protected ISprite enemySprite;
+	protected ISprite enemySprite = null!;
 	protected abstract void Move(GameTime gameTime);
 
 	// on-screen size of the largest frame, used to keep the whole sprite inside the window
@@ -28,11 +28,17 @@ public abstract class AbstractEnemy
 	{
 		Move(gameTime);
 
+		if (enemySprite is MovingSprite movingSprite)
+		{
+			movingSprite.Update(gameTime);
+			return;
+		}
+
 		float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		position = ClampToWindow(position + velocity * seconds);
 
-		if (enemySprite is MovingAnimatedSprite movingSprite)
-			movingSprite.SetPos(position);
+		if (enemySprite is MovingAnimatedSprite movingAnimatedSprite)
+			movingAnimatedSprite.SetPos(position);
 
 		enemySprite.Update(gameTime);
 	}
@@ -47,6 +53,14 @@ public abstract class AbstractEnemy
 		this.position = ClampToWindow(position);
 		this.velocity = velocity;
 		enemySprite = new MovingAnimatedSprite(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale);
+	}
+
+	protected AbstractEnemy(ref Vector2 position, ref Vector2 velocity, Rectangle sourceRectangle, float scale = 1.0f)
+	{
+		size = new Vector2(sourceRectangle.Width, sourceRectangle.Height) * scale;
+
+		this.position = ClampToWindow(position);
+		this.velocity = velocity;
 	}
 
 	/// <summary>
