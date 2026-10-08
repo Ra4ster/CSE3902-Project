@@ -40,6 +40,8 @@ namespace Byte.Sprite.Enemy
                 0f,
                 1f);
 
+	    if (progress == 1f)
+		    progress = 0f;
             return patrolSpeed * MathHelper.Lerp(
                 EnemyConstants.Keese.SPEED_MULTIPLIER,
                 EnemyConstants.Keese.MAX_SPEED_MULTIPLIER,

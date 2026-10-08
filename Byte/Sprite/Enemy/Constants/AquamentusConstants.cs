@@ -1,7 +1,7 @@
 
 using Microsoft.Xna.Framework;
 
-namespace Byte.Sprite.EnemyConstants
+namespace Byte.Sprite.Enemy
 {
     internal static partial class EnemyConstants
     {
@@ -14,8 +14,8 @@ namespace Byte.Sprite.EnemyConstants
             ];
             public static readonly Vector2[] REL_PATHS =
             [
-                new(GameConstants.WINDOW_SIZE.Bottom / 2f, GameConstants.WINDOW_SIZE.Right),
-            new(GameConstants.WINDOW_SIZE.Bottom / 2f, GameConstants.WINDOW_SIZE.Left)
+                new(GameConstants.WINDOW_SIZE.Right, GameConstants.WINDOW_SIZE.Bottom / 2f),
+            new(GameConstants.WINDOW_SIZE.Left, GameConstants.WINDOW_SIZE.Bottom / 2f)
             ];
             public static readonly float SPEED = 200f;
             public static readonly float WAIT_DURATION = 1f;

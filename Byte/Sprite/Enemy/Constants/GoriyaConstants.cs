@@ -1,7 +1,7 @@
 
 using Microsoft.Xna.Framework;
 
-namespace Byte.Sprite.EnemyConstants
+namespace Byte.Sprite.Enemy
 {
     internal static partial class EnemyConstants
     {
