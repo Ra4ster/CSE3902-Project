@@ -1,10 +1,12 @@
 
 using Byte.Projectile;
+using Byte.Rooms;
+using Byte.Sprite.Enemy;
 using Byte.Sprite.Enemy.Minion;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Sprite.Enemy
+namespace Byte.Factory
 {
     public enum EnemyType
     {
@@ -17,8 +19,25 @@ namespace Byte.Sprite.Enemy
         Aquamentus
     }
 
-    public static class EnemyFactory
+    public class EnemyFactory : IFactory<EnemyData, AbstractEnemy>
     {
+
+        private readonly ProjectileManager projectileManager;
+
+        public EnemyFactory(ProjectileManager projectileManager)
+        {
+            this.projectileManager = projectileManager;
+        }
+
+        public AbstractEnemy Create(EnemyData data)
+        {
+            if (!Enum.TryParse(data.Type, ignoreCase: true, out EnemyType type) || !Enum.IsDefined(type))
+                throw new InvalidDataException($"Unknown enemy type '{data.Type}'.");
+
+            return CreateEnemy(type, data.Position, projectileManager,
+                data.Path, data.Speed, data.FrameDuration, data.WaitDuration, data.Scale);
+        }
+
         /// <param name="at">Initial world position.</param>
         /// <param name="path">
         /// Optional route offsets. Patrol routes are translated so their first point is <paramref name="at"/>;

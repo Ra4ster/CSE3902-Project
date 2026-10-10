@@ -5,16 +5,16 @@ namespace Byte.Command
     // reloads the whole level, every object is rebuilt from the dungeon
     public class ResetCommand : ICommand
     {
-        private readonly Game game;
+        private readonly Program program;
 
-        public ResetCommand(Game game)
+        public ResetCommand(Program program)
         {
-            this.game = game;
+            this.program = program;
         }
 
         public void Execute(GameTime gameTime)
         {
-            game.RequestReset();
+            program.RequestReset();
         }
     }
 }

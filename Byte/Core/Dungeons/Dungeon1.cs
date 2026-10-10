@@ -1,5 +1,6 @@
 
 using Byte.Block;
+using Byte.Factory;
 using Byte.Item;
 using Byte.Projectile;
 using Byte.Sprite.Enemy;

@@ -9,11 +9,14 @@ using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
+using Byte;
+using Byte.Rooms;
+using Byte.Factory;
 
 /// <summary>
-/// Class representing the game, containing the graphics device and sprite painter.
+/// Class representing the game, containing the graphics device and sprite painter. Also the entrypoint of the application.
 /// </summary>
-public class Game : Microsoft.Xna.Framework.Game
+public class Program : Game
 {
     public GraphicsDeviceManager graphicsDeviceManager;
     private const float SCREEN_FILL_RATIO = 0.85f;
@@ -40,7 +43,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
     private bool resetRequested = false;
 
-    public Game(IDungeon dungeon)
+    public Program(IDungeon dungeon)
     {
         this.dungeon = dungeon;
 
@@ -89,6 +92,16 @@ public class Game : Microsoft.Xna.Framework.Game
     /// </summary>
     public void RequestReset() => resetRequested = true;
 
+    private void LoadRoom(string path)
+    {
+        RoomData room = LevelLoader.GetRoomData(path);
+        EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
+        List<AbstractEnemy> enemies = room.Objects.OfType<EnemyData>().Select(enemyFactory.Create).ToList();
+
+        enemyManager = new EnemyManager();
+        enemyManager.Add(enemies);
+    }
+
     /// <summary>
     /// Builds every object in the level from the dungeon, along with the commands bound to them.
     /// </summary>
@@ -99,7 +112,7 @@ public class Game : Microsoft.Xna.Framework.Game
         rightClickBindings.Clear();
 
         projectileManager = new ProjectileManager();
-        enemyManager = dungeon.CreateEnemies(projectileManager);
+        LoadRoom("Content/Rooms/TestRoom.json");
         itemManager = dungeon.CreateItems();
         blockManager = dungeon.CreateBlocks();
 
@@ -209,5 +222,5 @@ public class Game : Microsoft.Xna.Framework.Game
         base.Draw(gameTime);
     }
 
-    public static void Main() => new Game(new Dungeon1()).Run();
+    public static void Main() => new Program(new Dungeon1()).Run();
 }

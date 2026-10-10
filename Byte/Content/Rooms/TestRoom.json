@@ -1,0 +1,9 @@
+{
+  "name": "Room1",
+  "worldPosition": { "x": 0, "y": 0 },
+  "background": "room1",
+  "objects": [
+    { "kind": "enemy", "type": "Stalfos", "position": { "x": 100, "y": 100 } },
+    { "kind": "enemy", "type": "Goriya",  "position": { "x": 400, "y": 400 }, "speed": 120 }
+  ]
+}
