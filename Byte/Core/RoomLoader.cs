@@ -1,10 +1,9 @@
-using Microsoft.Xna.Framework;
 using Byte.Rooms;
 using System.Text.Json;
 
 namespace Byte
 {
-    internal class LevelLoader
+    internal class RoomLoader
     {
         public static RoomData GetRoomData(string path)
         {

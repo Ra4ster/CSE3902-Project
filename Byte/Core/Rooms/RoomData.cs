@@ -1,9 +1,8 @@
-using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Byte.Rooms
 {
-    internal sealed class RoomData
+    public sealed class RoomData
     {
         public required string Name { get; set; }
         public Vector2 WorldPosition { get; set; }
@@ -31,5 +30,6 @@ namespace Byte.Rooms
 
     public sealed class BlockData : GameObjectData { }
 
-    public sealed class ItemData : GameObjectData { }
+    public sealed class ItemData : GameObjectData
+    { }
 }

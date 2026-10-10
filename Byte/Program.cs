@@ -23,13 +23,9 @@ public class Program : Game
 
     public Link link = null!;
     public ISprite? linkSprite;
-
-    private readonly IDungeon dungeon;
-
-    private EnemyManager enemyManager = new EnemyManager();
-    private BlockManager blockManager = new BlockManager();
     private ProjectileManager projectileManager = new ProjectileManager();
-    private ItemManager itemManager = new ItemManager();
+
+    private RoomManager roomManager = null!;
 
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
@@ -43,10 +39,8 @@ public class Program : Game
 
     private bool resetRequested = false;
 
-    public Program(IDungeon dungeon)
+    public Program()
     {
-        this.dungeon = dungeon;
-
         kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.O, Keys.P]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
@@ -94,16 +88,16 @@ public class Program : Game
 
     private void LoadRoom(string path)
     {
-        RoomData room = LevelLoader.GetRoomData(path);
-        EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
-        List<AbstractEnemy> enemies = room.Enemies.Select(enemyFactory.Create).ToList();
+        RoomData room = RoomLoader.GetRoomData(path);
 
-        enemyManager = new EnemyManager();
-        enemyManager.Add(enemies);
+        EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
+        BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
+        ItemFactory itemFactory = new ItemFactory();
+        roomManager = new RoomManager([room], enemyFactory, blockFactory, itemFactory);
     }
 
     /// <summary>
-    /// Builds every object in the level from the dungeon, along with the commands bound to them.
+    /// Builds every object in the level from the roomManager, along with the commands bound to them.
     /// </summary>
     private void BuildLevel()
     {
@@ -113,8 +107,6 @@ public class Program : Game
 
         projectileManager = new ProjectileManager();
         LoadRoom("Content/Rooms/TestRoom.json");
-        itemManager = dungeon.CreateItems();
-        blockManager = dungeon.CreateBlocks();
 
         Vector2 linkPos = GameConstants.LINK_START_POS;
         link = new Link(linkPos, new StaticSprite(
@@ -122,11 +114,6 @@ public class Program : Game
             Color.White, new Rectangle(1, 11, 16, 16), 6.0f),
             SpritePainter!, GameAssets.Instance.LinkSheet,
             mouseControls, kbControls);
-
-        ICommand NextItemCommand = new NextItemCommand(itemManager);
-        ICommand PreviousItemCommand = new PreviousItemCommand(itemManager);
-        keybindings.Add(Keys.I, NextItemCommand);
-        keybindings.Add(Keys.U, PreviousItemCommand);
 
         link.sourceRects = new Rectangle[10];
 
@@ -137,10 +124,6 @@ public class Program : Game
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
         ICommand resetCommand = new ResetCommand(this);
-        ICommand nextBlockCommand = new NextBlockCommand(blockManager);
-        ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
-        ICommand nextEnemyCommand = new NextEnemyCommand(enemyManager);
-        ICommand previousEnemyCommand = new PreviousEnemyCommand(enemyManager);
         ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
@@ -156,10 +139,6 @@ public class Program : Game
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
-        keybindings.Add(Keys.T, previousBlockCommand);
-        keybindings.Add(Keys.Y, nextBlockCommand);
-        keybindings.Add(Keys.O, previousEnemyCommand);
-        keybindings.Add(Keys.P, nextEnemyCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
     }
@@ -189,10 +168,8 @@ public class Program : Game
             BuildLevel();
         }
 
-        enemyManager.Update(gameTime);
-        blockManager.Update(gameTime);
         projectileManager.Update(gameTime);
-        itemManager.Update(gameTime);
+        roomManager.Update(gameTime);
 
         link.Update(gameTime);
 
@@ -211,16 +188,12 @@ public class Program : Game
         );
 
         link.state.Draw(link);
-
-        enemyManager.Draw(SpritePainter!);
-        blockManager.Draw(SpritePainter!);
+        roomManager.Draw(SpritePainter!);
         projectileManager.Draw(SpritePainter!);
-        itemManager.Draw(SpritePainter!);
-
         SpritePainter?.End();
 
         base.Draw(gameTime);
     }
 
-    public static void Main() => new Program(new Dungeon1()).Run();
+    public static void Main() => new Program().Run();
 }

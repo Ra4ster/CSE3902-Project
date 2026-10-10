@@ -1,11 +1,13 @@
+using Byte.Block;
+using Byte.Rooms;
 using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Block;
+namespace Byte.Factory;
 
 // makes every block type, only place the sheet coordinates should live
-public class BlockFactory
+public class BlockFactory : IFactory<BlockData, IBlock>
 {
     // the single tiles are in a little palette on the sheet
     // 16x16 tiles spaced 17px apart starting at (984, 11)
@@ -21,6 +23,22 @@ public class BlockFactory
     {
         this.blockSheet = blockSheet;
     }
+
+    public IBlock Create(BlockData data) => data.Type switch
+    {
+        "Square" => CreateSquareBlock(data.Position),
+        "Keystone" => CreateKeystoneBlock(data.Position),
+        "StatueLeft" => CreateStatueLeftBlock(data.Position),
+        "StatueRight" => CreateStatueRightBlock(data.Position),
+        "Void" => CreateVoidBlock(data.Position),
+        "SpeckledFloor" => CreateSpeckledFloorBlock(data.Position),
+        "Water" => CreateWaterBlock(data.Position),
+        "Stairs" => CreateStairsBlock(data.Position),
+        "Brick" => CreateBrickBlock(data.Position),
+        "Ladder" => CreateLadderBlock(data.Position),
+        "Sand" => CreateSandBlock(data.Position),
+        _ => throw new InvalidDataException($"Invalid block data of type: {data.Type}")
+    };
 
     private StaticSprite CreateSprite(int column, int row, Vector2 position)
     {

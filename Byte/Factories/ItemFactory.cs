@@ -1,27 +1,36 @@
-﻿using Byte.Sprite;
+﻿using Byte.Item;
+using Byte.Rooms;
+using Byte.Sprite;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Byte.Item
+namespace Byte.Factory
 {
-    internal class ItemFactory
+    public class ItemFactory : IFactory<ItemData, IItem>
     {
+
         private readonly Texture2D tileSheet = GameAssets.Instance.ItemSheet;
 
         public ItemFactory()
         {
         }
 
+        public IItem Create(ItemData data) => data.Type switch
+        {
+            "Rupee" => CreateRupee(data.Position),
+            "Heart" => CreateHeart(data.Position),
+            "Bomb" => CreateBomb(data.Position),
+            "Bow" => CreateBow(data.Position),
+            "Boomerang" => CreateBoomerang(data.Position),
+            _ => throw new InvalidDataException($"Could not find item data with type: {data.Type}")
+        };
+
         public IItem CreateRupee(Vector2 position)
         {
-            Rectangle[] rupeeFrames = new Rectangle[]
+            Rectangle[] rupeeFrames =
             {
-                new Rectangle(72, 0, 8, 16),  
-                new Rectangle(72, 16, 8, 16)   
+                new Rectangle(72, 0, 8, 16),
+                new Rectangle(72, 16, 8, 16)
             };
 
             AnimatedSprite rupeeSprite = new AnimatedSprite(
@@ -35,10 +44,10 @@ namespace Byte.Item
 
             return new Rupee(rupeeSprite, position);
         }
-        
+
         public IItem CreateHeart(Vector2 position)
         {
-            Rectangle[] heartFrames = new Rectangle[]
+            Rectangle[] heartFrames =
             {
                 new Rectangle(0, 0, 7, 7), //red frame
                 new Rectangle(0, 8, 7, 7) //blue frame
@@ -50,7 +59,7 @@ namespace Byte.Item
                 ref position,
                 Color.White,
                 heartFrames,
-                1f, 
+                1f,
                 5f
             );
 
@@ -84,7 +93,7 @@ namespace Byte.Item
 
         public IItem CreateBoomerang(Vector2 position)
         {
-            Rectangle[] boomerangFrames = new Rectangle[]
+            Rectangle[] boomerangFrames =
             {
                 new Rectangle(129, 3, 5, 8), // brown frame
                 new Rectangle(129, 19, 5, 8) //blue frame

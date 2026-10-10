@@ -9,10 +9,10 @@ namespace Byte.Rooms
     /// <summary>
     /// Interface representing a room, including its collidables such as walls, doors, enemies, blocks, items, etc.
     /// </summary>
-    interface IRoom
+    public interface IRoom
     {
         IReadOnlyList<AbstractEnemy> Enemies { get; }
-        IReadOnlyList<AbstractBlock> Blocks { get; }
+        IReadOnlyList<IBlock> Blocks { get; }
         IReadOnlyList<IItem> Items { get; }
 
         // TODO: IReadOnlyList<ICollidable> collidables { get; }
@@ -21,8 +21,6 @@ namespace Byte.Rooms
         /// Updates all aspects of a room.
         /// </summary>
         /// <param name="gametime">Current time</paramRoomManaIRoom
-
-
         void Update(GameTime gametime);
 
         /// <summary>
