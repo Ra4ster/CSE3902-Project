@@ -8,11 +8,12 @@ namespace Byte.Rooms
         public required string Name { get; set; }
         public Vector2 WorldPosition { get; set; }
         public required string Background { get; set; }
-        public required List<GameObjectData> Objects { get; set; }
+
+        public List<EnemyData> Enemies { get; set; } = [];
+        public List<BlockData> Blocks { get; set; } = [];
+        public List<ItemData> Items { get; set; } = [];
     }
 
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
-    [JsonDerivedType(typeof(EnemyData), "enemy")]
     public class GameObjectData
     {
         public required string Type { get; set; }
@@ -27,4 +28,8 @@ namespace Byte.Rooms
         public float? WaitDuration { get; set; }
         public float? Scale { get; set; }
     }
+
+    public sealed class BlockData : GameObjectData { }
+
+    public sealed class ItemData : GameObjectData { }
 }

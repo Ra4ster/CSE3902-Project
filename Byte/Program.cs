@@ -96,7 +96,7 @@ public class Program : Game
     {
         RoomData room = LevelLoader.GetRoomData(path);
         EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
-        List<AbstractEnemy> enemies = room.Objects.OfType<EnemyData>().Select(enemyFactory.Create).ToList();
+        List<AbstractEnemy> enemies = room.Enemies.Select(enemyFactory.Create).ToList();
 
         enemyManager = new EnemyManager();
         enemyManager.Add(enemies);
