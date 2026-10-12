@@ -5,16 +5,6 @@ namespace Byte.Sprite.Enemy
 {
     internal class Keese : WanderingEnemy
     {
-        private const float SpeedRampDurationSeconds = 2f;
-        private const float StartingSpeedMultiplier = 0.1f;
-        private const float MaximumSpeedMultiplier = 2f;
-
-        private static readonly Rectangle[] sourceRects =
-        {
-            new Rectangle(184, 12, 14, 14),
-            new Rectangle(201, 12, 14, 14)
-        };
-
         private float elapsedSeconds;
 
         internal Keese(
@@ -22,17 +12,17 @@ namespace Byte.Sprite.Enemy
             ref Vector2 position,
             ref Vector2 velocity,
             Color color,
-            float frameDuration,
-            float scale,
+            float? frameDuration,
+            float? scale,
             float speed)
     : base(
         texture,
         ref position,
         ref velocity,
         color,
-        sourceRects,
-        frameDuration,
-        scale,
+        EnemyConstants.Keese.SOURCE_RECTS,
+        frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION,
+        scale ?? GameConstants.SCALE,
         speed)
         {
         }
@@ -46,13 +36,15 @@ namespace Byte.Sprite.Enemy
         protected override float GetPatrolSpeed(GameTime gameTime)
         {
             float progress = MathHelper.Clamp(
-                elapsedSeconds / SpeedRampDurationSeconds,
+                elapsedSeconds / EnemyConstants.Keese.RAMP_DURATION_SECONDS,
                 0f,
                 1f);
 
+	    if (progress == 1f)
+		    progress = 0f;
             return patrolSpeed * MathHelper.Lerp(
-                StartingSpeedMultiplier,
-                MaximumSpeedMultiplier,
+                EnemyConstants.Keese.SPEED_MULTIPLIER,
+                EnemyConstants.Keese.MAX_SPEED_MULTIPLIER,
                 progress);
         }
     }

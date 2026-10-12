@@ -47,11 +47,12 @@ public class MovingSprite : ISprite
         position.Y += Velocity.Y * seconds;
     }
 
-    public void SetPos(int x, int y)
+    public void SetPos(Vector2 pos)
     {
-        position.X = x;
-        position.Y = y;
+        position.X = pos.X;
+        position.Y = pos.Y;
     }
+
     public void MoveOrigin(Vector2 origin)
     {
 

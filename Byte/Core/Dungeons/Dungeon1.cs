@@ -1,9 +1,8 @@
 
 using Byte.Block;
 using Byte.Item;
-using Byte.Sprite;
+using Byte.Projectile;
 using Byte.Sprite.Enemy;
-using Byte.Sprite.Enemy.Minion;
 using Microsoft.Xna.Framework;
 
 class Dungeon1 : IDungeon
@@ -29,30 +28,18 @@ class Dungeon1 : IDungeon
         return blockManager;
     }
 
-    public EnemyManager CreateEnemies()
+    public EnemyManager CreateEnemies(ProjectileManager projectileManager)
     {
-        List<AbstractEnemy> enemies = [
-            EnemyFactory.Instance.Create<Stalfos>(
-            patrolPath: [
-                new Vector2(100, 100),
-                new Vector2(100, 300),
-                new Vector2(300, 300),
-                new Vector2(300, 100)
-            ], speed: 200f),
-            EnemyFactory.Instance.Create<Keese>(
-                null,
-                pos: new Vector2(500, 600), 200f),
-            EnemyFactory.Instance.Create<Gel>(
-            patrolPath: [
-                new Vector2(300, 800),
-                new Vector2(800, 800)
-            ], speed: 200f, waitDuration: 1.5f),
-            EnemyFactory.Instance.Create<Aquamentus>(
-            patrolPath: [
-                new Vector2(800, 900),
-                new Vector2(1000, 900)
-            ], speed: 200f, waitDuration: 1.0f, frameDuration: 0.5f)
-        ];
+
+        List<AbstractEnemy> enemies = new List<AbstractEnemy> {
+            EnemyFactory.CreateEnemy(EnemyType.Stalfos, at: new Vector2(100, 100)),
+            EnemyFactory.CreateEnemy(EnemyType.Keese, at: new Vector2(500, 600)),
+            EnemyFactory.CreateEnemy(EnemyType.Gel, at: new Vector2(300, 800)),
+            EnemyFactory.CreateEnemy(EnemyType.Goriya, at: new Vector2(400, 400), projectileManager: projectileManager),
+            EnemyFactory.CreateEnemy(EnemyType.Aquamentus, at: new Vector2(800, 900), projectileManager: projectileManager),
+            EnemyFactory.CreateEnemy(EnemyType.Wallmaster, at: new Vector2(1200, 1000)),
+            EnemyFactory.CreateEnemy(EnemyType.BladeTrap, at: new Vector2(GameConstants.WINDOW_SIZE.Right, GameConstants.WINDOW_SIZE.Bottom))
+        };
 
         EnemyManager e_man = new EnemyManager();
         e_man.Add(enemies);

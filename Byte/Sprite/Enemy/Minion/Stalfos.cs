@@ -5,17 +5,15 @@ namespace Byte.Sprite.Enemy.Minion
 {
     internal class Stalfos : PatrolEnemy
     {
-
-        private static readonly Rectangle[] sourceRect = {
-            new Rectangle(2, 59, 15, 16)
-        };
-
         private float flipTimer = 0f;
-        private const float FLIP_INTERVAL = 0.25f; // Flip every 0.25 seconds
         private SpriteEffects spriteEffect = SpriteEffects.None;
 
-        internal Stalfos(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, float frameDuration, float scale, Vector2[] patrolPath, float patrolSpeed)
-            : base(texture, ref position, ref velocity, color, sourceRect, frameDuration, scale, patrolPath, patrolSpeed)
+        internal Stalfos(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color, float? frameDuration, float? scale, Vector2[]? patrolPath, float patrolSpeed)
+            : base(texture, ref position, ref velocity, color,
+            [EnemyConstants.Stalfos.SOURCE_RECT],
+            frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION,
+            scale ?? GameConstants.SCALE,
+            patrolPath ?? EnemyConstants.Stalfos.REL_PATHS, patrolSpeed)
         { }
 
         public override void Update(GameTime gameTime)
@@ -24,7 +22,7 @@ namespace Byte.Sprite.Enemy.Minion
 
             flipTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (flipTimer >= FLIP_INTERVAL)
+            if (flipTimer >= EnemyConstants.Stalfos.FLIP_INTERVAL)
             {
                 spriteEffect = (spriteEffect == SpriteEffects.None)
                     ? SpriteEffects.FlipHorizontally
