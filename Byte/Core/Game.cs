@@ -9,6 +9,7 @@ using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
+using Byte.Collidable;
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
@@ -20,7 +21,7 @@ public class Game : Microsoft.Xna.Framework.Game
 
     public Link link = null!;
     public ISprite? linkSprite;
-
+    CollisionDispatcher dispatcher;
     private readonly IDungeon dungeon;
 
     private EnemyManager enemyManager = new EnemyManager();
@@ -58,6 +59,8 @@ public class Game : Microsoft.Xna.Framework.Game
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
+
+         dispatcher = new CollisionDispatcher();
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -149,7 +152,16 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.P, nextEnemyCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
+        dispatcher.Register(
+            CollidableTypes.Player,
+            CollidableTypes.Enemy,
+            (player, enemy, side) =>
+            {
+                link.TakeDamage();
+            }
 
+            );
+        
     }
 
     private void AddProjectileCommands()
