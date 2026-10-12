@@ -149,6 +149,7 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.P, nextEnemyCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
+
     }
 
     private void AddProjectileCommands()
