@@ -11,6 +11,7 @@ using Byte.Sprite;
 using Byte.Sprite.Enemy;
 using Byte.Collidable;
 
+
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
 /// </summary>
@@ -19,6 +20,7 @@ public class Game : Microsoft.Xna.Framework.Game
     public GraphicsDeviceManager graphicsDeviceManager;
     private const float SCREEN_FILL_RATIO = 0.85f;
 
+    public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
     public ISprite? linkSprite;
     CollisionDispatcher dispatcher;
@@ -28,7 +30,8 @@ public class Game : Microsoft.Xna.Framework.Game
     private BlockManager blockManager = new BlockManager();
     private ProjectileManager projectileManager = new ProjectileManager();
     private ItemManager itemManager = new ItemManager();
-
+    public static BoundingBoxDrawer BoundingBoxDrawer = null!;
+    
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
 
@@ -80,7 +83,7 @@ public class Game : Microsoft.Xna.Framework.Game
     {
         GameAssets.Load(Content);
         SpritePainter = new SpriteBatch(GraphicsDevice);
-
+        BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         BuildLevel();
 
         OnClientSizeChanged(this, EventArgs.Empty); // Initialize the spriteTransform matrix
@@ -157,7 +160,11 @@ public class Game : Microsoft.Xna.Framework.Game
             CollidableTypes.Enemy,
             (player, enemy, side) =>
             {
-                link.TakeDamage();
+                if (enemy.Properties.DamagesPlayer)
+                {
+                    link.TakeDamage();
+                }
+          
             }
 
             );
@@ -195,6 +202,7 @@ public class Game : Microsoft.Xna.Framework.Game
         itemManager.Update(gameTime);
 
         link.Update(gameTime);
+        ProcessCollisions();
 
         base.Update(gameTime);
     }
@@ -211,6 +219,15 @@ public class Game : Microsoft.Xna.Framework.Game
         );
 
         link.state.Draw(link);
+        if (DrawBoundingBoxes)
+        {
+            Game.BoundingBoxDrawer.Draw(
+                SpritePainter,
+                link.BoundingBox,
+                Color.Red
+            );
+            
+        }
 
         enemyManager.Draw(SpritePainter!);
         blockManager.Draw(SpritePainter!);
@@ -221,6 +238,34 @@ public class Game : Microsoft.Xna.Framework.Game
 
         base.Draw(gameTime);
     }
+    private void ProcessCollisions()
+    {
+        var collidables = new List<ICollidable>();
 
+        // Add Link
+        collidables.Add(link);
+
+        // Add the selected enemy if it is collidable
+        AbstractEnemy? enemy = enemyManager.GetSelectedEnemy();
+
+        if (enemy is ICollidable collidableEnemy)
+        {
+            collidables.Add(collidableEnemy);
+        }
+
+        // Detect overlapping bounding boxes
+        CollisionDetector detector = new CollisionDetector();
+        var collisions = detector.DetectCollisions(collidables);
+
+        // Dispatch each detected collision
+        foreach (var collision in collisions)
+        {
+            dispatcher.Dispatch(
+                collision.A,
+                collision.B,
+                collision.Side
+            );
+        }
+    }
     public static void Main() => new Game(new Dungeon1()).Run();
 }

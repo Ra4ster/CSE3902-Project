@@ -5,7 +5,7 @@ using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Byte.GameConstants;
+
 namespace Byte.Player
 {
     public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface, Byte.Collidable.ICollidable
@@ -15,7 +15,7 @@ namespace Byte.Player
         {
             Type = CollidableTypes.Player
         };
-        public Rectangle BoundingBox => new Rectangle((int)Position.X, (int)Position.Y, 16 *10, 16*10);
+        public Rectangle BoundingBox => new Rectangle((int)Position.X-8*6, (int)Position.Y-13*6, 16 *6, 16*6);
         public bool isDamaged = false; // Checks if link has taken damage
         private float damageTimer = 0f;
         private const float DamageDuration = 0.5f;

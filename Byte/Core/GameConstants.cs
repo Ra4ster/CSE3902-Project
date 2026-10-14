@@ -1,7 +1,6 @@
 
 using Microsoft.Xna.Framework;
-namespace Byte.GameConstants
-{
+
     public static class GameConstants
     {
         public const float SCALE = 10.0f;
@@ -12,5 +11,5 @@ namespace Byte.GameConstants
         public static readonly Color BG_COLOR = Color.SkyBlue;
 
         public static readonly Vector2 LINK_START_POS = new Vector2(220.0f, 220.0f);
-    }
+        
 }

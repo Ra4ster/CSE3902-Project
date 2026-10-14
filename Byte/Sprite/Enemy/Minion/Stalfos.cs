@@ -1,10 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Byte.Collidable;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Sprite.Enemy.Minion
 {
-    internal class Stalfos : PatrolEnemy
+    internal class Stalfos : PatrolEnemy, ICollidable
     {
+        public CollisionProperties Properties { get; } =
+        new CollisionProperties
+        {
+            Type = CollidableTypes.Enemy,DamagesPlayer = true
+        };
+        public Rectangle BoundingBox => new Rectangle((int)this.position.X , (int)this.position.Y, 16 * 10, 16 * 10);
         private float flipTimer = 0f;
         private SpriteEffects spriteEffect = SpriteEffects.None;
 
