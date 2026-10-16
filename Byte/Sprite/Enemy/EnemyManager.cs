@@ -1,6 +1,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Byte.Collidable;
 
 namespace Byte.Sprite.Enemy
 {
@@ -31,12 +32,30 @@ namespace Byte.Sprite.Enemy
         {
             if (enemies.Count > 0)
                 enemies[selectedEnemyIndex].Draw(spritePainter);
+            // Draw its bounding box when debugging is enabled
+            if (Game.DrawBoundingBoxes && enemies[selectedEnemyIndex] is ICollidable collidableEnemy)
+            {
+                Game.BoundingBoxDrawer.Draw(
+                    spritePainter,
+                    collidableEnemy.BoundingBox,
+                    Color.Red
+                );
+            }
         }
 
         public void Update(GameTime gameTime)
         {
             if (enemies.Count > 0)
                 enemies[selectedEnemyIndex].Update(gameTime);
+
+        }
+
+        public AbstractEnemy? GetSelectedEnemy()
+        {
+            if (enemies.Count == 0)
+                return null;
+
+            return enemies[selectedEnemyIndex];
         }
     }
 }
