@@ -1,7 +1,6 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Byte.Collidable;
 
 namespace Byte.Sprite.Enemy
 {
@@ -30,24 +29,21 @@ namespace Byte.Sprite.Enemy
 
         public void Draw(SpriteBatch spritePainter)
         {
-            if (enemies.Count > 0)
-                enemies[selectedEnemyIndex].Draw(spritePainter);
-            // Draw its bounding box when debugging is enabled
-            if (Game.DrawBoundingBoxes && enemies[selectedEnemyIndex] is ICollidable collidableEnemy)
-            {
-                Game.BoundingBoxDrawer.Draw(
-                    spritePainter,
-                    collidableEnemy.BoundingBox,
-                    Color.Red
-                );
-            }
+            AbstractEnemy? enemy = GetSelectedEnemy();
+            if (enemy == null) return;
+
+            enemy.Draw(spritePainter);
+            if (Game.DrawBoundingBoxes)
+                Game.BoundingBoxDrawer.Draw(spritePainter, enemy.BoundingBox, Color.Red);
         }
 
         public void Update(GameTime gameTime)
         {
-            if (enemies.Count > 0)
-                enemies[selectedEnemyIndex].Update(gameTime);
-
+            enemies.RemoveAll(enemy => enemy.IsDefeated);
+            if (enemies.Count == 0) return;
+            selectedEnemyIndex %= enemies.Count;
+            enemies[selectedEnemyIndex].UpdateDamage(gameTime);
+            enemies[selectedEnemyIndex].Update(gameTime);
         }
 
         public AbstractEnemy? GetSelectedEnemy()
@@ -55,7 +51,7 @@ namespace Byte.Sprite.Enemy
             if (enemies.Count == 0)
                 return null;
 
-            return enemies[selectedEnemyIndex];
+            return enemies[selectedEnemyIndex].IsDefeated ? null : enemies[selectedEnemyIndex];
         }
     }
 }

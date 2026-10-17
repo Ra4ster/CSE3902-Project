@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +8,7 @@ namespace Byte.Collidable
     {
         public static readonly string Enemy = "Enemy";
         public static readonly string Player = "Player";
+        public static readonly string Sword = "Sword";
         public static readonly string Block = "Block";
         
         public static readonly string Door = "Door";

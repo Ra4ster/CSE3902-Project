@@ -5,5 +5,5 @@ namespace Byte.Block;
 
 public class LadderBlock : AbstractBlock
 {
-    public LadderBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+    public LadderBlock(ISprite sprite, Vector2 position) : base(sprite, position) { Properties.BlocksPlayer = false; }
 }
