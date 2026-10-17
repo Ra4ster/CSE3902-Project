@@ -11,7 +11,7 @@ public class StaticSprite : ISprite
     public bool Loop { get; set; } = true;
     public bool IsFinished { get;  set; } = false;
     private readonly Texture2D texture;
-    private readonly Vector2 position;
+    private Vector2 position;
     public Color Color { get; set; }
     private float scale;
     public Vector2 Origin { get; set; } = Vector2.Zero;
@@ -29,6 +29,8 @@ public class StaticSprite : ISprite
     }
 
     public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, position, sourceRectangle, Color, 0f, Origin, scale, Effects, 0f);
+
+    public void SetPos(Vector2 position) => this.position = position;
 
     public void Update(GameTime gameTime)
     {

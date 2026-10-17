@@ -10,6 +10,8 @@ public class BlockManager
     private readonly List<IBlock> blocks = new List<IBlock>();
     private int currentIndex;
 
+    public IBlock? GetSelectedBlock() => blocks.Count == 0 ? null : blocks[currentIndex];
+
     public void AddBlock(IBlock block) => blocks.Add(block);
 
     public void NextBlock()

@@ -5,5 +5,5 @@ namespace Byte.Block;
 
 public class StairsBlock : AbstractBlock
 {
-    public StairsBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+    public StairsBlock(ISprite sprite, Vector2 position) : base(sprite, position) { Properties.BlocksPlayer = false; }
 }

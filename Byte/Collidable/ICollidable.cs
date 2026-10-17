@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -19,6 +19,8 @@ namespace Byte.Collidable
         public bool DamagesEnemies = false;
 
         public bool IsStatic = false;
+
+        public bool BlocksPlayer = false;
 
         public Action<ICollidable>? OnCollide { get; set; }
 

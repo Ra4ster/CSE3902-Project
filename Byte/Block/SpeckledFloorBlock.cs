@@ -5,5 +5,5 @@ namespace Byte.Block;
 
 public class SpeckledFloorBlock : AbstractBlock
 {
-    public SpeckledFloorBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+    public SpeckledFloorBlock(ISprite sprite, Vector2 position) : base(sprite, position) { Properties.BlocksPlayer = false; }
 }
