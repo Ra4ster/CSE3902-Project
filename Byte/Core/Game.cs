@@ -1,4 +1,4 @@
-﻿using Byte.Block;
+using Byte.Block;
 using Byte.Command;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,6 +34,7 @@ public class Game : Microsoft.Xna.Framework.Game
     
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
+    private SpriteFont statusFont = null!;
 
     Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
     Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
@@ -82,6 +83,7 @@ public class Game : Microsoft.Xna.Framework.Game
     protected override void LoadContent()
     {
         GameAssets.Load(Content);
+        statusFont = Content.Load<SpriteFont>("Roboto");
         SpritePainter = new SpriteBatch(GraphicsDevice);
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         BuildLevel();
@@ -155,20 +157,7 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.P, nextEnemyCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
-        dispatcher.Register(
-            CollidableTypes.Player,
-            CollidableTypes.Enemy,
-            (player, enemy, side) =>
-            {
-                if (enemy.Properties.DamagesPlayer)
-                {
-                    link.TakeDamage();
-                }
-          
-            }
-
-            );
-        
+        LinkCollisionHandler.Register(dispatcher);
     }
 
     private void AddProjectileCommands()
@@ -229,10 +218,24 @@ public class Game : Microsoft.Xna.Framework.Game
             
         }
 
+        if (DrawBoundingBoxes && !link.Sword.BoundingBox.IsEmpty)
+            BoundingBoxDrawer.Draw(SpritePainter!, link.Sword.BoundingBox, Color.Yellow);
+
+        if (DrawBoundingBoxes && blockManager.GetSelectedBlock() is ICollidable block)
+            BoundingBoxDrawer.Draw(SpritePainter!, block.BoundingBox, Color.Green);
+
         enemyManager.Draw(SpritePainter!);
         blockManager.Draw(SpritePainter!);
         projectileManager.Draw(SpritePainter!);
         itemManager.Draw(SpritePainter!);
+
+        SpritePainter!.DrawString(statusFont,
+            $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
+            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+        if (link.Health <= 0)
+            SpritePainter.DrawString(statusFont,
+                "HP is zero. Collision testing stays active; press R to reset.",
+                new Vector2(20, 75), Color.Black);
 
         SpritePainter?.End();
 
@@ -240,32 +243,26 @@ public class Game : Microsoft.Xna.Framework.Game
     }
     private void ProcessCollisions()
     {
-        var collidables = new List<ICollidable>();
+        // Resolve barriers first, so body and sword contacts use the corrected position.
+        if (blockManager.GetSelectedBlock() is ICollidable block)
+            DispatchCollisions(new List<ICollidable> { link, block });
+        LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
 
-        // Add Link
-        collidables.Add(link);
+        var collidables = new List<ICollidable> { link };
+        if (enemyManager.GetSelectedEnemy() is ICollidable enemy)
+            collidables.Add(enemy);
 
-        // Add the selected enemy if it is collidable
-        AbstractEnemy? enemy = enemyManager.GetSelectedEnemy();
+        link.Sword.Update(link);
+        if (!link.Sword.BoundingBox.IsEmpty)
+            collidables.Add(link.Sword);
+        DispatchCollisions(collidables);
+    }
 
-        if (enemy is ICollidable collidableEnemy)
-        {
-            collidables.Add(collidableEnemy);
-        }
-
-        // Detect overlapping bounding boxes
-        CollisionDetector detector = new CollisionDetector();
-        var collisions = detector.DetectCollisions(collidables);
-
-        // Dispatch each detected collision
-        foreach (var collision in collisions)
-        {
-            dispatcher.Dispatch(
-                collision.A,
-                collision.B,
-                collision.Side
-            );
-        }
+    private void DispatchCollisions(IList<ICollidable> collidables)
+    {
+        var detector = new CollisionDetector();
+        foreach (var collision in detector.DetectCollisions(collidables))
+            dispatcher.Dispatch(collision.A, collision.B, collision.Side);
     }
     public static void Main() => new Game(new Dungeon1()).Run();
 }

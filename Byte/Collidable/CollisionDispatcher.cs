@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +11,7 @@ namespace Byte.Collidable
         public void Register(String typeA, String typeB, CollisionHandler handler)
         {
             handlers[(typeA, typeB)] = handler;
-            handlers[(typeB, typeA)] = (a, b, side) => handler(b, a, side);
+            handlers[(typeB, typeA)] = (a, b, side) => handler(b, a, Reverse(side));
         }
         public void Dispatch(ICollidable a, ICollidable b, CollisionSide side)
         {

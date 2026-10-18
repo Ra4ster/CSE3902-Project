@@ -1,4 +1,4 @@
-﻿using Byte.Collidable;
+using Byte.Collidable;
 using Byte.Controller;
 using Byte.Sprite;
 using Microsoft.VisualBasic;
@@ -15,10 +15,15 @@ namespace Byte.Player
         {
             Type = CollidableTypes.Player
         };
-        public Rectangle BoundingBox => new Rectangle((int)Position.X-8*6, (int)Position.Y-13*6, 16 *6, 16*6);
+        public const int SpriteScale = 6;
+        public Rectangle BoundingBox => new Rectangle(
+            (int)Position.X - 8 * SpriteScale, (int)Position.Y - 13 * SpriteScale,
+            16 * SpriteScale, 16 * SpriteScale);
+        public SwordHitbox Sword { get; } = new SwordHitbox();
         public bool isDamaged = false; // Checks if link has taken damage
         private float damageTimer = 0f;
         private const float DamageDuration = 0.5f;
+        public int HitsTaken { get; private set; }
         public bool isGameStart = true; // Checks if game was just started
 
         // use to see if movement/other needs to be stopped - cant move when attacking
@@ -87,7 +92,8 @@ namespace Byte.Player
 
                 if (currentSprite != null)
                 {
-                    currentSprite.Color = Color.Red;
+                    currentSprite.Color = (int)(damageTimer / 0.1f) % 2 == 0
+                        ? Color.Red : Color.White;
                 }
 
                 if (damageTimer <= 0)
@@ -105,10 +111,27 @@ namespace Byte.Player
         // Show damage texture
         public void TakeDamage()
         {
+            if (isDamaged)
+                return;
+
             isDamaged = true;
             damageTimer = DamageDuration;
-            Health--;
+            // This framework scene has no death state yet; keep collisions testable at zero HP.
+            Health = Math.Max(0, Health - 1);
+            HitsTaken++;
+            if (currentSprite != null)
+                currentSprite.Color = Color.Red;
             
+        }
+
+        // Collision correction happens after animation updates. Keep drawing in sync.
+        public void CorrectPosition(Vector2 position)
+        {
+            Position = position;
+            if (currentSprite is MovingAnimatedSprite sprite)
+                sprite.SetPos(position);
+            else if (currentSprite is StaticSprite staticSprite)
+                staticSprite.SetPos(position);
         }
 
         // update player position
@@ -121,6 +144,8 @@ namespace Byte.Player
         // apply the attack animation and disable movment until attack is finished
         public void Attack()
         {
+            if (!IsAttacking)
+                Sword.BeginAttack();
             this.IsAttacking = true;
             this.MovementSpeed = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)
