@@ -40,6 +40,7 @@ Each frame, `Program.Update` first polls the controllers, which run the commands
   "name": "Demo",
   "background": "room1",
   "isStartingRoom": true,
+  "playerSpawn": [1, 1],
   "width": 6,
   "height": 5,
   "tiles": {
@@ -70,7 +71,7 @@ Each frame, `Program.Update` first polls the controllers, which run the commands
     {
       "position": [5, 2],
       "direction": "East",
-      "targetRoom": "DemoRoom",
+      "targetRoom": "Demo",
       "arrivalPosition": [1, 2]
     }
   ]
