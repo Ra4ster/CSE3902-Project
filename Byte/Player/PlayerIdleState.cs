@@ -25,7 +25,7 @@ namespace Byte.Player
         {
             
             // update gameStart so new sprite is only made when game starts
-                link.isGameStart = false;
+            link.isGameStart = false;
 
             // check given direction and update sourceRect to correct frame
                 if (link.Direction == CardinalDirections.South)

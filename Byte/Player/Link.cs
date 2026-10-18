@@ -32,8 +32,7 @@ namespace Byte.Player
         // The starting reference point for most animations and sprite drawing
         public static readonly Vector2 LinkOrigin = new Vector2(8, 13);
 
-        // Misleading name - direction sprite should be moving
-        public Vector2 MovementSpeed { get; set; } = Vector2.Zero;
+
 
         // current health
         public float Health { get; set; } = 3;
@@ -43,6 +42,10 @@ namespace Byte.Player
 
         // Current position of the character
         public Vector2 Position { get; set; } = position;
+        // Misleading name - direction sprite should be moving
+        public float MovementSpeed { get; set; } = 200f;
+
+        public Vector2 Velocity { get; set; } = Vector2.Zero;
 
         // Direction that link is facing
         public Vector2 Direction { get; set; } = CardinalDirections.South;
@@ -70,6 +73,11 @@ namespace Byte.Player
         private MouseController mouseControls { get; set; } = (MouseController)mouseControl;
         private KeyboardController kbControls { get; set; } = (KeyboardController)kbControl;
 
+        // How quickly Link slows down (higher = more friction)
+        public float Deceleration { get; set; } = 1600f;
+
+        // Minimum velocity before Link fully stops
+        private const float StopThreshold = 5f;
 
         // The list of keys pressed
         private Keys[] keys = new Keys[1];
@@ -84,8 +92,24 @@ namespace Byte.Player
             if (shouldBeIdle(keys) && !IsAttacking)
             {
                 GetNewState(new PlayerIdleState());
+                ApplyVelocityDecay(gameTime);
+            }
+           
+            if (IsAttacking)
+            {
+                Velocity = Vector2.Zero;
             }
             state.Update(this, gameTime);
+            float seconds =
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            Position += Velocity * seconds;
+
+            // Keep the sprite aligned with Link's position
+            if (currentSprite is MovingAnimatedSprite animatedSprite)
+                animatedSprite.SetPos(Position);
+            else if (currentSprite is StaticSprite staticSprite)
+                staticSprite.SetPos(Position);
             if (isDamaged)
             {
                 damageTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -121,7 +145,7 @@ namespace Byte.Player
             HitsTaken++;
             if (currentSprite != null)
                 currentSprite.Color = Color.Red;
-            
+
         }
 
         // Collision correction happens after animation updates. Keep drawing in sync.
@@ -135,10 +159,10 @@ namespace Byte.Player
         }
 
         // update player position
-        public void Move(GameTime gameTime)
+        public void Move(Vector2 direction)
         {
-            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Position += MovementSpeed * seconds;
+
+            Velocity = MovementSpeed * direction;
         }
 
         // apply the attack animation and disable movment until attack is finished
@@ -147,7 +171,7 @@ namespace Byte.Player
             if (!IsAttacking)
                 Sword.BeginAttack();
             this.IsAttacking = true;
-            this.MovementSpeed = new Vector2(0, 0);
+            Velocity = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)
             {
                 this.GetNewState(new PlayerAttackState());
@@ -158,7 +182,7 @@ namespace Byte.Player
         public void UseItem()
         {
             this.IsAttacking = true;
-            this.MovementSpeed = new Vector2(0, 0);
+            Velocity = new Vector2(0, 0);
             if (this.state is not PlayerUseItemState)
             {
                 this.GetNewState(new PlayerUseItemState());
@@ -204,5 +228,34 @@ namespace Byte.Player
 
 
 
+
+        public void ApplyVelocityDecay(GameTime gameTime)
+        {
+            float deltaTime =
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Reduce velocity toward zero
+            Velocity = new Vector2(
+                MoveTowardsZero(Velocity.X, Deceleration * deltaTime),
+                MoveTowardsZero(Velocity.Y, Deceleration * deltaTime)
+            );
+
+            // Stop tiny residual movement
+            if (Velocity.Length() < StopThreshold)
+            {
+                Velocity = Vector2.Zero;
+            }
+        }
+
+        private float MoveTowardsZero(float value, float amount)
+        {
+            if (value > 0)
+                return Math.Max(0, value - amount);
+
+            if (value < 0)
+                return Math.Min(0, value + amount);
+
+            return 0;
+        }
     }
 }
