@@ -17,7 +17,7 @@ namespace Byte.Command
         public MoveUpCommand(Game game, Link link) {
             player= link;
             gameGet = game;
-            player.MovementSpeed = new Vector2(0, -200);
+            
         }
          
         public void Execute(GameTime gameTime)
@@ -31,12 +31,12 @@ namespace Byte.Command
             // update direction and move player
             player.Direction = CardinalDirections.North;
             
-            player.MovementSpeed = new Vector2(0, -200);
+            player.Velocity = new Vector2(0, -player.MovementSpeed);
             if (player.state is not PlayerMoveUpState)
             {
                 player.GetNewState(new PlayerMoveUpState());
             }
-            player.Position += player.MovementSpeed *(float)gameTime.ElapsedGameTime.TotalSeconds;
+            
             
         }
     }

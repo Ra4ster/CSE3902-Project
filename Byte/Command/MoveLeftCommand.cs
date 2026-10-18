@@ -41,13 +41,13 @@ namespace Byte.Command
             player.Direction = CardinalDirections.West;
 
             //check if already moving left - if not create new moving left state
-            player.MovementSpeed = new Vector2(-200, 0);
+            player.Velocity = new Vector2(-player.MovementSpeed, 0);
             if (player.state is not PlayerMoveLeftState)
             {
                 player.GetNewState(new PlayerMoveLeftState());
             }
             // update position based on direction and time
-            player.Position += player.MovementSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
         }
 
     }

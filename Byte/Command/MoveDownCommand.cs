@@ -32,12 +32,12 @@ namespace Byte.Command
             //update player direction and move player
             player.Direction = CardinalDirections.South;
 
-            player.MovementSpeed = new Vector2(0, 200);
+            player.Velocity = new Vector2(0, player.MovementSpeed);
             if (player.state is not PlayerMoveDownState)
             {
                 player.GetNewState(new PlayerMoveDownState());
             }
-            player.Position += player.MovementSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
         }
     }
 }

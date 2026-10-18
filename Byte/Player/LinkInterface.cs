@@ -34,7 +34,7 @@ namespace Byte.Player
         public void TakeDamage();
 
         // move player
-        public void Move(GameTime gameTime);
+        public void Move(Vector2 direction);
 
         // cause player to attack
         public void Attack();

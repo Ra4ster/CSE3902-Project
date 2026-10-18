@@ -22,12 +22,13 @@ namespace Byte.Player
         }
         public IPlayerState Update(Link link, GameTime gametime)
         {
+            link.Velocity = new Vector2(link.MovementSpeed, 0 );
             // check if already walking if not start walking
             if (link.currentSprite is not MovingAnimatedSprite)
             {
                 link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                      link.Position,
-                     link.MovementSpeed,
+                     link.Velocity,
                     Color.White,
                     eastFrames,
                     .1f,

@@ -53,7 +53,7 @@ namespace Byte.Player
                 {
                     link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                          link.Position,
-                         link.MovementSpeed,
+                         link.Velocity,
                         Color.White,
                         attackNorthFrames,
                         .1f,
@@ -72,7 +72,7 @@ namespace Byte.Player
                 {
                     link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                          link.Position,
-                         link.MovementSpeed,
+                         link.Velocity,
                         Color.White,
                         attackSouthFrames,
                         .1f,
@@ -83,7 +83,7 @@ namespace Byte.Player
 
                     link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                          link.Position,
-                         link.MovementSpeed,
+                         link.Velocity,
                         Color.White,
                         attackEastWestFrames,
                         .1f,
@@ -93,7 +93,7 @@ namespace Byte.Player
                 {
                     link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                          link.Position,
-                         link.MovementSpeed,
+                         link.Velocity,
                         Color.White,
                         attackEastWestFrames,
                         .1f,
@@ -128,7 +128,7 @@ namespace Byte.Player
                 if (sprite.IsFinished)
                 {
                     link.IsAttacking = false;
-                    link.MovementSpeed = Vector2.Zero;
+                    link.Velocity = Vector2.Zero;
                     link.GetNewState(new PlayerIdleState());
                     link.state.Update(link,gametime);
                 }
