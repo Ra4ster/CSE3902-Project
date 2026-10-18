@@ -1,14 +1,11 @@
-﻿using Byte.Block;
-using Byte.Command;
+﻿using Byte.Command;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
-using Byte.Item;
 using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
-using Byte.Sprite.Enemy;
 using Byte;
 using Byte.Rooms;
 using Byte.Factory;
@@ -41,7 +38,7 @@ public class Program : Game
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.O, Keys.P]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -77,7 +74,7 @@ public class Program : Game
 
         BuildLevel();
 
-        OnClientSizeChanged(this, EventArgs.Empty); // Initialize the spriteTransform matrix
+        OnClientSizeChanged(this, EventArgs.Empty);
         base.LoadContent();
     }
 
@@ -86,14 +83,17 @@ public class Program : Game
     /// </summary>
     public void RequestReset() => resetRequested = true;
 
-    private void LoadRoom(string path)
+    private void LoadRooms()
     {
-        RoomData room = RoomLoader.GetRoomData(path);
+        string roomsDirectory = Path.Combine(AppContext.BaseDirectory, "Content", "Rooms");
+        RoomData[] rooms = Directory.GetFiles(roomsDirectory, "*.json") // Get all .json files in Content/Rooms and convert to DTO
+            .Select(path => RoomLoader.GetRoomData(Path.Combine("Content", "Rooms", Path.GetFileName(path))))
+            .ToArray();
 
         EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
         BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
         ItemFactory itemFactory = new ItemFactory();
-        roomManager = new RoomManager([room], enemyFactory, blockFactory, itemFactory);
+        roomManager = new RoomManager(rooms, enemyFactory, blockFactory, itemFactory);
     }
 
     /// <summary>
@@ -106,9 +106,9 @@ public class Program : Game
         rightClickBindings.Clear();
 
         projectileManager = new ProjectileManager();
-        LoadRoom("Content/Rooms/TestRoom.json");
+        LoadRooms();
 
-        Vector2 linkPos = GameConstants.LINK_START_POS;
+        Vector2 linkPos = roomManager.CurrentRoom.PlayerSpawnPosition;
         link = new Link(linkPos, new StaticSprite(
             GameAssets.Instance.LinkSheet, linkPos,
             Color.White, new Rectangle(1, 11, 16, 16), 6.0f),

@@ -19,7 +19,7 @@ namespace Byte.Factory
         Aquamentus
     }
 
-    public class EnemyFactory : IFactory<EnemyData, AbstractEnemy>
+    public class EnemyFactory : IFactory<EnemyFactoryData, AbstractEnemy>
     {
 
         private readonly ProjectileManager projectileManager;
@@ -29,7 +29,7 @@ namespace Byte.Factory
             this.projectileManager = projectileManager;
         }
 
-        public AbstractEnemy Create(EnemyData data)
+        public AbstractEnemy Create(EnemyFactoryData data)
         {
             if (!Enum.TryParse(data.Type, ignoreCase: true, out EnemyType type) || !Enum.IsDefined(type))
                 throw new InvalidDataException($"Unknown enemy type '{data.Type}'.");

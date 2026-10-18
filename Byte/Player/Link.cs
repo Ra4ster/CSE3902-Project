@@ -156,8 +156,6 @@ namespace Byte.Player
             Array.Exists(keys, key => key == Keys.Left) ||
             Array.Exists(keys, key => key == Keys.Right) ||
             Array.Exists(keys, key => key == Keys.Z) ||
-            Array.Exists(keys, key => key == Keys.I) ||
-            Array.Exists(keys, key => key == Keys.U) ||
             Array.Exists(keys, key => key == Keys.N);
 
 

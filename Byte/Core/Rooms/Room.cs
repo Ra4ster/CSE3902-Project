@@ -2,7 +2,6 @@
 using Byte.Block;
 using Byte.Factory;
 using Byte.Item;
-using Byte.Sprite;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,25 +13,55 @@ namespace Byte.Rooms
         private readonly List<AbstractEnemy> enemies = [];
         private readonly List<IBlock> blocks = [];
         private readonly List<IItem> items = [];
+        private readonly List<DoorData> doors = [];
 
         public IReadOnlyList<AbstractEnemy> Enemies => enemies;
         public IReadOnlyList<IBlock> Blocks => blocks;
         public IReadOnlyList<IItem> Items => items;
-
-        public string name;
+        public IReadOnlyList<DoorData> Doors => doors;
+        public string Name { get; }
+        public Vector2 PlayerSpawnPosition { get; }
+        public bool IsStartingRoom { get; }
 
         public Room(RoomData data,
-        IFactory<EnemyData, AbstractEnemy> enemyFactory,
-        IFactory<BlockData, IBlock> blockFactory,
-        IFactory<ItemData, IItem> itemFactory)
+        IFactory<EnemyFactoryData, AbstractEnemy> enemyFactory,
+        BlockFactory blockFactory,
+        IFactory<ItemFactoryData, IItem> itemFactory)
         {
-            name = data.Name;
+            Name = data.Name;
+            PlayerSpawnPosition = RoomGrid.ToWorld(data.PlayerSpawn);
+            IsStartingRoom = data.IsStartingRoom;
+
+            foreach ((string tileType, List<GridPosition> positions) in data.Tiles)
+                foreach (GridPosition position in positions)
+                    blocks.Add(blockFactory.Create(tileType, RoomGrid.ToWorld(position)));
+
             foreach (EnemyData enemyData in data.Enemies)
-            enemies.Add(enemyFactory.Create(enemyData));
-            foreach (BlockData blockData in data.Blocks)
-            blocks.Add(blockFactory.Create(blockData));
+            {
+                EnemyFactoryData worldData = new EnemyFactoryData
+                {
+                    Type = enemyData.Type,
+                    Position = RoomGrid.ToWorld(enemyData.Position),
+                    Path = enemyData.Path?.Select(RoomGrid.ToWorld).ToArray(),
+                    Speed = enemyData.Speed,
+                    FrameDuration = enemyData.FrameDuration,
+                    WaitDuration = enemyData.WaitDuration,
+                    Scale = enemyData.Scale
+                };
+                enemies.Add(enemyFactory.Create(worldData));
+            }
+
             foreach (ItemData itemData in data.Items)
-            items.Add(itemFactory.Create(itemData));
+            {
+                ItemFactoryData worldData = new ItemFactoryData
+                {
+                    Type = itemData.Type,
+                    Position = RoomGrid.ToWorld(itemData.Position)
+                };
+                items.Add(itemFactory.Create(worldData));
+            }
+
+            doors.AddRange(data.Doors);
         }
 
         public void Draw(SpriteBatch spriteBatch)

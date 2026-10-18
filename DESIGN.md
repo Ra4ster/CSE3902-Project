@@ -8,17 +8,15 @@ This document explains how the Sprint 2 game framework is put together: what eac
 flowchart LR
     KB[KeyboardController] -->|Execute| CMD[ICommand objects]
     CMD --> Link
-    CMD --> BM[BlockManager]
-    CMD --> IM[ItemManager]
-    CMD --> EM[EnemyManager]
     CMD --> PM[ProjectileManager]
     CMD -->|RequestReset| Game
-    Game -->|BuildLevel| D[IDungeon / Dungeon1]
-    D --> BM & IM & EM
-    Game -->|Update / Draw| Link & BM & IM & EM & PM
+    Game -->|BuildLevel| RL[RoomLoader]
+    RL --> RM[RoomManager]
+    RM --> Rooms
+    Game -->|Update / Draw| Link & RM & PM
 ```
 
-Each frame, `Game.Update` first polls the controllers, which run the commands bound to the pressed keys. Then it updates every manager and Link. `Game.Draw` asks each of them to draw into one shared `SpriteBatch`.
+Each frame, `Program.Update` first polls the controllers, which run the commands bound to the pressed keys. Then it updates the current room, projectiles, and Link. `Program.Draw` asks each active component to draw into one shared `SpriteBatch`.
 
 | Pattern | Where it is used |
 |---|---|
@@ -31,11 +29,15 @@ Each frame, `Game.Update` first polls the controllers, which run the commands bo
 
 ## 1. Core loop and level loading (`Byte/Core`)
 
-**What it does.** `Game` owns the MonoGame loop, the `SpriteBatch`, the controllers and one manager per object category. `GameAssets` loads every texture once and exposes it through a singleton. `GameConstants` holds shared values such as the window size, the background color and Link's start position.
+**What it does.** `Program` owns the MonoGame loop, the `SpriteBatch`, the controllers, and the room and projectile managers. `GameAssets` loads every texture once and exposes it through a singleton. `GameConstants` holds shared rendering and window values.
 
-**Level loading.** `Game` builds no objects itself. It takes an `IDungeon` (currently `Dungeon1`), which creates the block, item and enemy managers with their starting contents and positions. Adding another dungeon later means writing another `IDungeon`; `Game` does not change.
+**Level loading.** At startup, `RoomLoader` reads every JSON file in `Content/Rooms`. `RoomData` stores each room's dimensions, sparse tile placements, player spawn, enemy and item spawns, and door destinations. Positions in these files are grid coordinates; omitted tile positions are empty. `Room` converts positions to world coordinates and creates blocks, enemies, and items through their factories. `RoomManager` owns the room collection and updates/draws only its current room.
 
-**Reset (`R`).** `BuildLevel()` creates everything in the level from scratch: it asks the dungeon for new managers, creates a new projectile manager and a new `Link`, and rebuilds all keybindings so every command points at the new objects. `ResetCommand` calls `Game.RequestReset()`, which only sets a flag; `Update` runs `BuildLevel()` after the controllers finish. This avoids changing the keybinding dictionary while `KeyboardController` is still looping over it. No object state is kept in static fields, so nothing survives a reset.
+**Room file format.** `tiles` maps each block type accepted by `BlockFactory` to a list of `[x, y]` positions within the declared `width` and `height`; unlisted cells are empty. Player, enemy, item, door, and enemy-path positions also use `[x, y]` grid coordinates. Each door has a cardinal `direction`, a `targetRoom` name, and an optional target `arrivalPosition`. Exactly one room must set `isStartingRoom` to `true`; loading and manager setup reject invalid dimensions, positions, duplicate tile coordinates or room names, and unresolved door targets.
+
+`RoomManager.EnterDoor` switches to a door's target room and returns the world position where Link should arrive. `origin/main` contains a generic door collision type and `OnCollide` callback, but no concrete door class; that callback can call `EnterDoor` once the collision code is integrated with this room branch.
+
+**Reset (`R`).** `BuildLevel()` reloads the room files, creates a new projectile manager and a new `Link` at the starting room's data-defined spawn, and rebuilds all keybindings so every command points at the new objects. `ResetCommand` calls `Program.RequestReset()`, which only sets a flag; `Update` runs `BuildLevel()` after the controllers finish. This avoids changing the keybinding dictionary while `KeyboardController` is still looping over it.
 
 **Resizing.** Everything is drawn in a fixed 1600×1600 virtual space. When the window changes size, `OnClientSizeChanged` rebuilds a scale-and-translate matrix that is passed to `SpriteBatch.Begin`, so the game keeps its aspect ratio at any window size.
 
@@ -43,7 +45,7 @@ Each frame, `Game.Update` first polls the controllers, which run the commands bo
 
 **Pattern: Command.** `KeyboardController` holds a `Dictionary<Keys, ICommand>`. Each frame it looks up every bound key that is down and calls `Execute(GameTime)` on its command. The controller knows nothing about Link, enemies or blocks, and commands know nothing about the keyboard. Changing a key binding is a one-line change in `Game.BuildLevel()`.
 
-**Press-only keys.** Some actions should run once per key press rather than every frame while the key is held (`E`, `R`, `O`, `P`). The controller keeps a set of these keys and runs their commands only on the frame the key goes down. Other repeatable actions (block/item cycling, using items) space out repeats with a cooldown inside the command.
+**Press-only keys.** Some actions should run once per key press rather than every frame while the key is held (`E`, `R`). The controller keeps a set of these keys and runs their commands only on the frame the key goes down.
 
 **Case.** MonoGame reports physical keys, so upper and lower case letters trigger the same binding.
 
@@ -80,13 +82,13 @@ Game objects hold an `ISprite` and decide where it goes and when it changes; the
 
 **Pattern: Factory.** `BlockFactory` is the only class that knows the tile sheet. The tiles sit on a grid (16×16 tiles, 17 px apart), so each `CreateXBlock` method just picks a column and row. There are 11 block classes (square, keystone, two statues, void, speckled floor, water, stairs, brick, ladder, sand). They all extend `AbstractBlock`, which stores a sprite and a position and implements `IBlock`.
 
-`BlockManager` holds the list and draws only the selected block. `NextBlockCommand` / `PreviousBlockCommand` (`Y` / `T`) move the selection with wrap-around. Blocks are stationary and have no interaction.
+Rooms own their block lists. The active room updates and draws all of its blocks.
 
 ## 6. Items (`Byte/Item`)
 
 **Pattern: Factory.** `ItemFactory` creates the five pickups (rupee, heart, boomerang, bow, bomb) from the item sheet. Rupee, heart and boomerang use an `AnimatedSprite` that flashes between two colors; bow and bomb use a `StaticSprite`. Every item implements `IItem`.
 
-`ItemManager` works like `BlockManager`: it draws one item at a time, and `NextItemCommand` / `PreviousItemCommand` (`I` / `U`) cycle through them with a short cooldown.
+Rooms own their item lists and update and draw all items in the active room.
 
 ## 7. Projectiles (`Byte/Projectile`)
 
@@ -115,7 +117,7 @@ Waypoints and wander targets are clamped to the window too, so an enemy never ge
 
 **Boss attack.** `Aquamentus` adds a fire timer: every 2 seconds it creates three fireballs from its mouth in a leftward spread through `ProjectileFactory`. It keeps the fireballs in its own `ProjectileManager`, so they update and draw only while Aquamentus is the enemy on screen.
 
-**Creation.** `EnemyFactory.Create<T>()` is a single generic method that builds any enemy type with its sheet, path and timing settings. `Dungeon1` uses it to define the starting enemies. `EnemyManager` shows exactly one enemy at a time; `NextEnemyCommand` / `PreviousEnemyCommand` (`P` / `O`) cycle with wrap-around.
+**Creation.** `EnemyFactory` builds the enemy described by each room's data, including its path and timing settings. Rooms own their enemy lists and update and draw all enemies in the active room.
 
 ---
 

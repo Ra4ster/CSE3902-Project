@@ -7,15 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Byte.Factory;
 
 // makes every block type, only place the sheet coordinates should live
-public class BlockFactory : IFactory<BlockData, IBlock>
+public class BlockFactory
 {
-    // the single tiles are in a little palette on the sheet
-    // 16x16 tiles spaced 17px apart starting at (984, 11)
-    private const int TILE_SIZE = 16;
     private const int TILE_PITCH = 17;
     private const int PALETTE_X = 984;
     private const int PALETTE_Y = 11;
-    private const float BLOCK_SCALE = 6.0f;
 
     private readonly Texture2D blockSheet;
 
@@ -24,20 +20,20 @@ public class BlockFactory : IFactory<BlockData, IBlock>
         this.blockSheet = blockSheet;
     }
 
-    public IBlock Create(BlockData data) => data.Type switch
+    public IBlock Create(string type, Vector2 position) => type switch
     {
-        "Square" => CreateSquareBlock(data.Position),
-        "Keystone" => CreateKeystoneBlock(data.Position),
-        "StatueLeft" => CreateStatueLeftBlock(data.Position),
-        "StatueRight" => CreateStatueRightBlock(data.Position),
-        "Void" => CreateVoidBlock(data.Position),
-        "SpeckledFloor" => CreateSpeckledFloorBlock(data.Position),
-        "Water" => CreateWaterBlock(data.Position),
-        "Stairs" => CreateStairsBlock(data.Position),
-        "Brick" => CreateBrickBlock(data.Position),
-        "Ladder" => CreateLadderBlock(data.Position),
-        "Sand" => CreateSandBlock(data.Position),
-        _ => throw new InvalidDataException($"Invalid block data of type: {data.Type}")
+        "Square" => CreateSquareBlock(position),
+        "Keystone" => CreateKeystoneBlock(position),
+        "StatueLeft" => CreateStatueLeftBlock(position),
+        "StatueRight" => CreateStatueRightBlock(position),
+        "Void" => CreateVoidBlock(position),
+        "SpeckledFloor" => CreateSpeckledFloorBlock(position),
+        "Water" => CreateWaterBlock(position),
+        "Stairs" => CreateStairsBlock(position),
+        "Brick" => CreateBrickBlock(position),
+        "Ladder" => CreateLadderBlock(position),
+        "Sand" => CreateSandBlock(position),
+        _ => throw new InvalidDataException($"Invalid block data of type: {type}")
     };
 
     private StaticSprite CreateSprite(int column, int row, Vector2 position)
@@ -45,8 +41,8 @@ public class BlockFactory : IFactory<BlockData, IBlock>
         Rectangle source = new Rectangle(
             PALETTE_X + TILE_PITCH * column,
             PALETTE_Y + TILE_PITCH * row,
-            TILE_SIZE, TILE_SIZE);
-        return new StaticSprite(blockSheet, position, Color.White, source, BLOCK_SCALE);
+            RoomGrid.TILE_SIZE, RoomGrid.TILE_SIZE);
+        return new StaticSprite(blockSheet, position, Color.White, source, RoomGrid.BLOCK_SCALE);
     }
 
     public IBlock CreateSquareBlock(Vector2 position) => new SquareBlock(CreateSprite(0, 0, position), position);

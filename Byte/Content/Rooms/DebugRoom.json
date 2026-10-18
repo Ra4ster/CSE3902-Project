@@ -1,0 +1,62 @@
+{
+  "name": "DebugRoom",
+  "background": "room1",
+  "playerSpawn": [1, 1],
+  "isStartingRoom": true,
+  "width": 16,
+  "height": 16,
+  "tiles": {
+    "Square": [[15, 15]],
+    "Keystone": [[14, 15]],
+    "StatueLeft": [[13, 15]],
+    "StatueRight": [[12, 15]],
+    "Void": [[12, 14]],
+    "SpeckledFloor": [[12, 13]],
+    "Water": [[13, 14]],
+    "Stairs": [[13, 13]],
+    "Brick": [[14, 14]],
+    "Ladder": [[14, 13]],
+    "Sand": [[15, 13]]
+  },
+  "enemies": [
+    {
+      "type": "Stalfos",
+      "position": [2, 1]
+    },
+    {
+      "type": "Goriya",
+      "position": [3, 3],
+      "speed": 120
+    }
+  ],
+  "items": [
+    {
+      "type": "Heart",
+      "position": [1, 2]
+    },
+    {
+      "type": "Rupee",
+      "position": [2, 2]
+    },
+    {
+      "type": "Boomerang",
+      "position": [3, 2]
+    },
+    {
+      "type": "Bow",
+      "position": [1, 3]
+    },
+    {
+      "type": "Bomb",
+      "position": [2, 3]
+    }
+  ],
+  "doors": [
+    {
+      "position": [4, 2],
+      "direction": "East",
+      "targetRoom": "Hall",
+      "arrivalPosition": [1, 2]
+    }
+  ]
+}

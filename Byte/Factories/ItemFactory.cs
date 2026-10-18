@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Factory
 {
-    public class ItemFactory : IFactory<ItemData, IItem>
+    public class ItemFactory : IFactory<ItemFactoryData, IItem>
     {
 
         private readonly Texture2D tileSheet = GameAssets.Instance.ItemSheet;
@@ -15,7 +15,7 @@ namespace Byte.Factory
         {
         }
 
-        public IItem Create(ItemData data) => data.Type switch
+        public IItem Create(ItemFactoryData data) => data.Type switch
         {
             "Rupee" => CreateRupee(data.Position),
             "Heart" => CreateHeart(data.Position),
@@ -113,4 +113,3 @@ namespace Byte.Factory
 
     }
 }
-

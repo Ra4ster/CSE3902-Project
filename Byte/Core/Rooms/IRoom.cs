@@ -14,6 +14,9 @@ namespace Byte.Rooms
         IReadOnlyList<AbstractEnemy> Enemies { get; }
         IReadOnlyList<IBlock> Blocks { get; }
         IReadOnlyList<IItem> Items { get; }
+        IReadOnlyList<DoorData> Doors { get; }
+        string Name { get; }
+        Vector2 PlayerSpawnPosition { get; }
 
         // TODO: IReadOnlyList<ICollidable> collidables { get; }
 
