@@ -31,7 +31,7 @@ This project is a 2D dungeon exploration game framework built in C# using MonoGa
 
 ## Known Bugs
 * **Stalfos Sprite Bleed:** Due to the tightly packed nature of the original NES sprite sheet, the Stalfos bounding box may occasionally show 1 pixel of bleed from adjacent sprites.
-* **No interaction yet:** Objects do not collide or respond to each other; this is intended for Sprint 2 and comes in Sprint 3.
+* **Sprint 3 integration in progress:** Link now collides with the selected barrier and enemy, and sword attacks damage enemies. The current main-branch scene still cycles objects; room loading, door transitions, and item/projectile collisions are separate integration work. See [Link collision behavior and checks](Documentation/LinkCollisions.md).
 
 ## Tools & Processes Used
 To ensure code quality and maintain performance budgets, our team utilized several external software analysis tools:

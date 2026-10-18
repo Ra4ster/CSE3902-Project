@@ -1,16 +1,29 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using Byte.Collidable;
 using Byte.Controller;
 using Byte.Sprite;
+using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Byte.Player
 {
-    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
+    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface, Byte.Collidable.ICollidable
     {
+        public CollisionProperties Properties { get; } =
+        new CollisionProperties
+        {
+            Type = CollidableTypes.Player
+        };
+        public const int SpriteScale = 6;
+        public Rectangle BoundingBox => new Rectangle(
+            (int)Position.X - 8 * SpriteScale, (int)Position.Y - 13 * SpriteScale,
+            16 * SpriteScale, 16 * SpriteScale);
+        public SwordHitbox Sword { get; } = new SwordHitbox();
         public bool isDamaged = false; // Checks if link has taken damage
         private float damageTimer = 0f;
         private const float DamageDuration = 0.5f;
+        public int HitsTaken { get; private set; }
         public bool isGameStart = true; // Checks if game was just started
 
         // use to see if movement/other needs to be stopped - cant move when attacking
@@ -19,8 +32,7 @@ namespace Byte.Player
         // The starting reference point for most animations and sprite drawing
         public static readonly Vector2 LinkOrigin = new Vector2(8, 13);
 
-        // Misleading name - direction sprite should be moving
-        public Vector2 MovementSpeed { get; set; } = Vector2.Zero;
+
 
         // current health
         public float Health { get; set; } = 3;
@@ -30,6 +42,10 @@ namespace Byte.Player
 
         // Current position of the character
         public Vector2 Position { get; set; } = position;
+        // Misleading name - direction sprite should be moving
+        public float MovementSpeed { get; set; } = 200f;
+
+        public Vector2 Velocity { get; set; } = Vector2.Zero;
 
         // Direction that link is facing
         public Vector2 Direction { get; set; } = CardinalDirections.South;
@@ -57,9 +73,16 @@ namespace Byte.Player
         private MouseController mouseControls { get; set; } = (MouseController)mouseControl;
         private KeyboardController kbControls { get; set; } = (KeyboardController)kbControl;
 
+        // How quickly Link slows down (higher = more friction)
+        public float Deceleration { get; set; } = 1600f;
+
+        // Minimum velocity before Link fully stops
+        private const float StopThreshold = 5f;
 
         // The list of keys pressed
         private Keys[] keys = new Keys[1];
+
+
 
 
         public void Update(GameTime gameTime)
@@ -69,15 +92,32 @@ namespace Byte.Player
             if (shouldBeIdle(keys) && !IsAttacking)
             {
                 GetNewState(new PlayerIdleState());
+                ApplyVelocityDecay(gameTime);
+            }
+           
+            if (IsAttacking)
+            {
+                Velocity = Vector2.Zero;
             }
             state.Update(this, gameTime);
+            float seconds =
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            Position += Velocity * seconds;
+
+            // Keep the sprite aligned with Link's position
+            if (currentSprite is MovingAnimatedSprite animatedSprite)
+                animatedSprite.SetPos(Position);
+            else if (currentSprite is StaticSprite staticSprite)
+                staticSprite.SetPos(Position);
             if (isDamaged)
             {
                 damageTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (currentSprite != null)
                 {
-                    currentSprite.Color = Color.Red;
+                    currentSprite.Color = (int)(damageTimer / 0.1f) % 2 == 0
+                        ? Color.Red : Color.White;
                 }
 
                 if (damageTimer <= 0)
@@ -95,24 +135,43 @@ namespace Byte.Player
         // Show damage texture
         public void TakeDamage()
         {
+            if (isDamaged)
+                return;
+
             isDamaged = true;
             damageTimer = DamageDuration;
-            Health--;
-            
+            // This framework scene has no death state yet; keep collisions testable at zero HP.
+            Health = Math.Max(0, Health - 1);
+            HitsTaken++;
+            if (currentSprite != null)
+                currentSprite.Color = Color.Red;
+
+        }
+
+        // Collision correction happens after animation updates. Keep drawing in sync.
+        public void CorrectPosition(Vector2 position)
+        {
+            Position = position;
+            if (currentSprite is MovingAnimatedSprite sprite)
+                sprite.SetPos(position);
+            else if (currentSprite is StaticSprite staticSprite)
+                staticSprite.SetPos(position);
         }
 
         // update player position
-        public void Move(GameTime gameTime)
+        public void Move(Vector2 direction)
         {
-            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Position += MovementSpeed * seconds;
+
+            Velocity = MovementSpeed * direction;
         }
 
         // apply the attack animation and disable movment until attack is finished
         public void Attack()
         {
+            if (!IsAttacking)
+                Sword.BeginAttack();
             this.IsAttacking = true;
-            this.MovementSpeed = new Vector2(0, 0);
+            Velocity = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)
             {
                 this.GetNewState(new PlayerAttackState());
@@ -123,7 +182,7 @@ namespace Byte.Player
         public void UseItem()
         {
             this.IsAttacking = true;
-            this.MovementSpeed = new Vector2(0, 0);
+            Velocity = new Vector2(0, 0);
             if (this.state is not PlayerUseItemState)
             {
                 this.GetNewState(new PlayerUseItemState());
@@ -167,5 +226,34 @@ namespace Byte.Player
 
 
 
+
+        public void ApplyVelocityDecay(GameTime gameTime)
+        {
+            float deltaTime =
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Reduce velocity toward zero
+            Velocity = new Vector2(
+                MoveTowardsZero(Velocity.X, Deceleration * deltaTime),
+                MoveTowardsZero(Velocity.Y, Deceleration * deltaTime)
+            );
+
+            // Stop tiny residual movement
+            if (Velocity.Length() < StopThreshold)
+            {
+                Velocity = Vector2.Zero;
+            }
+        }
+
+        private float MoveTowardsZero(float value, float amount)
+        {
+            if (value > 0)
+                return Math.Max(0, value - amount);
+
+            if (value < 0)
+                return Math.Min(0, value + amount);
+
+            return 0;
+        }
     }
 }

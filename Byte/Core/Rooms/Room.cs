@@ -78,6 +78,7 @@ namespace Byte.Rooms
         {
             foreach (AbstractEnemy enemy in enemies)
                 enemy.Update(gametime);
+            enemies.RemoveAll(enemy => enemy.IsDefeated);
             foreach (IBlock block in blocks)
                 block.Update(gametime);
             foreach (IItem item in items)
