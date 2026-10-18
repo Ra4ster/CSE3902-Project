@@ -1,6 +1,5 @@
 {
   "Version": 1,
-<<<<<<< HEAD
   "WorkspaceRootPath": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\",
   "Documents": [
     {
@@ -14,13 +13,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\sprite\\staticsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\staticsprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-=======
-  "WorkspaceRootPath": "C:\\Users\\rose0\\Projects\\CSE3902-Project\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rose0\\projects\\cse3902-project\\byte\\sprite\\enemy\\minion\\stalfos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\enemy\\minion\\stalfos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
->>>>>>> f5049eb69535181ae74ae43f69de0a436d88bdd7
     }
   ],
   "DocumentGroupContainers": [
@@ -30,11 +22,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-<<<<<<< HEAD
           "SelectedChildIndex": 4,
-=======
-          "SelectedChildIndex": 0,
->>>>>>> f5049eb69535181ae74ae43f69de0a436d88bdd7
           "Children": [
             {
               "$type": "Bookmark",
@@ -45,8 +33,11 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
               "$type": "Document",
-<<<<<<< HEAD
               "DocumentIndex": 2,
               "Title": "StaticSprite.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\StaticSprite.cs",
@@ -55,11 +46,66 @@
               "RelativeToolTip": "Byte\\Sprite\\StaticSprite.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAuwBEAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+<<<<<<< Updated upstream
               "WhenOpened": "2026-10-02T16:22:23.26Z"
+=======
+              "WhenOpened": "2026-10-14T16:50:05.925Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CollisionDispatcher.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Collidable\\CollisionDispatcher.cs",
+              "RelativeDocumentMoniker": "Byte\\Collidable\\CollisionDispatcher.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Collidable\\CollisionDispatcher.cs",
+              "RelativeToolTip": "Byte\\Collidable\\CollisionDispatcher.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAQwCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-14T16:48:13.905Z"
+>>>>>>> Stashed changes
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+<<<<<<< Updated upstream
+=======
+              "Title": "EnemyManager.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\Enemy\\EnemyManager.cs",
+              "RelativeDocumentMoniker": "Byte\\Sprite\\Enemy\\EnemyManager.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\Enemy\\EnemyManager.cs",
+              "RelativeToolTip": "Byte\\Sprite\\Enemy\\EnemyManager.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAgwDwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-14T16:35:50.054Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Stalfos.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
+              "RelativeDocumentMoniker": "Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
+              "RelativeToolTip": "Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAmwA0AAABqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-14T16:31:52.599Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Link.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
+              "RelativeDocumentMoniker": "Byte\\Player\\Link.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
+              "RelativeToolTip": "Byte\\Player\\Link.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwBEAAABuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-30T20:07:57.308Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+>>>>>>> Stashed changes
               "Title": "Game.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\Game.cs",
               "RelativeDocumentMoniker": "Byte\\Core\\Game.cs",
@@ -77,11 +123,30 @@
               "RelativeDocumentMoniker": "Byte\\Player\\Link.cs",
               "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
               "RelativeToolTip": "Byte\\Player\\Link.cs",
-              "ViewState": "AgIAAG8AAAAAAAAAAAAiwIAAAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAAI0AAAAAAAAAAAAiwJ4AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T20:07:57.308Z"
+<<<<<<< Updated upstream
+              "WhenOpened": "2026-09-30T20:07:57.308Z",
+              "EditorCaption": ""
             },
             {
+=======
+              "WhenOpened": "2026-10-12T20:26:23.636Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CollisionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Collidable\\CollisionHandler.cs",
+              "RelativeDocumentMoniker": "Byte\\Collidable\\CollisionHandler.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Collidable\\CollisionHandler.cs",
+              "RelativeToolTip": "Byte\\Collidable\\CollisionHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-12T20:50:55.165Z"
+            },
+            {
+>>>>>>> Stashed changes
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             }
@@ -94,18 +159,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
-=======
-              "DocumentIndex": 0,
-              "Title": "Stalfos.cs",
-              "DocumentMoniker": "C:\\Users\\rose0\\Projects\\CSE3902-Project\\Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
-              "RelativeDocumentMoniker": "Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
-              "ToolTip": "C:\\Users\\rose0\\Projects\\CSE3902-Project\\Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
-              "RelativeToolTip": "Byte\\Sprite\\Enemy\\Minion\\Stalfos.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAwwAwAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-04T00:46:37.272Z",
-              "EditorCaption": ""
->>>>>>> f5049eb69535181ae74ae43f69de0a436d88bdd7
             }
           ]
         }
