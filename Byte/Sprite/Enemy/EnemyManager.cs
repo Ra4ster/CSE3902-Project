@@ -29,14 +29,29 @@ namespace Byte.Sprite.Enemy
 
         public void Draw(SpriteBatch spritePainter)
         {
-            if (enemies.Count > 0)
-                enemies[selectedEnemyIndex].Draw(spritePainter);
+            AbstractEnemy? enemy = GetSelectedEnemy();
+            if (enemy == null) return;
+
+            enemy.Draw(spritePainter);
+            if (Game.DrawBoundingBoxes)
+                Game.BoundingBoxDrawer.Draw(spritePainter, enemy.BoundingBox, Color.Red);
         }
 
         public void Update(GameTime gameTime)
         {
-            if (enemies.Count > 0)
-                enemies[selectedEnemyIndex].Update(gameTime);
+            enemies.RemoveAll(enemy => enemy.IsDefeated);
+            if (enemies.Count == 0) return;
+            selectedEnemyIndex %= enemies.Count;
+            enemies[selectedEnemyIndex].UpdateDamage(gameTime);
+            enemies[selectedEnemyIndex].Update(gameTime);
+        }
+
+        public AbstractEnemy? GetSelectedEnemy()
+        {
+            if (enemies.Count == 0)
+                return null;
+
+            return enemies[selectedEnemyIndex].IsDefeated ? null : enemies[selectedEnemyIndex];
         }
     }
 }

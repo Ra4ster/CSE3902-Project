@@ -1,4 +1,4 @@
-﻿using Byte.Block;
+using Byte.Block;
 using Byte.Command;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,6 +9,8 @@ using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
+using Byte.Collidable;
+
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter.
@@ -18,18 +20,21 @@ public class Game : Microsoft.Xna.Framework.Game
     public GraphicsDeviceManager graphicsDeviceManager;
     private const float SCREEN_FILL_RATIO = 0.85f;
 
+    public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
     public ISprite? linkSprite;
-
+    CollisionDispatcher dispatcher;
     private readonly IDungeon dungeon;
 
     private EnemyManager enemyManager = new EnemyManager();
     private BlockManager blockManager = new BlockManager();
     private ProjectileManager projectileManager = new ProjectileManager();
     private ItemManager itemManager = new ItemManager();
-
+    public static BoundingBoxDrawer BoundingBoxDrawer = null!;
+    
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
+    private SpriteFont statusFont = null!;
 
     Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
     Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
@@ -58,6 +63,8 @@ public class Game : Microsoft.Xna.Framework.Game
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
+
+         dispatcher = new CollisionDispatcher();
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -76,8 +83,9 @@ public class Game : Microsoft.Xna.Framework.Game
     protected override void LoadContent()
     {
         GameAssets.Load(Content);
+        statusFont = Content.Load<SpriteFont>("Roboto");
         SpritePainter = new SpriteBatch(GraphicsDevice);
-
+        BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         BuildLevel();
 
         OnClientSizeChanged(this, EventArgs.Empty); // Initialize the spriteTransform matrix
@@ -149,6 +157,7 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.P, nextEnemyCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
+        LinkCollisionHandler.Register(dispatcher);
     }
 
     private void AddProjectileCommands()
@@ -182,6 +191,7 @@ public class Game : Microsoft.Xna.Framework.Game
         itemManager.Update(gameTime);
 
         link.Update(gameTime);
+        ProcessCollisions();
 
         base.Update(gameTime);
     }
@@ -198,16 +208,61 @@ public class Game : Microsoft.Xna.Framework.Game
         );
 
         link.state.Draw(link);
+        if (DrawBoundingBoxes)
+        {
+            Game.BoundingBoxDrawer.Draw(
+                SpritePainter,
+                link.BoundingBox,
+                Color.Red
+            );
+            
+        }
+
+        if (DrawBoundingBoxes && !link.Sword.BoundingBox.IsEmpty)
+            BoundingBoxDrawer.Draw(SpritePainter!, link.Sword.BoundingBox, Color.Yellow);
+
+        if (DrawBoundingBoxes && blockManager.GetSelectedBlock() is ICollidable block)
+            BoundingBoxDrawer.Draw(SpritePainter!, block.BoundingBox, Color.Green);
 
         enemyManager.Draw(SpritePainter!);
         blockManager.Draw(SpritePainter!);
         projectileManager.Draw(SpritePainter!);
         itemManager.Draw(SpritePainter!);
 
+        SpritePainter!.DrawString(statusFont,
+            $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
+            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+        if (link.Health <= 0)
+            SpritePainter.DrawString(statusFont,
+                "HP is zero. Collision testing stays active; press R to reset.",
+                new Vector2(20, 75), Color.Black);
+
         SpritePainter?.End();
 
         base.Draw(gameTime);
     }
+    private void ProcessCollisions()
+    {
+        // Resolve barriers first, so body and sword contacts use the corrected position.
+        if (blockManager.GetSelectedBlock() is ICollidable block)
+            DispatchCollisions(new List<ICollidable> { link, block });
+        LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
 
+        var collidables = new List<ICollidable> { link };
+        if (enemyManager.GetSelectedEnemy() is ICollidable enemy)
+            collidables.Add(enemy);
+
+        link.Sword.Update(link);
+        if (!link.Sword.BoundingBox.IsEmpty)
+            collidables.Add(link.Sword);
+        DispatchCollisions(collidables);
+    }
+
+    private void DispatchCollisions(IList<ICollidable> collidables)
+    {
+        var detector = new CollisionDetector();
+        foreach (var collision in detector.DetectCollisions(collidables))
+            dispatcher.Dispatch(collision.A, collision.B, collision.Side);
+    }
     public static void Main() => new Game(new Dungeon1()).Run();
 }

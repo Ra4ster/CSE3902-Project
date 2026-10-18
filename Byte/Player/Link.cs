@@ -1,16 +1,29 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using Byte.Collidable;
 using Byte.Controller;
 using Byte.Sprite;
+using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Byte.Player
 {
-    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface
+    public class Link(Vector2 position, ISprite newSprite, SpriteBatch newSpriteBatch, Texture2D sheet, IController mouseControl, IController kbControl) : LinkInterface, Byte.Collidable.ICollidable
     {
+        public CollisionProperties Properties { get; } =
+        new CollisionProperties
+        {
+            Type = CollidableTypes.Player
+        };
+        public const int SpriteScale = 6;
+        public Rectangle BoundingBox => new Rectangle(
+            (int)Position.X - 8 * SpriteScale, (int)Position.Y - 13 * SpriteScale,
+            16 * SpriteScale, 16 * SpriteScale);
+        public SwordHitbox Sword { get; } = new SwordHitbox();
         public bool isDamaged = false; // Checks if link has taken damage
         private float damageTimer = 0f;
         private const float DamageDuration = 0.5f;
+        public int HitsTaken { get; private set; }
         public bool isGameStart = true; // Checks if game was just started
 
         // use to see if movement/other needs to be stopped - cant move when attacking
@@ -62,6 +75,8 @@ namespace Byte.Player
         private Keys[] keys = new Keys[1];
 
 
+
+
         public void Update(GameTime gameTime)
         {
             // Check which keys are pressed - if they affect idle state update if not set to idle
@@ -77,7 +92,8 @@ namespace Byte.Player
 
                 if (currentSprite != null)
                 {
-                    currentSprite.Color = Color.Red;
+                    currentSprite.Color = (int)(damageTimer / 0.1f) % 2 == 0
+                        ? Color.Red : Color.White;
                 }
 
                 if (damageTimer <= 0)
@@ -95,10 +111,27 @@ namespace Byte.Player
         // Show damage texture
         public void TakeDamage()
         {
+            if (isDamaged)
+                return;
+
             isDamaged = true;
             damageTimer = DamageDuration;
-            Health--;
+            // This framework scene has no death state yet; keep collisions testable at zero HP.
+            Health = Math.Max(0, Health - 1);
+            HitsTaken++;
+            if (currentSprite != null)
+                currentSprite.Color = Color.Red;
             
+        }
+
+        // Collision correction happens after animation updates. Keep drawing in sync.
+        public void CorrectPosition(Vector2 position)
+        {
+            Position = position;
+            if (currentSprite is MovingAnimatedSprite sprite)
+                sprite.SetPos(position);
+            else if (currentSprite is StaticSprite staticSprite)
+                staticSprite.SetPos(position);
         }
 
         // update player position
@@ -111,6 +144,8 @@ namespace Byte.Player
         // apply the attack animation and disable movment until attack is finished
         public void Attack()
         {
+            if (!IsAttacking)
+                Sword.BeginAttack();
             this.IsAttacking = true;
             this.MovementSpeed = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)
