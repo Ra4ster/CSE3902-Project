@@ -18,12 +18,12 @@ flowchart LR
 
 Each frame, `Program.Update` first polls the controllers, which run the commands bound to the pressed keys. Then it updates the current room, projectiles, and Link. `Program.Draw` asks each active component to draw into one shared `SpriteBatch`.
 
-| Pattern | Where it is used |
-|---|---|
-| Command | Every key action is an `ICommand` stored in a key → command dictionary |
-| State | Link's behavior is split into `IPlayerState` classes |
-| Factory | `BlockFactory`, `ItemFactory`, `ProjectileFactory`, `EnemyFactory` create objects and own the sprite sheet coordinates |
-| Template method / inheritance | `AbstractEnemy` → `PatrolEnemy` / `WaitingPatrolEnemy` / `WanderingEnemy` → concrete enemies |
+| Pattern                       | Where it is used                                                                                                       |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Command                       | Every key action is an `ICommand` stored in a key → command dictionary                                                 |
+| State                         | Link's behavior is split into `IPlayerState` classes                                                                   |
+| Factory                       | `BlockFactory`, `ItemFactory`, `ProjectileFactory`, `EnemyFactory` create objects and own the sprite sheet coordinates |
+| Template method / inheritance | `AbstractEnemy` → `PatrolEnemy` / `WaitingPatrolEnemy` / `WanderingEnemy` → concrete enemies                           |
 
 ---
 
@@ -33,7 +33,49 @@ Each frame, `Program.Update` first polls the controllers, which run the commands
 
 **Level loading.** At startup, `RoomLoader` reads every JSON file in `Content/Rooms`. `RoomData` stores each room's dimensions, sparse tile placements, player spawn, enemy and item spawns, and door destinations. Positions in these files are grid coordinates; omitted tile positions are empty. `Room` converts positions to world coordinates and creates blocks, enemies, and items through their factories. `RoomManager` owns the room collection and updates/draws only its current room.
 
-**Room file format.** `tiles` maps each block type accepted by `BlockFactory` to a list of `[x, y]` positions within the declared `width` and `height`; unlisted cells are empty. Player, enemy, item, door, and enemy-path positions also use `[x, y]` grid coordinates. Each door has a cardinal `direction`, a `targetRoom` name, and an optional target `arrivalPosition`. Exactly one room must set `isStartingRoom` to `true`; loading and manager setup reject invalid dimensions, positions, duplicate tile coordinates or room names, and unresolved door targets.
+**Room file format.** `tiles` maps each block type accepted by `BlockFactory` to a list of `[x, y]` positions within the declared `width` and `height`; unlisted cells are empty. Player, enemy, item, door, and enemy-path positions also use `[x, y]` grid coordinates. Each door has a cardinal `direction`, a `targetRoom` name, and an optional target `arrivalPosition`. Exactly one room must set `isStartingRoom` to `true`; loading and manager setup reject invalid dimensions, positions, duplicate tile coordinates or room names, and unresolved door targets. Example format:
+
+```json
+{
+  "name": "Demo",
+  "background": "room1",
+  "isStartingRoom": true,
+  "width": 6,
+  "height": 5,
+  "tiles": {
+    "Brick": [
+      [0, 0],
+      [1, 0],
+      [2, 0]
+    ],
+    "SpeckledFloor": [
+      [1, 1],
+      [2, 1],
+      [3, 1]
+    ]
+  },
+  "enemies": [
+    {
+      "type": "Stalfos",
+      "position": [3, 2]
+    }
+  ],
+  "items": [
+    {
+      "type": "Heart",
+      "position": [2, 3]
+    }
+  ],
+  "doors": [
+    {
+      "position": [5, 2],
+      "direction": "East",
+      "targetRoom": "DemoRoom",
+      "arrivalPosition": [1, 2]
+    }
+  ]
+}
+```
 
 `RoomManager.EnterDoor` switches to a door's target room and returns the world position where Link should arrive. `origin/main` contains a generic door collision type and `OnCollide` callback, but no concrete door class; that callback can call `EnterDoor` once the collision code is integrated with this room branch.
 
@@ -55,12 +97,12 @@ Each frame, `Program.Update` first polls the controllers, which run the commands
 
 **Pattern: State.** `Link` holds the player's data: position, facing direction, health, damage flag and current sprite. Its behavior lives in its current `IPlayerState`:
 
-| State | Behavior |
-|---|---|
-| `PlayerIdleState` | Still frame for the facing direction |
+| State                               | Behavior                                                 |
+| ----------------------------------- | -------------------------------------------------------- |
+| `PlayerIdleState`                   | Still frame for the facing direction                     |
 | `PlayerMoveUp/Down/Left/RightState` | Two-frame walking animation that follows Link's position |
-| `PlayerAttackState` | Four-frame sword swing played once, then back to idle |
-| `PlayerUseItemState` | Item-use pose played once, then back to idle |
+| `PlayerAttackState`                 | Four-frame sword swing played once, then back to idle    |
+| `PlayerUseItemState`                | Item-use pose played once, then back to idle             |
 
 `Link.Update` and `Link.Draw` forward to the current state. `Link.GetNewState` swaps states and clears the old sprite, so the next state builds its own animation. Attack and use-item set `IsAttacking`, which blocks movement commands until the animation finishes.
 
@@ -94,24 +136,24 @@ Rooms own their item lists and update and draw all items in the active room.
 
 Every projectile implements `IProjectile` (`Update`, `Draw`, `IsExpired`). `ProjectileManager` updates and draws all live projectiles and removes expired ones each frame, so each projectile class only has to decide when it is done.
 
-| Projectile | Behavior | Expires |
-|---|---|---|
-| `Arrow` | Flies straight in Link's facing direction | After 700 px or when it leaves the window |
-| `Bomb` | Sits for a 1 s fuse, then plays the explosion once | When the explosion animation finishes |
-| `Boomerang` | Flies out 450 px, then reverses | When it returns to where it was thrown |
-| `Fireball` | Aquamentus's attack; flies in a straight line | After 1200 px or when it leaves the window |
+| Projectile  | Behavior                                           | Expires                                    |
+| ----------- | -------------------------------------------------- | ------------------------------------------ |
+| `Arrow`     | Flies straight in Link's facing direction          | After 700 px or when it leaves the window  |
+| `Bomb`      | Sits for a 1 s fuse, then plays the explosion once | When the explosion animation finishes      |
+| `Boomerang` | Flies out 450 px, then reverses                    | When it returns to where it was thrown     |
+| `Fireball`  | Aquamentus's attack; flies in a straight line      | After 1200 px or when it leaves the window |
 
 **Pattern: Factory.** `ProjectileFactory` owns all projectile sprite coordinates (Link's sheet for the player's items, the boss sheet for fireballs). `UseProjectileCommand` takes a factory method as a delegate, so one command class handles keys `1`, `2` and `3`: it computes the spawn point in front of Link and adds whatever projectile the delegate creates.
 
 ## 8. Enemies (`Byte/Sprite/Enemy`)
 
-**Movement through inheritance.** `AbstractEnemy` holds the position, velocity and sprite. Its `Update` calls the abstract `Move` to pick a velocity, applies it, and clamps the result so the whole sprite stays inside `GameConstants.WINDOW_SIZE`. Subclasses only decide *how* to move:
+**Movement through inheritance.** `AbstractEnemy` holds the position, velocity and sprite. Its `Update` calls the abstract `Move` to pick a velocity, applies it, and clamps the result so the whole sprite stays inside `GameConstants.WINDOW_SIZE`. Subclasses only decide _how_ to move:
 
-| Base class | Movement | Used by |
-|---|---|---|
-| `PatrolEnemy` | Walks between waypoints along cardinal directions | `Stalfos` (square loop, sprite flips every 0.25 s) |
-| `WaitingPatrolEnemy` | Same, but pauses at each waypoint | `Gel` (moves, then waits), `Aquamentus` (paces back and forth) |
-| `WanderingEnemy` | Heads to random nearby points, picking a new one on arrival (RNG) | `Keese` (also speeds up over its first 2 s) |
+| Base class           | Movement                                                          | Used by                                                        |
+| -------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- |
+| `PatrolEnemy`        | Walks between waypoints along cardinal directions                 | `Stalfos` (square loop, sprite flips every 0.25 s)             |
+| `WaitingPatrolEnemy` | Same, but pauses at each waypoint                                 | `Gel` (moves, then waits), `Aquamentus` (paces back and forth) |
+| `WanderingEnemy`     | Heads to random nearby points, picking a new one on arrival (RNG) | `Keese` (also speeds up over its first 2 s)                    |
 
 Waypoints and wander targets are clamped to the window too, so an enemy never gets stuck pushing against an edge toward a point it cannot reach.
 
