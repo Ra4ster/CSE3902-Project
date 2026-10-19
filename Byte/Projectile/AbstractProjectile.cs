@@ -21,19 +21,31 @@ namespace Byte.Projectile
 
         Rectangle ICollidable.BoundingBox => new Rectangle((int)Position.X, (int)Position.Y, size.X, size.Y);
 
-        public CollisionProperties Properties { get; } = new CollisionProperties
+        //This distinguishes between player's projectiles that should damage enemy and enemy projectiles that should damage the player.
+        public static CollisionProperties PlayerProjectileProperties { get; } = new CollisionProperties
         {
             Type = CollidableTypes.Projectile,
             IsStatic = false,
             DamagesEnemies = true,
+            DamagesPlayer = false
         };
 
-        protected AbstractProjectile(ISprite sprite, Point size, Vector2 position, Vector2 velocity)
+        public static CollisionProperties EnemyProjectileProperties { get; } = new CollisionProperties
+        {
+            Type = CollidableTypes.EnemyProjectile,
+            IsStatic = false,
+            DamagesEnemies = false,
+            DamagesPlayer = true
+        };
+        public CollisionProperties Properties { get; protected set; }
+
+        protected AbstractProjectile(ISprite sprite, Point size, Vector2 position, Vector2 velocity, CollisionProperties properties)
         {
             this.sprite = sprite;
             this.size = size;
             Position = position;
             Velocity = velocity;
+            Properties = properties;
         }
 
         void IProjectile.Collided() => HasCollided = true;

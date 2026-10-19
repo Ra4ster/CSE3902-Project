@@ -19,7 +19,8 @@ namespace Byte.Projectile
                 bombSprite,
                 new Point((int)(8 * SCALE), (int)(16 * SCALE)), 
                 position,
-                Vector2.Zero 
+                Vector2.Zero,
+                PlayerProjectileProperties
             )
         {
             this.bombSprite = bombSprite;
