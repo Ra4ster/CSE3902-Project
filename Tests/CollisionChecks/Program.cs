@@ -2,6 +2,8 @@ using System.Runtime.CompilerServices;
 using Byte.Block;
 using Byte.Collidable;
 using Byte.Controller;
+using Byte.Item;
+using Byte.Rooms;
 using Byte.Player;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
@@ -148,6 +150,35 @@ Check(door.Visitor == edge, "Door callback must receive Link even in reverse ord
 var defeated = new TestEnemy(Vector2.Zero, 1f);
 for (int hit = 0; hit < 4; hit++) defeated.TakeDamage();
 Check(defeated.IsDefeated && defeated.Health == 0, "Enemy health must stop at zero");
+
+// Pick-ups vanish on contact.
+var rupee = new TestItem(new Vector2(200, 200), new Point(40, 80));
+Link collector = CreateLink(new Vector2(200, 200));
+Check(rupee.BoundingBox == new Rectangle(200, 200, 40, 80), "Item hitbox must match its scaled frame size");
+Collide(rupee, collector);
+Check(rupee.IsCollected, "Touching an item must collect it even in reverse order");
+Collide(collector, rupee);
+Check(rupee.IsCollected, "Collecting an item twice must be harmless");
+
+// A door covers one grid tile and fires its callback when Link touches it.
+var westDoor = new Door(new DoorData { Position = new GridPosition(0, 2), Direction = "West", TargetRoom = "Hall" });
+Check(westDoor.BoundingBox == new Rectangle(0, 192, 96, 96), "Door hitbox must cover its grid tile");
+ICollidable? visitor = null;
+westDoor.Properties.OnCollide = who => visitor = who;
+Link walker = CreateLink(new Vector2(48 + 90, 78 + 192)); // body left edge 6px into the door tile
+Collide(walker, westDoor);
+Check(visitor == walker, "Walking into a door must report Link to the door callback");
+Link bystander = CreateLink(new Vector2(48 + 96, 78 + 192)); // body exactly on the next tile over
+Check(!bystander.BoundingBox.Intersects(westDoor.BoundingBox), "Arriving on the tile next to a door must not re-trigger it");
+
+// Shallow corner clips slide Link around the block, deep ones push him straight back.
+var corner = new SquareBlock(new FakeSprite(), new Vector2(200, 200));
+Link slider = CreateLink(new Vector2(48 + 107, 78 + 110)); // 3px into the block, 6px of vertical overlap
+Collide(slider, corner);
+Check(slider.BoundingBox.Left == 107 && slider.BoundingBox.Bottom == 200, "Shallow corner clips must nudge Link along the block");
+Link blocked = CreateLink(new Vector2(48 + 107, 78 + 160)); // 3px into the block, 56px of vertical overlap
+Collide(blocked, corner);
+Check(blocked.BoundingBox.Right == 200 && blocked.BoundingBox.Top == 160, "Deep side hits must still push Link straight back");
 Console.WriteLine($"Passed {checks} collision checks.");
 
 sealed class TestDoor(Rectangle bounds) : ICollidable
@@ -157,6 +188,8 @@ sealed class TestDoor(Rectangle bounds) : ICollidable
     public CollisionProperties Properties { get; } = new() { Type = CollidableTypes.Door };
     public void Initialize() => Properties.OnCollide = visitor => Visitor = visitor;
 }
+
+sealed class TestItem(Vector2 position, Point size) : AbstractItem(new FakeSprite(), position, size);
 
 sealed class TestEnemy : AbstractEnemy
 {

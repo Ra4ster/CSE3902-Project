@@ -78,7 +78,7 @@ Each frame, `Program.Update` first polls the controllers, which run the commands
 }
 ```
 
-`RoomManager.EnterDoor` switches to a door's target room and returns the world position where Link should arrive. `origin/main` contains a generic door collision type and `OnCollide` callback, but no concrete door class; that callback can call `EnterDoor` once the collision code is integrated with this room branch.
+**Doors.** Each door entry becomes a `Door` collidable covering its grid tile. `Program.LoadRooms` sets every door's `OnCollide` to remember which door Link touched; once collision dispatch is done, `ProcessCollisions` calls `RoomManager.EnterDoor`, which swaps the current room and returns the arrival tile. Link is put on that tile with zero velocity so he does not walk straight back through. `]` / `[` call `RoomManager.NextRoom` / `PreviousRoom` to jump between rooms for debugging.
 
 **Reset (`R`).** `BuildLevel()` reloads the room files, creates a new projectile manager and a new `Link` at the starting room's data-defined spawn, and rebuilds all keybindings so every command points at the new objects. `ResetCommand` calls `Program.RequestReset()`, which only sets a flag; `Update` runs `BuildLevel()` after the controllers finish. This avoids changing the keybinding dictionary while `KeyboardController` is still looping over it.
 
@@ -131,7 +131,7 @@ Rooms own their block lists. The active room updates and draws all of its blocks
 
 **Pattern: Factory.** `ItemFactory` creates the five pickups (rupee, heart, boomerang, bow, bomb) from the item sheet. Rupee, heart and boomerang use an `AnimatedSprite` that flashes between two colors; bow and bomb use a `StaticSprite`. Every item implements `IItem`.
 
-Rooms own their item lists and update and draw all items in the active room.
+Every item extends `AbstractItem`, which holds the sprite, position and the scaled frame size used as its hitbox. Items are `ICollidable` (type `ItemPickup`); when Link touches one the handler calls `Collect()`, the item stops drawing and the room drops it on the next update. Rooms own their item lists and update and draw all items in the active room.
 
 ## 7. Projectiles (`Byte/Projectile`)
 
@@ -164,8 +164,24 @@ Waypoints and wander targets are clamped to the window too, so an enemy never ge
 
 ---
 
-## Known design debt (planned for Sprint 3)
+## 9. Collisions (`Byte/Collidable`)
 
-- Link's animation frames and the enemy frames are still defined in the state and enemy classes instead of in a factory, unlike blocks, items and projectiles. Moving them into a sprite factory is the first refactor for Sprint 3.
-- There are no shared `IGameObject` / `IDrawable` / `IUpdateable` interfaces yet; each category has its own interface. These will be needed for collision handling in Sprint 3.
-- Movement commands still change Link's position directly. Moving that logic into `Link` (for example `Link.Move(direction)`) will make collision easier to add.
+**Pattern: Strategy.** Each pair of object types gets its own handler. Anything that can touch something implements `ICollidable`, which is just a `BoundingBox` plus a `CollisionProperties` (type string, `BlocksPlayer`, `DamagesPlayer`, `DamagesEnemies`, and an optional `OnCollide` callback). `CollisionDetector` takes a list of collidables and returns every pair that overlaps, along with which side they hit on (whichever overlap axis is smaller). `CollisionDispatcher` maps a `(typeA, typeB)` pair to one `CollisionHandler` and registers the flipped pair for you, so a rule only has to be written once. `LinkCollisionHandler.Register` sets up the rules we have so far:
+
+| Pair | What happens |
+|---|---|
+| Player / Block | If the block has `BlocksPlayer`, Link gets pushed back out on the side he hit. If he only clipped the corner by 24 px or less he gets nudged sideways instead, which is what makes one-tile door gaps passable. |
+| Player / Enemy | `Link.TakeDamage()`: lose 1 HP, flash red, 0.5 s invulnerable. |
+| Sword / Enemy | `SwordHitbox.Hit` hurts an enemy once per swing. At 0 HP the room drops it. |
+| Player / ItemPickup | `IItem.Collect()`, the room drops the item next update. |
+| Player / Door | The door's `OnCollide` remembers the door, and the room switch happens after dispatch. |
+
+`Program.ProcessCollisions` runs right after `Link.Update`. Blocks go first so everything after sees Link's corrected position, then he is clamped to the window, then one dispatch over Link, the sword hitbox, and the current room's enemies, items and doors. The sword is its own `ICollidable` (`SwordHitbox`) and only has a box during the active swing frames, so a sword hit can't be confused with Link bumping into something.
+
+## Known design debt
+
+- Projectiles aren't `ICollidable` yet, so arrows, bombs and boomerangs go through everything.
+- Enemies clamp to the window, not to the room's walls.
+- There is no camera. Rooms draw in the fixed 1600×1600 space and a door is a hard cut to the next room.
+- `Link` still has its own frame rectangles instead of getting them from a sprite factory.
+

@@ -7,30 +7,30 @@ namespace Byte.Rooms
     public class RoomManager
     {
         private readonly Dictionary<string, Room> roomsByName = new(StringComparer.Ordinal);
+        private readonly List<Room> rooms = [];
         public IReadOnlyList<IRoom> Rooms { get; }
         public IRoom CurrentRoom { get; private set; }
 
         public RoomManager(IEnumerable<RoomData> roomsData, EnemyFactory enemyFactory, BlockFactory blockFactory, ItemFactory itemFactory)
         {
             RoomData[] roomDataArray = roomsData.ToArray();
-            List<Room> loadedRooms = [];
             foreach (RoomData roomData in roomDataArray)
             {
                 Room room = new Room(roomData, enemyFactory, blockFactory, itemFactory);
                 if (!roomsByName.TryAdd(room.Name, room))
                     throw new InvalidDataException($"Duplicate room name '{room.Name}'.");
-                loadedRooms.Add(room);
+                rooms.Add(room);
             }
 
-            if (loadedRooms.Count == 0)
+            if (rooms.Count == 0)
                 throw new InvalidDataException("No rooms were provided.");
 
-            Room[] startingRooms = roomsByName.Values.Where(room => room.IsStartingRoom).ToArray();
+            Room[] startingRooms = rooms.Where(room => room.IsStartingRoom).ToArray();
             if (startingRooms.Length != 1)
                 throw new InvalidDataException($"Expected exactly one starting room, found {startingRooms.Length}.");
 
             ValidateDoors(roomDataArray);
-            Rooms = loadedRooms.AsReadOnly();
+            Rooms = rooms.AsReadOnly();
             CurrentRoom = startingRooms[0];
         }
 
@@ -53,7 +53,21 @@ namespace Byte.Rooms
             return room.PlayerSpawnPosition;
         }
 
-        public Vector2 EnterDoor(DoorData door)
+        public Vector2 NextRoom() => StepRoom(1);
+
+        public Vector2 PreviousRoom() => StepRoom(-1);
+
+        private Vector2 StepRoom(int offset)
+        {
+            int index = rooms.IndexOf((Room)CurrentRoom) + offset;
+            if (index < 0)
+                index = rooms.Count - 1;
+            else if (index >= rooms.Count)
+                index = 0;
+            return GoToRoom(rooms[index].Name);
+        }
+
+        public Vector2 EnterDoor(Door door)
         {
             if (!CurrentRoom.Doors.Contains(door))
                 throw new InvalidOperationException($"Door does not belong to current room '{CurrentRoom.Name}'.");
@@ -62,7 +76,7 @@ namespace Byte.Rooms
                     $"Door in room '{CurrentRoom.Name}' targets unknown room '{door.TargetRoom}'.");
 
             CurrentRoom = targetRoom;
-            return door.ArrivalPosition is GridPosition arrivalPosition
+            return door.Data.ArrivalPosition is GridPosition arrivalPosition
                 ? RoomGrid.ToWorld(arrivalPosition)
                 : targetRoom.PlayerSpawnPosition;
         }

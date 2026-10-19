@@ -25,6 +25,10 @@ namespace Byte.Factory
             _ => throw new InvalidDataException($"Could not find item data with type: {data.Type}")
         };
 
+        // hitbox size = frame size after scaling
+        private static Point ScaledSize(Rectangle frame, float scale) =>
+            new Point((int)(frame.Width * scale), (int)(frame.Height * scale));
+
         public IItem CreateRupee(Vector2 position)
         {
             Rectangle[] rupeeFrames =
@@ -42,7 +46,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Rupee(rupeeSprite, position);
+            return new Rupee(rupeeSprite, position, ScaledSize(rupeeFrames[0], 5f));
         }
 
         public IItem CreateHeart(Vector2 position)
@@ -63,7 +67,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Heart(HeartSprite, position);
+            return new Heart(HeartSprite, position, ScaledSize(heartFrames[0], 5f));
         }
         public IItem CreateBomb(Vector2 position)
         {
@@ -76,7 +80,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Bomb(BombSprite, position);
+            return new Bomb(BombSprite, position, ScaledSize(bombFrame, 5f));
         }
         public IItem CreateBow(Vector2 position)
         {
@@ -88,7 +92,7 @@ namespace Byte.Factory
                 bowFrame,
                 5f
             );
-            return new Bow(BowSprite, position);
+            return new Bow(BowSprite, position, ScaledSize(bowFrame, 5f));
         }
 
         public IItem CreateBoomerang(Vector2 position)
@@ -108,7 +112,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Boomerang(boomerangSprite, position);
+            return new Boomerang(boomerangSprite, position, ScaledSize(boomerangFrames[0], 5f));
         }
 
     }

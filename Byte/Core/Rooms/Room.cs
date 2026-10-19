@@ -1,5 +1,6 @@
 
 using Byte.Block;
+using Byte.Collidable;
 using Byte.Factory;
 using Byte.Item;
 using Byte.Sprite.Enemy;
@@ -13,15 +14,21 @@ namespace Byte.Rooms
         private readonly List<AbstractEnemy> enemies = [];
         private readonly List<IBlock> blocks = [];
         private readonly List<IItem> items = [];
-        private readonly List<DoorData> doors = [];
+        private readonly List<Door> doors = [];
 
         public IReadOnlyList<AbstractEnemy> Enemies => enemies;
         public IReadOnlyList<IBlock> Blocks => blocks;
         public IReadOnlyList<IItem> Items => items;
-        public IReadOnlyList<DoorData> Doors => doors;
+        public IReadOnlyList<Door> Doors => doors;
         public string Name { get; }
         public Vector2 PlayerSpawnPosition { get; }
         public bool IsStartingRoom { get; }
+
+        public IEnumerable<ICollidable> Collidables =>
+            blocks.OfType<ICollidable>()
+                .Concat(enemies)
+                .Concat(items)
+                .Concat(doors);
 
         public Room(RoomData data,
         IFactory<EnemyFactoryData, AbstractEnemy> enemyFactory,
@@ -61,17 +68,18 @@ namespace Byte.Rooms
                 items.Add(itemFactory.Create(worldData));
             }
 
-            doors.AddRange(data.Doors);
+            foreach (DoorData doorData in data.Doors)
+                doors.Add(new Door(doorData));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (AbstractEnemy enemy in enemies)
-                enemy.Draw(spriteBatch);
             foreach (IBlock block in blocks)
                 block.Draw(spriteBatch);
             foreach (IItem item in items)
                 item.Draw(spriteBatch);
+            foreach (AbstractEnemy enemy in enemies)
+                enemy.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
@@ -83,6 +91,7 @@ namespace Byte.Rooms
                 block.Update(gametime);
             foreach (IItem item in items)
                 item.Update(gametime);
+            items.RemoveAll(item => item.IsCollected);
         }
     }
 }

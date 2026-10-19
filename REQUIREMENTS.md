@@ -4,7 +4,7 @@
 
 1.  [Sprint 1](#sprint-1): Introduction
 2.  [Sprint 2](#sprint-2): Enemy, Player, Projectiles, Blocks, Items
-3.  [Sprint 3](#sprint-3): _N/A (not implementing)_
+3.  [Sprint 3](#sprint-3): Collision and Level Framework
 4.  [Sprint 4](#sprint-4): _N/A (not not implementing)_
 
 ---
@@ -77,9 +77,23 @@
   - [x] Load room file data through each of the factories.
   - [x] Room-owned lists and manager for the current room.
   - [x] Instantiate at least 3 rooms and a debug room with every block/item in it.
-  - [ ] Connect rooms to door and camera logic, so rooms can connect.
+  - [x] Doors in the room file: position, direction, target room, arrival tile.
+  - [x] Walking into a door moves Link to the target room.
+  - [x] `[` / `]` jump to the previous / next room (debug).
+  - [ ] Every room has at least one enemy and one item (`Hall` and `Chamber` are still empty).
+- Collisions:
+  - [x] `ICollidable` + detector that finds overlapping pairs and which side they hit on.
+  - [x] Dispatcher that maps a (type, type) pair to one handler, either order.
+  - [x] Link can't walk through walls/barrier tiles, can walk over floor, sand, stairs and ladder.
+  - [x] Link gets nudged around a block corner if he clips it by less than a quarter tile.
+  - [x] Link flashes red and loses 1 HP when touching an enemy, 0.5 s invulnerable after.
+  - [x] Enemies flash red and lose 1 HP when the sword hits them during an attack, once per swing.
+  - [x] Items disappear when Link touches them.
+  - [ ] Projectiles collide with enemies and walls.
+  - [ ] Link death at 0 HP.
 - Other:
   - [x] Remove Sprint 2 cycling code and dependencies.
+  - [x] `Tests/CollisionChecks` covers blocks, enemies, sword, items, doors and corner nudging.
   - [ ] Publish GitHub Sprint 3 release.
 
 ## Sprint 4

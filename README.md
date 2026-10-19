@@ -13,12 +13,32 @@
 ## Project Description
 This project is a 2D dungeon exploration game framework built in C# using MonoGame. Designed around Agile software development principles, it mimics the mechanics of the original NES Legend of Zelda. The current iteration features a modular entity-component design, a state-machine-driven player character (Link), and extensible interfaces for blocks, enemies, items, and projectiles.
 
+As of Sprint 3 the dungeon is loaded from JSON room files in `Byte/Content/Rooms` (nothing about the layout is hard coded), Link collides with walls, enemies, items and doors, and walking into a door takes you to the next room. The room file format is written up in [DESIGN.md](DESIGN.md#1-core-loop-and-level-loading-bytecore).
+
+## Running it
+You need the .NET 10 SDK. From the repo root:
+
+```
+dotnet run --project Byte
+```
+
+The headless collision checks run the same way:
+
+```
+dotnet run --project Tests/CollisionChecks
+```
+
 ## Controls
 **Player Actions**
 * **Movement:** `W`, `A`, `S`, `D` (or Arrow Keys)
 * **Attack (Sword):** `Z` or `N`
 * **Use Item/Projectile:** `1` (Arrow), `2` (Bomb), `3` (Boomerang)
 * **Take Damage (Debug):** `E`
+
+**Rooms**
+* **Change Room:** walk into a door (blue box)
+* **Previous / Next Room (debug):** `[` / `]`
+* **Hitbox colors:** red Link, yellow sword, green wall, light green floor, orange enemy, magenta item, blue door
 
 **System Controls**
 * **Reset Game:** `R` (Full level reload from the room data files)
@@ -28,17 +48,22 @@ This project is a 2D dungeon exploration game framework built in C# using MonoGa
 * [Requirements](REQUIREMENTS.md)
 * [Design document](DESIGN.md): how each component works and which design patterns it uses
 * [Sprint 2 reflection](SPRINT2REFLECTION.md)
+* [Link collision behavior and checks](Documentation/LinkCollisions.md)
+* [Code review transcript](Documentation/ClaudeAnalysis.md): the Sprint 2 code analysis deliverable
 
 ## Known Bugs
 * **Stalfos Sprite Bleed:** Due to the tightly packed nature of the original NES sprite sheet, the Stalfos bounding box may occasionally show 1 pixel of bleed from adjacent sprites.
-* **Sprint 3 integration in progress:** Link now collides with the selected barrier and enemy, and sword attacks damage enemies. The current main-branch scene still cycles objects; room loading, door transitions, and item/projectile collisions are separate integration work. See [Link collision behavior and checks](Documentation/LinkCollisions.md).
+* **Projectiles don't collide yet:** arrows, bombs and boomerangs pass through enemies and walls.
+* **No death state:** Link stays at 0 HP until you press `R`.
+* **Tight doors:** Link's hitbox is one tile and so is the door gap. He gets nudged in if he's within a quarter tile, otherwise he stops on the wall.
+* **Enemies ignore walls:** they are clamped to the window, not the room, so patrols can walk over bricks.
 
 ## Tools & Processes Used
-To ensure code quality and maintain performance budgets, our team utilized several external software analysis tools:
-
-1. **Code Metrics (Tokei):** We utilized Tokei to generate comprehensive codebase metrics, including lines of code, blank lines, and comment ratios across our C# files. The raw output is available in our `Documentation/Resources/` directory.
-2. **Performance Profiling (dotnet-trace & Speedscope):** We captured runtime execution traces of our game loop using `dotnet-trace`. These traces were exported and visualized as interactive flamegraphs via Speedscope to monitor the CPU cycles spent in our `Update()` and `Draw()` methods.
-3. **Visual Studio Diagnostic Tools:** We also used the built-in diagnostic tools in Visual Studio Community Edition to view heap, memory usage, and CPU/GPU performance overall.
+1. **Code Metrics (Tokei):** Tokei gives us lines of code, blank lines and comment ratios across the C# files. The raw output is in `Documentation/tokei.txt`.
+2. **Performance Profiling (dotnet-trace & Speedscope):** We recorded traces of the game loop with `dotnet-trace` and opened them in Speedscope to see where `Update()` and `Draw()` spend their time. The trace is `Documentation/Byte.speedscope.json`.
+3. **Visual Studio Diagnostic Tools:** Heap, memory and CPU/GPU usage from the built-in diagnostics in Visual Studio Community.
+4. **Code review:** Each PR gets one reviewer before merge. The Sprint 2 code analysis was done as a chat review, transcript in `Documentation/ClaudeAnalysis.md`.
+5. **Collision checks:** `Tests/CollisionChecks` is a small console program that runs Link into blocks, enemies, items and doors without a window and fails loudly if a rule breaks.
 
 ### Diagnostic Visualizations
 ![Diagnostic Trace](Documentation/Resources/diagnostic.png)
