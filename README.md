@@ -20,13 +20,8 @@ This project is a 2D dungeon exploration game framework built in C# using MonoGa
 * **Use Item/Projectile:** `1` (Arrow), `2` (Bomb), `3` (Boomerang)
 * **Take Damage (Debug):** `E`
 
-**Environment & Debug Cycling**
-* **Cycle Blocks:** `T` (Previous), `Y` (Next)
-* **Cycle Items:** `U` (Previous), `I` (Next)
-* **Cycle Enemies:** `O` (Previous), `P` (Next)
-
 **System Controls**
-* **Reset Game:** `R` (Full level reload: rebuilds the player, blocks, items, enemies, and projectiles from the dungeon)
+* **Reset Game:** `R` (Full level reload from the room data files)
 * **Quit:** `Q`
 
 ## Documents

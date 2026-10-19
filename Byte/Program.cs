@@ -1,21 +1,31 @@
+
+﻿using Byte.Command;
+
 using Byte.Block;
 using Byte.Command;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Byte.Controller;
-using Byte.Item;
 using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
+
+using Byte;
+using Byte.Rooms;
+using Byte.Factory;
+using Byte.Collidable;
+
 using Byte.Sprite.Enemy;
 using Byte.Collidable;
 
 
+
 /// <summary>
-/// Class representing the game, containing the graphics device and sprite painter.
+/// Class representing the game, containing the graphics device and sprite painter. Also the entrypoint of the application.
 /// </summary>
-public class Game : Microsoft.Xna.Framework.Game
+public class Program : Game
 {
     public GraphicsDeviceManager graphicsDeviceManager;
     private const float SCREEN_FILL_RATIO = 0.85f;
@@ -23,15 +33,12 @@ public class Game : Microsoft.Xna.Framework.Game
     public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
     public ISprite? linkSprite;
-    CollisionDispatcher dispatcher;
-    private readonly IDungeon dungeon;
 
-    private EnemyManager enemyManager = new EnemyManager();
-    private BlockManager blockManager = new BlockManager();
     private ProjectileManager projectileManager = new ProjectileManager();
-    private ItemManager itemManager = new ItemManager();
+    private RoomManager roomManager = null!;
+    private readonly CollisionDispatcher dispatcher = new();
     public static BoundingBoxDrawer BoundingBoxDrawer = null!;
-    
+
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
@@ -45,11 +52,9 @@ public class Game : Microsoft.Xna.Framework.Game
 
     private bool resetRequested = false;
 
-    public Game(IDungeon dungeon)
+    public Program()
     {
-        this.dungeon = dungeon;
-
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.O, Keys.P]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -64,7 +69,9 @@ public class Game : Microsoft.Xna.Framework.Game
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
 
-         dispatcher = new CollisionDispatcher();
+
+        LinkCollisionHandler.Register(dispatcher);
+
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -88,7 +95,7 @@ public class Game : Microsoft.Xna.Framework.Game
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         BuildLevel();
 
-        OnClientSizeChanged(this, EventArgs.Empty); // Initialize the spriteTransform matrix
+        OnClientSizeChanged(this, EventArgs.Empty);
         base.LoadContent();
     }
 
@@ -97,8 +104,21 @@ public class Game : Microsoft.Xna.Framework.Game
     /// </summary>
     public void RequestReset() => resetRequested = true;
 
+    private void LoadRooms()
+    {
+        string roomsDirectory = Path.Combine(AppContext.BaseDirectory, "Content", "Rooms");
+        RoomData[] rooms = Directory.GetFiles(roomsDirectory, "*.json") // Get all .json files in Content/Rooms and convert to DTO
+            .Select(path => RoomLoader.GetRoomData(Path.Combine("Content", "Rooms", Path.GetFileName(path))))
+            .ToArray();
+
+        EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
+        BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
+        ItemFactory itemFactory = new ItemFactory();
+        roomManager = new RoomManager(rooms, enemyFactory, blockFactory, itemFactory);
+    }
+
     /// <summary>
-    /// Builds every object in the level from the dungeon, along with the commands bound to them.
+    /// Builds every object in the level from the roomManager, along with the commands bound to them.
     /// </summary>
     private void BuildLevel()
     {
@@ -107,21 +127,14 @@ public class Game : Microsoft.Xna.Framework.Game
         rightClickBindings.Clear();
 
         projectileManager = new ProjectileManager();
-        enemyManager = dungeon.CreateEnemies(projectileManager);
-        itemManager = dungeon.CreateItems();
-        blockManager = dungeon.CreateBlocks();
+        LoadRooms();
 
-        Vector2 linkPos = GameConstants.LINK_START_POS;
+        Vector2 linkPos = roomManager.CurrentRoom.PlayerSpawnPosition;
         link = new Link(linkPos, new StaticSprite(
             GameAssets.Instance.LinkSheet, linkPos,
             Color.White, new Rectangle(1, 11, 16, 16), 6.0f),
             SpritePainter!, GameAssets.Instance.LinkSheet,
             mouseControls, kbControls);
-
-        ICommand NextItemCommand = new NextItemCommand(itemManager);
-        ICommand PreviousItemCommand = new PreviousItemCommand(itemManager);
-        keybindings.Add(Keys.I, NextItemCommand);
-        keybindings.Add(Keys.U, PreviousItemCommand);
 
         link.sourceRects = new Rectangle[10];
 
@@ -132,10 +145,6 @@ public class Game : Microsoft.Xna.Framework.Game
         ICommand moveRightCommand = new MoveRightCommand(this, link);
         ICommand quitCommand = new QuitCommand(this);
         ICommand resetCommand = new ResetCommand(this);
-        ICommand nextBlockCommand = new NextBlockCommand(blockManager);
-        ICommand previousBlockCommand = new PreviousBlockCommand(blockManager);
-        ICommand nextEnemyCommand = new NextEnemyCommand(enemyManager);
-        ICommand previousEnemyCommand = new PreviousEnemyCommand(enemyManager);
         ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
@@ -151,10 +160,6 @@ public class Game : Microsoft.Xna.Framework.Game
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
-        keybindings.Add(Keys.T, previousBlockCommand);
-        keybindings.Add(Keys.Y, nextBlockCommand);
-        keybindings.Add(Keys.O, previousEnemyCommand);
-        keybindings.Add(Keys.P, nextEnemyCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
         LinkCollisionHandler.Register(dispatcher);
@@ -185,10 +190,8 @@ public class Game : Microsoft.Xna.Framework.Game
             BuildLevel();
         }
 
-        enemyManager.Update(gameTime);
-        blockManager.Update(gameTime);
         projectileManager.Update(gameTime);
-        itemManager.Update(gameTime);
+        roomManager.Update(gameTime);
 
         link.Update(gameTime);
         ProcessCollisions();
@@ -208,26 +211,25 @@ public class Game : Microsoft.Xna.Framework.Game
         );
 
         link.state.Draw(link);
+        roomManager.Draw(SpritePainter!);
+        projectileManager.Draw(SpritePainter!);
         if (DrawBoundingBoxes)
         {
-            Game.BoundingBoxDrawer.Draw(
-                SpritePainter,
-                link.BoundingBox,
-                Color.Red
-            );
-            
+            BoundingBoxDrawer.Draw(SpritePainter!, link.BoundingBox, Color.Red);
+            if (!link.Sword.BoundingBox.IsEmpty)
+                BoundingBoxDrawer.Draw(SpritePainter!, link.Sword.BoundingBox, Color.Yellow);
+
+            foreach (ICollidable collidable in GetRoomCollidables())
+                BoundingBoxDrawer.Draw(SpritePainter!, collidable.BoundingBox, Color.Green);
         }
 
-        if (DrawBoundingBoxes && !link.Sword.BoundingBox.IsEmpty)
-            BoundingBoxDrawer.Draw(SpritePainter!, link.Sword.BoundingBox, Color.Yellow);
-
-        if (DrawBoundingBoxes && blockManager.GetSelectedBlock() is ICollidable block)
-            BoundingBoxDrawer.Draw(SpritePainter!, block.BoundingBox, Color.Green);
-
-        enemyManager.Draw(SpritePainter!);
-        blockManager.Draw(SpritePainter!);
-        projectileManager.Draw(SpritePainter!);
-        itemManager.Draw(SpritePainter!);
+        SpritePainter!.DrawString(statusFont,
+            $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
+            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+        if (link.Health <= 0)
+            SpritePainter.DrawString(statusFont,
+                "HP is zero. Collision testing stays active; press R to reset.",
+                new Vector2(20, 75), Color.Black);
 
         SpritePainter!.DrawString(statusFont,
             $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
@@ -243,14 +245,17 @@ public class Game : Microsoft.Xna.Framework.Game
     }
     private void ProcessCollisions()
     {
-        // Resolve barriers first, so body and sword contacts use the corrected position.
-        if (blockManager.GetSelectedBlock() is ICollidable block)
+
+        foreach (ICollidable block in roomManager.CurrentRoom.Blocks.OfType<ICollidable>())
+        {
             DispatchCollisions(new List<ICollidable> { link, block });
+        }
         LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
 
         var collidables = new List<ICollidable> { link };
-        if (enemyManager.GetSelectedEnemy() is ICollidable enemy)
-            collidables.Add(enemy);
+
+        collidables.AddRange(roomManager.CurrentRoom.Enemies);
+
 
         link.Sword.Update(link);
         if (!link.Sword.BoundingBox.IsEmpty)
@@ -264,5 +269,10 @@ public class Game : Microsoft.Xna.Framework.Game
         foreach (var collision in detector.DetectCollisions(collidables))
             dispatcher.Dispatch(collision.A, collision.B, collision.Side);
     }
-    public static void Main() => new Game(new Dungeon1()).Run();
+
+    private IEnumerable<ICollidable> GetRoomCollidables() =>
+        roomManager.CurrentRoom.Blocks.OfType<ICollidable>()
+            .Concat(roomManager.CurrentRoom.Enemies);
+
+    public static void Main() => new Program().Run();
 }

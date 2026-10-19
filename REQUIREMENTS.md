@@ -71,7 +71,16 @@
 
 ### Sprint 3 Goals:
 
-- ...
+- Rooms:
+  - [x] Create a custom Json Serializer for making blocks easier to create (i.e. `"Brick": [1,2]` instead of `{"type": "Brick", "position": {"x": 1, "y": 2}}`).
+  - [x] Document the format of a room.json file for future room creation in a `DESIGN.md`.
+  - [x] Load room file data through each of the factories.
+  - [x] Room-owned lists and manager for the current room.
+  - [x] Instantiate at least 3 rooms and a debug room with every block/item in it.
+  - [ ] Connect rooms to door and camera logic, so rooms can connect.
+- Other:
+  - [x] Remove Sprint 2 cycling code and dependencies.
+  - [ ] Publish GitHub Sprint 3 release.
 
 ## Sprint 4
 

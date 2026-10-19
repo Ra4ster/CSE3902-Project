@@ -1,19 +1,17 @@
+using Byte.Block;
+using Byte.Rooms;
 using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Block;
+namespace Byte.Factory;
 
 // makes every block type, only place the sheet coordinates should live
 public class BlockFactory
 {
-    // the single tiles are in a little palette on the sheet
-    // 16x16 tiles spaced 17px apart starting at (984, 11)
-    private const int TILE_SIZE = 16;
     private const int TILE_PITCH = 17;
     private const int PALETTE_X = 984;
     private const int PALETTE_Y = 11;
-    private const float BLOCK_SCALE = 6.0f;
 
     private readonly Texture2D blockSheet;
 
@@ -22,13 +20,29 @@ public class BlockFactory
         this.blockSheet = blockSheet;
     }
 
+    public IBlock Create(string type, Vector2 position) => type switch
+    {
+        "Square" => CreateSquareBlock(position),
+        "Keystone" => CreateKeystoneBlock(position),
+        "StatueLeft" => CreateStatueLeftBlock(position),
+        "StatueRight" => CreateStatueRightBlock(position),
+        "Void" => CreateVoidBlock(position),
+        "SpeckledFloor" => CreateSpeckledFloorBlock(position),
+        "Water" => CreateWaterBlock(position),
+        "Stairs" => CreateStairsBlock(position),
+        "Brick" => CreateBrickBlock(position),
+        "Ladder" => CreateLadderBlock(position),
+        "Sand" => CreateSandBlock(position),
+        _ => throw new InvalidDataException($"Invalid block data of type: {type}")
+    };
+
     private StaticSprite CreateSprite(int column, int row, Vector2 position)
     {
         Rectangle source = new Rectangle(
             PALETTE_X + TILE_PITCH * column,
             PALETTE_Y + TILE_PITCH * row,
-            TILE_SIZE, TILE_SIZE);
-        return new StaticSprite(blockSheet, position, Color.White, source, BLOCK_SCALE);
+            RoomGrid.TILE_SIZE, RoomGrid.TILE_SIZE);
+        return new StaticSprite(blockSheet, position, Color.White, source, RoomGrid.BLOCK_SCALE);
     }
 
     public IBlock CreateSquareBlock(Vector2 position) => new SquareBlock(CreateSprite(0, 0, position), position);

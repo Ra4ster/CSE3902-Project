@@ -146,6 +146,10 @@ door.Initialize();
 Collide(door, edge);
 Check(door.Visitor == edge, "Door callback must receive Link even in reverse order");
 var defeated = new TestEnemy(Vector2.Zero, 1f);
+<<<<<<< HEAD
+for (int hit = 0; hit < 4; hit++) defeated.TakeDamage();
+Check(defeated.IsDefeated && defeated.Health == 0, "Enemy health must stop at zero");
+=======
 var manager = new EnemyManager();
 manager.Add(new List<AbstractEnemy> { defeated });
 for (int hit = 0; hit < 4; hit++) defeated.TakeDamage();
@@ -154,6 +158,7 @@ Check(manager.GetSelectedEnemy() == null, "Defeated enemies must immediately sto
 manager.Update(Step(0));
 manager.NextEnemy(); manager.PreviousEnemy(); manager.Draw(null!);
 Check(manager.GetSelectedEnemy() == null, "Removing last enemy must leave cycling/drawing safe");
+>>>>>>> main
 Console.WriteLine($"Passed {checks} collision checks.");
 
 sealed class TestDoor(Rectangle bounds) : ICollidable

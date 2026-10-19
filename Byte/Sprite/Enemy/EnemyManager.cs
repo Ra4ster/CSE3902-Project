@@ -33,8 +33,7 @@ namespace Byte.Sprite.Enemy
             if (enemy == null) return;
 
             enemy.Draw(spritePainter);
-            if (Game.DrawBoundingBoxes)
-                Game.BoundingBoxDrawer.Draw(spritePainter, enemy.BoundingBox, Color.Red);
+           
         }
 
         public void Update(GameTime gameTime)
