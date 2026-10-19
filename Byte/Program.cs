@@ -114,6 +114,7 @@ public class Program : Game
     {
         link.CorrectPosition(LinkPositionAt(tileTopLeft));
         link.Velocity = Vector2.Zero;
+        projectileManager.Clear();
     }
 
     public void NextRoom() => PlaceLink(roomManager.NextRoom());
@@ -217,8 +218,8 @@ public class Program : Game
             transformMatrix: spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
         );
 
-        link.state.Draw(link);
         roomManager.Draw(SpritePainter!);
+        link.state.Draw(link);
         projectileManager.Draw(SpritePainter!);
         if (DrawBoundingBoxes)
         {
@@ -231,12 +232,12 @@ public class Program : Game
         }
 
         SpritePainter!.DrawString(statusFont,
-            $"Room: {roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset   [ / ]: Switch room",
-            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+            $"{roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}",
+            new Vector2(20, GameConstants.WINDOW_SIZE.Height - 60), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
         if (link.Health <= 0)
             SpritePainter.DrawString(statusFont,
                 "HP is zero. Collision testing stays active; press R to reset.",
-                new Vector2(20, 75), Color.Black);
+                new Vector2(20, GameConstants.WINDOW_SIZE.Height - 100), Color.Black);
 
         SpritePainter?.End();
 

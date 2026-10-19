@@ -11,6 +11,8 @@ public class ProjectileManager
 
     public void Add(IProjectile projectile) => projectiles.Add(projectile);
 
+    public void Clear() => projectiles.Clear();
+
     public void Update(GameTime gameTime)
     {
         foreach (IProjectile projectile in projectiles)
