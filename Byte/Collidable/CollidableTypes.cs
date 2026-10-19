@@ -10,7 +10,9 @@ namespace Byte.Collidable
         public static readonly string Player = "Player";
         public static readonly string Sword = "Sword";
         public static readonly string Block = "Block";
-        
+
+        public static readonly string Projectile = "Projectile";
+        public static readonly string EnemyProjectile = "EnemyProjectile";
         public static readonly string Door = "Door";
 
         public static readonly string ItemPickup = "ItemPickup";

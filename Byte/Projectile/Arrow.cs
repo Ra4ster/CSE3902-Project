@@ -1,42 +1,42 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Projectile;
-
-// flies straight in one direction and disappears after a set distance or off screen
-public class Arrow : IProjectile
+namespace Byte.Projectile
 {
-    private const float SPEED = 800f;
-    private const float MAX_DISTANCE = 700f;
-
-    private readonly MovingAnimatedSprite sprite;
-    private readonly Vector2 velocity;
-    private Vector2 position;
-    private float distanceTraveled;
-
-    public bool IsExpired { get; private set; }
-
-    public Arrow(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+    public class Arrow : AbstractProjectile
     {
-        this.sprite = sprite;
-        this.position = position;
-        velocity = direction * SPEED;
-    }
+        private const float SPEED = 800f;
+        private const float MAX_DISTANCE = 700f;
+        private const float SCALE = 6.0f; 
 
-    public void Update(GameTime gameTime)
-    {
-        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        position += velocity * seconds;
-        distanceTraveled += SPEED * seconds;
+        private readonly MovingAnimatedSprite movingSprite;
+        private float distanceTraveled;
 
-        if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(position))
+        public Arrow(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+            : base(
+                sprite,
+                direction.X != 0 ? new Point((int)(16 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                position,
+                direction * SPEED,
+                PlayerProjectileProperties
+            )
         {
-            IsExpired = true;
+            this.movingSprite = sprite;
         }
 
-        sprite.SetPos(position);
-        sprite.Update(gameTime);
-    }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
 
-    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            distanceTraveled += SPEED * seconds;
+
+            if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(Position.ToPoint()))
+            {
+                IsExpired = true; 
+            }
+
+            movingSprite.SetPos(Position);
+        }
+    }
 }

@@ -9,17 +9,15 @@ public class ProjectileManager
 {
     private readonly List<IProjectile> projectiles = new List<IProjectile>();
 
+    public List<IProjectile> Projectiles => projectiles;
+
     public void Add(IProjectile projectile) => projectiles.Add(projectile);
 
     public void Clear() => projectiles.Clear();
 
     public void Update(GameTime gameTime)
     {
-        foreach (IProjectile projectile in projectiles)
-        {
-            projectile.Update(gameTime);
-        }
-        projectiles.RemoveAll(projectile => projectile.IsExpired);
+        projectiles.RemoveAll(projectile => projectile.IsExpired || projectile.HasCollided);
     }
 
     public void Draw(SpriteBatch spriteBatch)
