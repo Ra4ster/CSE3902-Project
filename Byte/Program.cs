@@ -1,24 +1,21 @@
 
-﻿using Byte.Command;
-
+using Byte;
 using Byte.Block;
+using Byte.Collidable;
+using Byte.Collidable;
+﻿using Byte.Command;
 using Byte.Command;
-
+using Byte.Controller;
+using Byte.Factory;
+using Byte.Item;
+using Byte.Player;
+using Byte.Projectile;
+using Byte.Rooms;
+using Byte.Sprite;
+using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Byte.Controller;
-using Byte.Player;
-using Byte.Projectile;
-using Byte.Sprite;
-
-using Byte;
-using Byte.Rooms;
-using Byte.Factory;
-using Byte.Collidable;
-
-using Byte.Sprite.Enemy;
-using Byte.Collidable;
 
 
 
@@ -163,6 +160,7 @@ public class Program : Game
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
         LinkCollisionHandler.Register(dispatcher);
+        ItemCollisionHandler.Register(dispatcher);
     }
 
     private void AddProjectileCommands()
@@ -256,6 +254,13 @@ public class Program : Game
 
         collidables.AddRange(roomManager.CurrentRoom.Enemies);
 
+        foreach (IItem item in roomManager.CurrentRoom.Items)
+        {
+            if (!item.IsCollected && item is ICollidable collidableItem)
+            {
+                DispatchCollisions(new List<ICollidable> { link, collidableItem });
+            }
+        }
 
         link.Sword.Update(link);
         if (!link.Sword.BoundingBox.IsEmpty)

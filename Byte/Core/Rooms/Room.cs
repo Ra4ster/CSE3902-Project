@@ -83,6 +83,7 @@ namespace Byte.Rooms
                 block.Update(gametime);
             foreach (IItem item in items)
                 item.Update(gametime);
+            items.RemoveAll(item => item.IsCollected);
         }
     }
 }

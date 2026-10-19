@@ -11,5 +11,7 @@ namespace Byte.Item
         void Update(GameTime gametime);
         void Draw(SpriteBatch spriteBatch);
         Vector2 Position { get; set; }
+
+        public bool IsCollected { get; set; }
     }
 }

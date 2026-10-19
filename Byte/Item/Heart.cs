@@ -1,4 +1,5 @@
-﻿using Byte.Sprite;
+﻿using Byte.Collidable;
+using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,10 +8,27 @@ using System.Text;
 
 namespace Byte.Item
 {
-    internal class Heart : IItem
+    internal class Heart : IItem, ICollidable
     {
         public Vector2 Position { get; set; }
         private readonly AnimatedSprite sprite;
+
+        public bool IsCollected { get; set; } = false;
+
+        private float scale;
+
+        public Rectangle BoundingBox => new Rectangle(
+             (int)Position.X,
+            (int)Position.Y,
+            (int)(7 * scale),
+            (int)(7 * scale)
+        );
+
+        public CollisionProperties Properties { get; } = new CollisionProperties
+        {
+            Type = CollidableTypes.ItemPickup,
+            IsStatic = true
+        };
 
         public Heart(AnimatedSprite sprite, Vector2 position)
         {
@@ -29,4 +47,3 @@ namespace Byte.Item
         }
     }
 }
-
