@@ -1,50 +1,78 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Projectile;
-
-// sits where it was placed until the fuse runs out, then plays the explosion once and disappears
-public class Bomb : IProjectile
+namespace Byte.Projectile
 {
-    private const float FUSE_SECONDS = 1.0f;
-
-    private readonly MovingAnimatedSprite bombSprite;
-    private readonly MovingAnimatedSprite explosionSprite;
-    private float fuseTimer;
-    private bool hasExploded;
-
-    public bool IsExpired => hasExploded && explosionSprite.IsFinished;
-
-    public Bomb(MovingAnimatedSprite bombSprite, MovingAnimatedSprite explosionSprite, Vector2 position)
+    public class Bomb : AbstractProjectile
     {
-        this.bombSprite = bombSprite;
-        this.explosionSprite = explosionSprite;
-        bombSprite.SetPos(position);
-        explosionSprite.SetPos(position);
-    }
+        private const float SCALE = 6.0f;
+        private const float EXPLOSION_DURATION = 0.3f;
 
-    public void Update(GameTime gameTime)
-    {
-        if (hasExploded)
+        private readonly MovingAnimatedSprite bombSprite;
+        private readonly MovingAnimatedSprite explosionSprite;
+
+        private bool isExploding = false;
+        private float explosionTimer = 0f;
+
+        public Bomb(MovingAnimatedSprite bombSprite, MovingAnimatedSprite explosionSprite, Vector2 position)
+            : base(
+                bombSprite,
+                new Point((int)(8 * SCALE), (int)(16 * SCALE)), 
+                position,
+                Vector2.Zero 
+            )
         {
-            explosionSprite.Update(gameTime);
-            return;
+            this.bombSprite = bombSprite;
+            this.explosionSprite = explosionSprite;
         }
 
-        fuseTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-        hasExploded = fuseTimer >= FUSE_SECONDS;
-        bombSprite.Update(gameTime);
-    }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime); 
 
-    public void Draw(SpriteBatch spriteBatch)
-    {
-        if (hasExploded)
-        {
-            explosionSprite.Draw(spriteBatch);
+            if (!isExploding)
+            {
+                bombSprite.SetPos(Position);
+
+
+                if (HasCollided)
+                {
+                    StartExplosion();
+                }
+            }
+            else
+            {
+                float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                explosionTimer += seconds;
+
+                explosionSprite.SetPos(Position);
+                explosionSprite.Update(gameTime);
+
+                if (explosionTimer >= EXPLOSION_DURATION)
+                {
+                    IsExpired = true;
+                }
+            }
         }
-        else
+
+        private void StartExplosion()
         {
-            bombSprite.Draw(spriteBatch);
+            isExploding = true;
+        }
+
+
+        public new void Draw(SpriteBatch spriteBatch)
+        {
+            if (IsExpired) return;
+
+            if (!isExploding)
+            {
+                bombSprite.Draw(spriteBatch);
+            }
+            else
+            {
+                explosionSprite.Draw(spriteBatch);
+            }
         }
     }
 }
