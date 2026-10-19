@@ -15,7 +15,7 @@ namespace Byte.Projectile
         public Fireball(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
-                direction.X != 0 ? new Point((int)(16 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+               direction.X != 0 ? new Point((int)(10 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(10 * SCALE)),
                 position,
                 direction * SPEED,
                 EnemyProjectileProperties

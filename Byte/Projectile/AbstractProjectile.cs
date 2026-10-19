@@ -56,7 +56,7 @@ namespace Byte.Projectile
             sprite.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (!HasCollided && !IsExpired)
             {

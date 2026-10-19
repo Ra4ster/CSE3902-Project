@@ -5,35 +5,48 @@ namespace Byte.Projectile
 {
     public class Boomerang : AbstractProjectile
     {
-        private const float SPEED = 800f;
-        private const float MAX_DISTANCE = 700f;
+        private const float SPEED = 600f;
+        private const float RANGE = 450f;
         private const float SCALE = 6.0f;
 
         private readonly MovingAnimatedSprite movingSprite;
+        private Vector2 startPosition;
         private float distanceTraveled;
+        private bool isReturning = false;
 
         public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
-                direction.X != 0 ? new Point((int)(16 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                new Point((int)(8 * SCALE), (int)(16 * SCALE)), 
                 position,
                 direction * SPEED,
                 PlayerProjectileProperties
             )
         {
             this.movingSprite = sprite;
+            this.startPosition = position;
         }
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Update(gameTime); 
 
             float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
             distanceTraveled += SPEED * seconds;
 
-            if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(Position.ToPoint()))
+            if (!isReturning && distanceTraveled >= RANGE)
             {
-                IsExpired = true;
+                isReturning = true;
+                Velocity = -Velocity; 
+            }
+            else if (isReturning)
+            {
+                float distanceToStart = Vector2.Distance(Position, startPosition);
+
+                if (distanceToStart <= 5f || distanceTraveled >= RANGE * 2f)
+                {
+                    IsExpired = true;
+                }
             }
 
             movingSprite.SetPos(Position);
