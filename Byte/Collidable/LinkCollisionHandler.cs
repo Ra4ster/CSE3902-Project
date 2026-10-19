@@ -1,3 +1,4 @@
+using Byte.Item;
 using Byte.Player;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
@@ -6,12 +7,16 @@ namespace Byte.Collidable;
 
 public static class LinkCollisionHandler
 {
+    // Link's hitbox is exactly one tile, so door gaps need some help lining up.
+    public const int CornerAssist = 24;
+
     public static void Register(CollisionDispatcher dispatcher)
     {
         dispatcher.Register(CollidableTypes.Player, CollidableTypes.Enemy, DamagePlayer);
         dispatcher.Register(CollidableTypes.Player, CollidableTypes.Block, ResolveBlock);
         dispatcher.Register(CollidableTypes.Player, CollidableTypes.Door,
             (player, door, side) => door.Properties.OnCollide?.Invoke(player));
+        dispatcher.Register(CollidableTypes.Player, CollidableTypes.ItemPickup, PickUpItem);
         dispatcher.Register(CollidableTypes.Sword, CollidableTypes.Enemy,
             (sword, enemy, side) =>
             {
@@ -26,6 +31,12 @@ public static class LinkCollisionHandler
             link.TakeDamage();
     }
 
+    private static void PickUpItem(ICollidable player, ICollidable pickup, CollisionSide side)
+    {
+        if (player is Link && pickup is IItem item)
+            item.Collect();
+    }
+
     private static void ResolveBlock(ICollidable player, ICollidable block, CollisionSide side)
     {
         if (player is not Link link || !block.Properties.BlocksPlayer)
@@ -35,14 +46,21 @@ public static class LinkCollisionHandler
         if (overlap.Width <= 0 || overlap.Height <= 0)
             return;
 
-        Vector2 correction = side switch
-        {
-            CollisionSide.Right => new Vector2(-overlap.Width, 0),
-            CollisionSide.Left => new Vector2(overlap.Width, 0),
-            CollisionSide.Bottom => new Vector2(0, -overlap.Height),
-            CollisionSide.Top => new Vector2(0, overlap.Height),
-            _ => Vector2.Zero
-        };
+        bool horizontalHit = side is CollisionSide.Left or CollisionSide.Right;
+        Vector2 correction;
+        if (horizontalHit && overlap.Height <= CornerAssist)
+            correction = new Vector2(0, link.BoundingBox.Center.Y < block.BoundingBox.Center.Y ? -overlap.Height : overlap.Height);
+        else if (!horizontalHit && overlap.Width <= CornerAssist)
+            correction = new Vector2(link.BoundingBox.Center.X < block.BoundingBox.Center.X ? -overlap.Width : overlap.Width, 0);
+        else
+            correction = side switch
+            {
+                CollisionSide.Right => new Vector2(-overlap.Width, 0),
+                CollisionSide.Left => new Vector2(overlap.Width, 0),
+                CollisionSide.Bottom => new Vector2(0, -overlap.Height),
+                CollisionSide.Top => new Vector2(0, overlap.Height),
+                _ => Vector2.Zero
+            };
         link.CorrectPosition(link.Position + correction);
     }
 

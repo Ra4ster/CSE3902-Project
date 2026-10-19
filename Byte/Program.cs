@@ -1,9 +1,4 @@
-
 ﻿using Byte.Command;
-
-using Byte.Block;
-using Byte.Command;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,16 +6,10 @@ using Byte.Controller;
 using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
-
 using Byte;
 using Byte.Rooms;
 using Byte.Factory;
 using Byte.Collidable;
-
-using Byte.Sprite.Enemy;
-using Byte.Collidable;
-
-
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter. Also the entrypoint of the application.
@@ -33,12 +22,11 @@ public class Program : Game
     public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
     public ISprite? linkSprite;
-
     private ProjectileManager projectileManager = new ProjectileManager();
     private RoomManager roomManager = null!;
     private readonly CollisionDispatcher dispatcher = new();
+    private Door? pendingDoor;
     public static BoundingBoxDrawer BoundingBoxDrawer = null!;
-
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
@@ -54,7 +42,7 @@ public class Program : Game
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.OemOpenBrackets, Keys.OemCloseBrackets]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -69,9 +57,7 @@ public class Program : Game
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
 
-
         LinkCollisionHandler.Register(dispatcher);
-
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -115,7 +101,25 @@ public class Program : Game
         BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
         ItemFactory itemFactory = new ItemFactory();
         roomManager = new RoomManager(rooms, enemyFactory, blockFactory, itemFactory);
+
+        foreach (IRoom room in roomManager.Rooms)
+            foreach (Door door in room.Doors)
+                door.Properties.OnCollide = _ => pendingDoor = door;
     }
+
+    // Link's position is his origin, not the top-left of his hitbox.
+    private static Vector2 LinkPositionAt(Vector2 tileTopLeft) => tileTopLeft + Link.LinkOrigin * Link.SpriteScale;
+
+    private void PlaceLink(Vector2 tileTopLeft)
+    {
+        link.CorrectPosition(LinkPositionAt(tileTopLeft));
+        link.Velocity = Vector2.Zero;
+        projectileManager.Clear();
+    }
+
+    public void NextRoom() => PlaceLink(roomManager.NextRoom());
+
+    public void PreviousRoom() => PlaceLink(roomManager.PreviousRoom());
 
     /// <summary>
     /// Builds every object in the level from the roomManager, along with the commands bound to them.
@@ -129,7 +133,8 @@ public class Program : Game
         projectileManager = new ProjectileManager();
         LoadRooms();
 
-        Vector2 linkPos = roomManager.CurrentRoom.PlayerSpawnPosition;
+        pendingDoor = null;
+        Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
         link = new Link(linkPos, new StaticSprite(
             GameAssets.Instance.LinkSheet, linkPos,
             Color.White, new Rectangle(1, 11, 16, 16), 6.0f),
@@ -146,6 +151,8 @@ public class Program : Game
         ICommand quitCommand = new QuitCommand(this);
         ICommand resetCommand = new ResetCommand(this);
         ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
+        ICommand nextRoomCommand = new NextRoomCommand(this);
+        ICommand previousRoomCommand = new PreviousRoomCommand(this);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -161,8 +168,9 @@ public class Program : Game
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
+        keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
+        keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         AddProjectileCommands();
-        LinkCollisionHandler.Register(dispatcher);
     }
 
     private void AddProjectileCommands()
@@ -210,8 +218,8 @@ public class Program : Game
             transformMatrix: spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
         );
 
-        link.state.Draw(link);
         roomManager.Draw(SpritePainter!);
+        link.state.Draw(link);
         projectileManager.Draw(SpritePainter!);
         if (DrawBoundingBoxes)
         {
@@ -219,25 +227,17 @@ public class Program : Game
             if (!link.Sword.BoundingBox.IsEmpty)
                 BoundingBoxDrawer.Draw(SpritePainter!, link.Sword.BoundingBox, Color.Yellow);
 
-            foreach (ICollidable collidable in GetRoomCollidables())
-                BoundingBoxDrawer.Draw(SpritePainter!, collidable.BoundingBox, Color.Green);
+            foreach (ICollidable collidable in roomManager.CurrentRoom.Collidables)
+                BoundingBoxDrawer.Draw(SpritePainter!, collidable.BoundingBox, BoundingBoxColor(collidable));
         }
 
         SpritePainter!.DrawString(statusFont,
-            $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
-            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+            $"{roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}",
+            new Vector2(20, GameConstants.WINDOW_SIZE.Height - 60), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
         if (link.Health <= 0)
             SpritePainter.DrawString(statusFont,
                 "HP is zero. Collision testing stays active; press R to reset.",
-                new Vector2(20, 75), Color.Black);
-
-        SpritePainter!.DrawString(statusFont,
-            $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
-            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-        if (link.Health <= 0)
-            SpritePainter.DrawString(statusFont,
-                "HP is zero. Collision testing stays active; press R to reset.",
-                new Vector2(20, 75), Color.Black);
+                new Vector2(20, GameConstants.WINDOW_SIZE.Height - 100), Color.Black);
 
         SpritePainter?.End();
 
@@ -245,22 +245,29 @@ public class Program : Game
     }
     private void ProcessCollisions()
     {
+        IRoom room = roomManager.CurrentRoom;
 
-        foreach (ICollidable block in roomManager.CurrentRoom.Blocks.OfType<ICollidable>())
-        {
+        // Resolve barriers first, so body and sword contacts use the corrected position.
+        foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
             DispatchCollisions(new List<ICollidable> { link, block });
-        }
         LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
 
         var collidables = new List<ICollidable> { link };
-
-        collidables.AddRange(roomManager.CurrentRoom.Enemies);
-
+        collidables.AddRange(room.Enemies);
+        collidables.AddRange(room.Items);
+        collidables.AddRange(room.Doors);
 
         link.Sword.Update(link);
         if (!link.Sword.BoundingBox.IsEmpty)
             collidables.Add(link.Sword);
         DispatchCollisions(collidables);
+
+        // Switch rooms after dispatch so handlers don't see a half-swapped room.
+        if (pendingDoor is Door door)
+        {
+            pendingDoor = null;
+            PlaceLink(roomManager.EnterDoor(door));
+        }
     }
 
     private void DispatchCollisions(IList<ICollidable> collidables)
@@ -270,9 +277,19 @@ public class Program : Game
             dispatcher.Dispatch(collision.A, collision.B, collision.Side);
     }
 
-    private IEnumerable<ICollidable> GetRoomCollidables() =>
-        roomManager.CurrentRoom.Blocks.OfType<ICollidable>()
-            .Concat(roomManager.CurrentRoom.Enemies);
+    private static Color BoundingBoxColor(ICollidable collidable)
+    {
+        string type = collidable.Properties.Type;
+        if (type == CollidableTypes.Door)
+            return Color.Blue;
+        if (type == CollidableTypes.ItemPickup)
+            return Color.Magenta;
+        if (type == CollidableTypes.Enemy)
+            return Color.Orange;
+        if (!collidable.Properties.BlocksPlayer)
+            return Color.LightGreen;
+        return Color.Green;
+    }
 
     public static void Main() => new Program().Run();
 }

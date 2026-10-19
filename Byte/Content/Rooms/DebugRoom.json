@@ -21,7 +21,7 @@
   "enemies": [
     {
       "type": "Stalfos",
-      "position": [2, 1]
+      "position": [6, 1]
     },
     {
       "type": "Goriya",

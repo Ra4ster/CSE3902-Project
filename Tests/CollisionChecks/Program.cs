@@ -2,6 +2,9 @@ using System.Runtime.CompilerServices;
 using Byte.Block;
 using Byte.Collidable;
 using Byte.Controller;
+using Byte.Factory;
+using Byte.Item;
+using Byte.Rooms;
 using Byte.Player;
 using Byte.Sprite;
 using Byte.Sprite.Enemy;
@@ -146,19 +149,76 @@ door.Initialize();
 Collide(door, edge);
 Check(door.Visitor == edge, "Door callback must receive Link even in reverse order");
 var defeated = new TestEnemy(Vector2.Zero, 1f);
-<<<<<<< HEAD
 for (int hit = 0; hit < 4; hit++) defeated.TakeDamage();
 Check(defeated.IsDefeated && defeated.Health == 0, "Enemy health must stop at zero");
-=======
-var manager = new EnemyManager();
-manager.Add(new List<AbstractEnemy> { defeated });
-for (int hit = 0; hit < 4; hit++) defeated.TakeDamage();
-Check(defeated.IsDefeated && defeated.Health == 0, "Enemy health must stop at zero");
-Check(manager.GetSelectedEnemy() == null, "Defeated enemies must immediately stop colliding");
-manager.Update(Step(0));
-manager.NextEnemy(); manager.PreviousEnemy(); manager.Draw(null!);
-Check(manager.GetSelectedEnemy() == null, "Removing last enemy must leave cycling/drawing safe");
->>>>>>> main
+
+// Pick-ups vanish on contact.
+var rupee = new TestItem(new Vector2(200, 200), new Point(40, 80));
+Link collector = CreateLink(new Vector2(200, 200));
+Check(rupee.BoundingBox == new Rectangle(200, 200, 40, 80), "Item hitbox must match its scaled frame size");
+Collide(rupee, collector);
+Check(rupee.IsCollected, "Touching an item must collect it even in reverse order");
+Collide(collector, rupee);
+Check(rupee.IsCollected, "Collecting an item twice must be harmless");
+
+// A door covers one grid tile and fires its callback when Link touches it.
+var westDoor = new Door(new DoorData { Position = new GridPosition(0, 2), Direction = "West", TargetRoom = "Hall" });
+Check(westDoor.BoundingBox == new Rectangle(0, 192, 96, 96), "Door hitbox must cover its grid tile");
+ICollidable? visitor = null;
+westDoor.Properties.OnCollide = who => visitor = who;
+Link walker = CreateLink(new Vector2(48 + 90, 78 + 192)); // body left edge 6px into the door tile
+Collide(walker, westDoor);
+Check(visitor == walker, "Walking into a door must report Link to the door callback");
+Link bystander = CreateLink(new Vector2(48 + 96, 78 + 192)); // body exactly on the next tile over
+Check(!bystander.BoundingBox.Intersects(westDoor.BoundingBox), "Arriving on the tile next to a door must not re-trigger it");
+
+// Shallow corner clips slide Link around the block, deep ones push him straight back.
+var corner = new SquareBlock(new FakeSprite(), new Vector2(200, 200));
+Link slider = CreateLink(new Vector2(48 + 107, 78 + 110)); // 3px into the block, 6px of vertical overlap
+Collide(slider, corner);
+Check(slider.BoundingBox.Left == 107 && slider.BoundingBox.Bottom == 200, "Shallow corner clips must nudge Link along the block");
+Link blocked = CreateLink(new Vector2(48 + 107, 78 + 160)); // 3px into the block, 56px of vertical overlap
+Collide(blocked, corner);
+Check(blocked.BoundingBox.Right == 200 && blocked.BoundingBox.Top == 160, "Deep side hits must still push Link straight back");
+
+// Rooms: doors go where the file says, debug keys wrap around, dead things get dropped.
+RoomData MakeRoom(string name, bool start, params DoorData[] doors) => new RoomData
+{
+    Name = name, Background = "room1", PlayerSpawn = new GridPosition(1, 1), IsStartingRoom = start,
+    Width = 5, Height = 5, Doors = doors.ToList(),
+    Items = [new ItemData { Type = "Rupee", Position = new GridPosition(2, 2) }],
+    Enemies = [new EnemyData { Type = "Stalfos", Position = new GridPosition(3, 3) }]
+};
+var toB = new DoorData { Position = new GridPosition(4, 2), Direction = "East", TargetRoom = "B", ArrivalPosition = new GridPosition(1, 2) };
+var backToA = new DoorData { Position = new GridPosition(0, 2), Direction = "West", TargetRoom = "A" };
+var rooms = new RoomManager(
+    [MakeRoom("A", true, toB), MakeRoom("B", false, backToA), MakeRoom("C", false)],
+    new FakeEnemies(), new BlockFactory(null!), new FakeItems());
+Check(rooms.CurrentRoom.Name == "A", "Must start in the room flagged isStartingRoom");
+Check(rooms.CurrentRoom.Doors.Count == 1 && rooms.CurrentRoom.Doors[0].Data == toB, "Room must build a Door per door entry");
+Check(rooms.EnterDoor(rooms.CurrentRoom.Doors[0]) == new Vector2(96, 192) && rooms.CurrentRoom.Name == "B",
+    "Entering a door must switch rooms and return the arrival tile");
+Check(rooms.EnterDoor(rooms.CurrentRoom.Doors[0]) == new Vector2(96, 96) && rooms.CurrentRoom.Name == "A",
+    "A door with no arrival position must use the target room's spawn");
+bool threw = false;
+try { rooms.EnterDoor(rooms.Rooms[1].Doors[0]); } catch (InvalidOperationException) { threw = true; }
+Check(threw && rooms.CurrentRoom.Name == "A", "Using a door from another room must throw and stay put");
+rooms.NextRoom(); rooms.NextRoom();
+Check(rooms.CurrentRoom.Name == "C", "Next room must walk the load order");
+rooms.NextRoom();
+Check(rooms.CurrentRoom.Name == "A", "Next room must wrap to the first room");
+rooms.PreviousRoom();
+Check(rooms.CurrentRoom.Name == "C", "Previous room must wrap to the last room");
+IRoom roomC = rooms.CurrentRoom;
+Check(roomC.Items.Count == 1 && roomC.Enemies.Count == 1 && roomC.Collidables.Count() == 2, "Room collidables must include items and enemies");
+roomC.Items[0].Collect();
+for (int hit = 0; hit < 3; hit++) roomC.Enemies[0].TakeDamage();
+roomC.Update(Step(0));
+Check(roomC.Items.Count == 0 && roomC.Enemies.Count == 0, "Collected items and dead enemies must leave the room on update");
+threw = false;
+try { new RoomManager([MakeRoom("A", false)], new FakeEnemies(), new BlockFactory(null!), new FakeItems()); }
+catch (InvalidDataException) { threw = true; }
+Check(threw, "Loading with no starting room must fail");
 Console.WriteLine($"Passed {checks} collision checks.");
 
 sealed class TestDoor(Rectangle bounds) : ICollidable
@@ -167,6 +227,18 @@ sealed class TestDoor(Rectangle bounds) : ICollidable
     public Rectangle BoundingBox => bounds;
     public CollisionProperties Properties { get; } = new() { Type = CollidableTypes.Door };
     public void Initialize() => Properties.OnCollide = visitor => Visitor = visitor;
+}
+
+sealed class TestItem(Vector2 position, Point size) : AbstractItem(new FakeSprite(), position, size);
+
+sealed class FakeItems : IFactory<ItemFactoryData, IItem>
+{
+    public IItem Create(ItemFactoryData data) => new TestItem(data.Position, new Point(40, 80));
+}
+
+sealed class FakeEnemies : IFactory<EnemyFactoryData, AbstractEnemy>
+{
+    public AbstractEnemy Create(EnemyFactoryData data) => new TestEnemy(data.Position, 1f);
 }
 
 sealed class TestEnemy : AbstractEnemy
