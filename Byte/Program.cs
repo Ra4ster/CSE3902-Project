@@ -1,4 +1,9 @@
+
 ﻿using Byte.Command;
+
+using Byte.Block;
+using Byte.Command;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -6,10 +11,16 @@ using Byte.Controller;
 using Byte.Player;
 using Byte.Projectile;
 using Byte.Sprite;
+
 using Byte;
 using Byte.Rooms;
 using Byte.Factory;
 using Byte.Collidable;
+
+using Byte.Sprite.Enemy;
+using Byte.Collidable;
+
+
 
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter. Also the entrypoint of the application.
@@ -22,10 +33,12 @@ public class Program : Game
     public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
     public ISprite? linkSprite;
+
     private ProjectileManager projectileManager = new ProjectileManager();
     private RoomManager roomManager = null!;
     private readonly CollisionDispatcher dispatcher = new();
     public static BoundingBoxDrawer BoundingBoxDrawer = null!;
+
     private SpriteBatch? SpritePainter { get; set; }
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
@@ -56,7 +69,9 @@ public class Program : Game
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
 
+
         LinkCollisionHandler.Register(dispatcher);
+
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -147,6 +162,7 @@ public class Program : Game
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         AddProjectileCommands();
+        LinkCollisionHandler.Register(dispatcher);
     }
 
     private void AddProjectileCommands()
@@ -215,18 +231,31 @@ public class Program : Game
                 "HP is zero. Collision testing stays active; press R to reset.",
                 new Vector2(20, 75), Color.Black);
 
+        SpritePainter!.DrawString(statusFont,
+            $"HP: {link.Health:0}   Hits taken: {link.HitsTaken}   R: Reset",
+            new Vector2(20, 20), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+        if (link.Health <= 0)
+            SpritePainter.DrawString(statusFont,
+                "HP is zero. Collision testing stays active; press R to reset.",
+                new Vector2(20, 75), Color.Black);
+
         SpritePainter?.End();
 
         base.Draw(gameTime);
     }
     private void ProcessCollisions()
     {
+
         foreach (ICollidable block in roomManager.CurrentRoom.Blocks.OfType<ICollidable>())
+        {
             DispatchCollisions(new List<ICollidable> { link, block });
+        }
         LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
 
         var collidables = new List<ICollidable> { link };
+
         collidables.AddRange(roomManager.CurrentRoom.Enemies);
+
 
         link.Sword.Update(link);
         if (!link.Sword.BoundingBox.IsEmpty)
@@ -240,6 +269,7 @@ public class Program : Game
         foreach (var collision in detector.DetectCollisions(collidables))
             dispatcher.Dispatch(collision.A, collision.B, collision.Side);
     }
+
     private IEnumerable<ICollidable> GetRoomCollidables() =>
         roomManager.CurrentRoom.Blocks.OfType<ICollidable>()
             .Concat(roomManager.CurrentRoom.Enemies);

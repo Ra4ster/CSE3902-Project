@@ -10,4 +10,6 @@ using Microsoft.Xna.Framework;
         public static readonly Rectangle MIN_WINDOW_SIZE = new Rectangle(0, 0, 800, 600);
         public static readonly Color BG_COLOR = Color.SkyBlue;
 
+
+        public static readonly Vector2 LINK_START_POS = new Vector2(220.0f, 220.0f);
 }
