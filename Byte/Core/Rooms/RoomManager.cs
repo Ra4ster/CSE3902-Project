@@ -1,4 +1,6 @@
 using Byte.Factory;
+using Byte.Item;
+using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,7 +13,10 @@ namespace Byte.Rooms
         public IReadOnlyList<IRoom> Rooms { get; }
         public IRoom CurrentRoom { get; private set; }
 
-        public RoomManager(IEnumerable<RoomData> roomsData, EnemyFactory enemyFactory, BlockFactory blockFactory, ItemFactory itemFactory)
+        public RoomManager(IEnumerable<RoomData> roomsData,
+        IFactory<EnemyFactoryData, AbstractEnemy> enemyFactory,
+        BlockFactory blockFactory,
+        IFactory<ItemFactoryData, IItem> itemFactory)
         {
             RoomData[] roomDataArray = roomsData.ToArray();
             foreach (RoomData roomData in roomDataArray)
