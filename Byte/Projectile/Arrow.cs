@@ -17,7 +17,7 @@ namespace Byte.Projectile
                 sprite,
                 direction.X != 0 ? new Point((int)(16 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(16 * SCALE)),
                 position,
-                direction * SPEED
+                direction * SPEED,
                 PlayerProjectileProperties
             )
         {
