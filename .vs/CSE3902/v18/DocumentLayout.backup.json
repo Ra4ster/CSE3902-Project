@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\sprite\\enemy\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\block\\blockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\block\\blockmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\link.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\link.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\core\\gameconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\core\\gameconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -40,7 +40,7 @@
         },
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -55,6 +55,19 @@
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BlockManager.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Block\\BlockManager.cs",
+              "RelativeDocumentMoniker": "Byte\\Block\\BlockManager.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Block\\BlockManager.cs",
+              "RelativeToolTip": "Byte\\Block\\BlockManager.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-19T00:12:46.86Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
@@ -66,14 +79,14 @@
               "RelativeDocumentMoniker": "Byte\\Sprite\\Enemy\\EnemyManager.cs",
               "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Sprite\\Enemy\\EnemyManager.cs",
               "RelativeToolTip": "Byte\\Sprite\\Enemy\\EnemyManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-19T00:06:16.397Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "GameConstants.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\GameConstants.cs",
               "RelativeDocumentMoniker": "Byte\\Core\\GameConstants.cs",
@@ -81,21 +94,7 @@
               "RelativeToolTip": "Byte\\Core\\GameConstants.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAcwAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-19T00:03:43.697Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Program.cs",
-              "RelativeDocumentMoniker": "Byte\\Program.cs",
-              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Program.cs",
-              "RelativeToolTip": "Byte\\Program.cs",
-              "ViewState": "AgIAAA0BAAAAAAAAAAAAABQBAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-18T23:45:12.462Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-19T00:03:43.697Z"
             },
             {
               "$type": "Document",
@@ -107,12 +106,11 @@
               "RelativeToolTip": "Byte\\Player\\LinkInterface.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAAgwCQAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-18T16:38:40.805Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-18T16:38:40.805Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Link.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
               "RelativeDocumentMoniker": "Byte\\Player\\Link.cs",
@@ -120,8 +118,7 @@
               "RelativeToolTip": "Byte\\Player\\Link.cs",
               "ViewState": "AgIAAI0AAAAAAAAAAAAAAJMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T20:07:57.308Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-30T20:07:57.308Z"
             }
           ]
         }
