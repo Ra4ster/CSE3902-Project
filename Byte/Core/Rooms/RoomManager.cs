@@ -55,6 +55,8 @@ namespace Byte.Rooms
                 throw new KeyNotFoundException($"Cannot go to unknown room '{name}'.");
 
             CurrentRoom = room;
+            foreach (AbstractEnemy enemy in CurrentRoom.Enemies)
+                if (!enemy.IsDefeated) enemy.position = enemy.startPos;
             return room.PlayerSpawnPosition;
         }
 
@@ -81,6 +83,10 @@ namespace Byte.Rooms
                     $"Door in room '{CurrentRoom.Name}' targets unknown room '{door.TargetRoom}'.");
 
             CurrentRoom = targetRoom;
+
+            foreach (AbstractEnemy enemy in CurrentRoom.Enemies)
+                if (!enemy.IsDefeated) enemy.position = enemy.startPos;
+
             return door.Data.ArrivalPosition is GridPosition arrivalPosition
                 ? RoomGrid.ToWorld(arrivalPosition)
                 : targetRoom.PlayerSpawnPosition;

@@ -10,28 +10,29 @@ namespace Byte.Sprite.Enemy;
 public abstract class AbstractEnemy : ICollidable
 {
 	protected int health { get; set; } = 3;
-    private float damageTimer;
-    public int Health => health;
-    public bool IsDefeated => health <= 0;
-    public bool IsDamaged => damageTimer > 0;
-    public Rectangle BoundingBox => new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
-    public CollisionProperties Properties { get; } = new CollisionProperties
-    {
-        Type = CollidableTypes.Enemy,
-        DamagesPlayer = true
-    };
+	private float damageTimer;
+	public int Health => health;
+	public bool IsDefeated => health <= 0;
+	public bool IsDamaged => damageTimer > 0;
+	public Rectangle BoundingBox => new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+	public CollisionProperties Properties { get; } = new CollisionProperties
+	{
+		Type = CollidableTypes.Enemy,
+		DamagesPlayer = true
+	};
 
-    public void TakeDamage()
-    {
-        if (IsDefeated) return;
-        health = Math.Max(0, health - 1);
-        damageTimer = 0.3f;
-    }
+	public void TakeDamage()
+	{
+		if (IsDefeated) return;
+		health = Math.Max(0, health - 1);
+		damageTimer = 0.3f;
+	}
 
-    public void UpdateDamage(GameTime gameTime)
-        => damageTimer = Math.Max(0, damageTimer - (float)gameTime.ElapsedGameTime.TotalSeconds);
+	public void UpdateDamage(GameTime gameTime)
+		=> damageTimer = Math.Max(0, damageTimer - (float)gameTime.ElapsedGameTime.TotalSeconds);
 
-	protected Vector2 position;
+	public Vector2 position;
+	public Vector2 startPos;
 	protected Vector2 velocity;
 
 	protected ISprite enemySprite = null!;
@@ -43,9 +44,9 @@ public abstract class AbstractEnemy : ICollidable
 	public virtual void Draw(SpriteBatch spriteBatch)
 	{
 		Color originalColor = enemySprite.Color;
-        if (IsDamaged) enemySprite.Color = Color.Red;
-        enemySprite.Draw(spriteBatch);
-        enemySprite.Color = originalColor;
+		if (IsDamaged) enemySprite.Color = Color.Red;
+		enemySprite.Draw(spriteBatch);
+		enemySprite.Color = originalColor;
 	}
 
 	public virtual void Update(GameTime gameTime)
@@ -75,6 +76,7 @@ public abstract class AbstractEnemy : ICollidable
 			size = Vector2.Max(size, new Vector2(frame.Width, frame.Height) * scale);
 
 		this.position = ClampToWindow(position);
+		this.startPos = position;
 		this.velocity = velocity;
 		enemySprite = new MovingAnimatedSprite(texture, ref position, ref velocity, color, sourceRectangles, frameDuration, scale);
 	}

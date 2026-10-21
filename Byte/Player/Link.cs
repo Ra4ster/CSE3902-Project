@@ -94,7 +94,7 @@ namespace Byte.Player
                 GetNewState(new PlayerIdleState());
                 ApplyVelocityDecay(gameTime);
             }
-           
+
             if (IsAttacking)
             {
                 Velocity = Vector2.Zero;
@@ -158,7 +158,7 @@ namespace Byte.Player
             else if (currentSprite is StaticSprite staticSprite)
                 staticSprite.SetPos(position);
 
-            
+
 
         }
 
