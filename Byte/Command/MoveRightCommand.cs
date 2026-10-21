@@ -1,17 +1,14 @@
 ﻿using Byte.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Command
 {
     public class MoveRightCommand : ICommand
     {
-        private Link player;
-        Game gameGet;
-    
+        private readonly Link player;
+        readonly Game gameGet;
+
 
         public MoveRightCommand(Game game, Link link)
         {
@@ -39,12 +36,12 @@ namespace Byte.Command
             player.Direction = CardinalDirections.East;
 
             // update player direction and begin moving
-            player.Velocity = new Vector2(player.MovementSpeed,0);
+            player.Velocity = new Vector2(player.MovementSpeed, 0);
             if (player.state is not PlayerMoveRightState)
             {
                 player.GetNewState(new PlayerMoveRightState());
             }
-           
+
         }
     }
 }

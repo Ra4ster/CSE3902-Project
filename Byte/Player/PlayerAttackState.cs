@@ -1,7 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Player
@@ -113,13 +110,13 @@ namespace Byte.Player
 
                 // set loop to false so animation plays once
                 link.currentSprite.Loop = false;
-                
+
             }
             if (link.currentSprite is MovingAnimatedSprite)
             {
                 MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
-                
-                
+
+
                 // update current sprite
                 sprite.SetPos(link.Position);
                 sprite.Update(gametime);
@@ -130,7 +127,7 @@ namespace Byte.Player
                     link.IsAttacking = false;
                     link.Velocity = Vector2.Zero;
                     link.GetNewState(new PlayerIdleState());
-                    link.state.Update(link,gametime);
+                    _ = link.state.Update(link, gametime);
                 }
 
             }

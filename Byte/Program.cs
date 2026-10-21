@@ -31,12 +31,12 @@ public class Program : Game
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
 
-    Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
-    Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
-    Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
+    readonly Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
+    readonly Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
+    readonly Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
 
-    private IController mouseControls;
-    private IController kbControls;
+    private readonly IController mouseControls;
+    private readonly IController kbControls;
 
     private bool resetRequested = false;
 

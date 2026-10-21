@@ -1,5 +1,3 @@
-
-using Byte.Factory;
 using Microsoft.Xna.Framework;
 
 namespace Byte.Rooms

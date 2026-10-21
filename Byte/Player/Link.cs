@@ -1,7 +1,6 @@
 using Byte.Collidable;
 using Byte.Controller;
 using Byte.Sprite;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -99,7 +98,7 @@ namespace Byte.Player
             {
                 Velocity = Vector2.Zero;
             }
-            state.Update(this, gameTime);
+            _ = state.Update(this, gameTime);
             float seconds =
                 (float)gameTime.ElapsedGameTime.TotalSeconds;
 

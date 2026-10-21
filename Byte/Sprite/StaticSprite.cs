@@ -9,11 +9,11 @@ namespace Byte.Sprite;
 public class StaticSprite : ISprite
 {
     public bool Loop { get; set; } = true;
-    public bool IsFinished { get;  set; } = false;
+    public bool IsFinished { get; set; } = false;
     private readonly Texture2D texture;
     private Vector2 position;
     public Color Color { get; set; }
-    private float scale;
+    private readonly float scale;
     public Vector2 Origin { get; set; } = Vector2.Zero;
     private readonly Rectangle sourceRectangle;
 

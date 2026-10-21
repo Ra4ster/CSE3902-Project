@@ -6,7 +6,7 @@ namespace Byte.Sprite.Enemy
 {
     internal class WaitingPatrolEnemy : PatrolEnemy
     {
-        private float waitDuration;
+        private readonly float waitDuration;
         private float waitTimer = 0.0f;
         private bool waiting = false;
 

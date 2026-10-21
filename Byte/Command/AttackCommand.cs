@@ -1,15 +1,12 @@
 ﻿using Byte.Player;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Command
 {
     public class AttackCommand : ICommand
     {
-        private Link player;
-        Game gameGet;
+        private readonly Link player;
+        readonly Game gameGet;
 
 
 
@@ -23,10 +20,10 @@ namespace Byte.Command
         {
             // cause player to attack
             player.Attack();
-           
-            
-            
-            
+
+
+
+
         }
     }
 }

@@ -8,8 +8,8 @@ namespace Byte.Controller;
 /// </summary>
 public class MouseController : IController
 {
-    private Dictionary<Rectangle, ICommand> leftClickMapping;
-    private Dictionary<Rectangle, ICommand> rightClickMapping;
+    private readonly Dictionary<Rectangle, ICommand> leftClickMapping;
+    private readonly Dictionary<Rectangle, ICommand> rightClickMapping;
 
     private MouseState CurrentState { get; set; }
     private MouseState PreviousState { get; set; }

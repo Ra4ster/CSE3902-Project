@@ -1,7 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Player
@@ -14,7 +11,7 @@ namespace Byte.Player
         public Rectangle[] useItemSouthFrames =
         {
             new Rectangle(1,47,16,14),
-            
+
 
         };
 
@@ -23,7 +20,7 @@ namespace Byte.Player
         public Rectangle[] useItemEastWestFrames =
        {
             new Rectangle(1,77,16,16),
-            
+
 
         };
         // contains frames for attacking north
@@ -31,7 +28,7 @@ namespace Byte.Player
         public Rectangle[] useItemNorthFrames =
        {
             new Rectangle(1,109,16,16),
-           
+
 
         };
 
@@ -124,7 +121,7 @@ namespace Byte.Player
                     link.IsAttacking = false;
                     link.Velocity = Vector2.Zero;
                     link.GetNewState(new PlayerIdleState());
-                    link.state.Update(link, gametime);
+                    _ = link.state.Update(link, gametime);
                 }
 
             }

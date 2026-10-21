@@ -51,7 +51,7 @@ namespace Byte.Factory
             float? scale = null)
         {
             if (type is EnemyType.Goriya or EnemyType.Aquamentus)
-                RequireProjectileManager(projectileManager, type);
+                _ = RequireProjectileManager(projectileManager, type);
 
             Texture2D enemyTex = GameAssets.Instance.EnemySheet;
             Texture2D bossTex = GameAssets.Instance.BossSheet;

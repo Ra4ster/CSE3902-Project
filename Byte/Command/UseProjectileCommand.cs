@@ -1,7 +1,6 @@
 using Byte.Player;
 using Byte.Projectile;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace Byte.Command
 {
