@@ -18,6 +18,10 @@ public class ProjectileManager
     public void Update(GameTime gameTime)
     {
         projectiles.RemoveAll(projectile => projectile.IsExpired || projectile.HasCollided);
+        foreach (AbstractProjectile projectile in projectiles)
+        {
+            projectile.Update(gameTime);
+        }
     }
 
     public void Draw(SpriteBatch spriteBatch)
