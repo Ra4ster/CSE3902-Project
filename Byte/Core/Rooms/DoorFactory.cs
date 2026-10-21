@@ -48,9 +48,6 @@ namespace Byte.Core.Rooms
                 CreateWestDoor(position);
                 break;
             }
-            // If no direction is specified, just create a north door. 
-            return CreateNorthDoor(position);
-
          }
         private (StaticSprite open, StaticSprite closed) CreateNorthDoor(Vector2 position)
         {

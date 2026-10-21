@@ -67,7 +67,6 @@ namespace Byte.Rooms
                 };
                 items.Add(itemFactory.Create(worldData));
             }
-
             foreach (DoorData doorData in data.Doors)
                 doors.Add(new Door(doorData));
         }
