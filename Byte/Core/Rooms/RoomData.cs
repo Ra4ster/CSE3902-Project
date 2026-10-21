@@ -30,6 +30,7 @@ namespace Byte.Rooms
         public required string Direction { get; set; }
         public required string TargetRoom { get; set; }
         public GridPosition? ArrivalPosition { get; set; }
+        public required string doorState { get; set; }
     }
 
     public sealed class EnemyData : GameObjectData

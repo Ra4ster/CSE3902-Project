@@ -1,4 +1,5 @@
 using Byte.Collidable;
+using Byte.Core.Rooms;
 using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,17 +7,12 @@ using System;
 
 namespace Byte.Rooms
 {
-    public enum DoorDirection
-    {
-        North,
-        South,
-        East,
-        West,
-        Default
-    }
+
     public sealed class Door : ICollidable
     {
-        public DoorDirection Direction { get; }
+        public DoorDirection doorDirection;
+
+        public DoorState doorState;
         public DoorData Data { get; }
         public Rectangle BoundingBox { get; }
 
@@ -39,11 +35,11 @@ namespace Byte.Rooms
 
             if (Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir))
             {
-                Direction = parsedDir;
+                doorDirection = parsedDir;
             }
             else
             {
-                Direction = DoorDirection.Default;
+                doorDirection = DoorDirection.Default;
             }
 
             Vector2 topLeft = RoomGrid.ToWorld(data.Position);
