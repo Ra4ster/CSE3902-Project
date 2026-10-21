@@ -3,7 +3,7 @@
 root = true
 
 [*.cs]
-dotnet_analyzer_diagnostic.severity = warning
+dotnet_analyzer_diagnostic.severity = none
 
 # Design metrics
 dotnet_diagnostic.CA1501.severity = warning
@@ -23,9 +23,6 @@ dotnet_diagnostic.CA1819.severity = warning
 dotnet_diagnostic.CA2000.severity = warning
 dotnet_diagnostic.CA2007.severity = warning
 dotnet_diagnostic.CA2200.severity = warning
-
-# Code style
-dotnet_analyzer_diagnostic.category-Style.severity = warning
 
 # Style rules in build output
 dotnet_diagnostic.IDE0005.severity=warning

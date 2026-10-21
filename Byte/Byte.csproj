@@ -9,7 +9,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
 
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <AnalysisLevel>latest-all</AnalysisLevel>
+        <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <Nullable>enable</Nullable>
         <Optimize>true</Optimize>

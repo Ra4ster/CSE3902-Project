@@ -1,11 +1,10 @@
 
-using Byte.Projectile;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Sprite.Enemy
 {
-    internal class Aquamentus : WaitingPatrolEnemy
+    internal sealed class Aquamentus : WaitingPatrolEnemy
     {
         private readonly Action<Vector2, Vector2> spawnFireball;
 
