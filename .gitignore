@@ -6,7 +6,7 @@ Byte/Content/bin/*
 .vscode/*
 bin/
 obj/
-.DS_Store
+.DS_Store/*
 Documentation/*.diagsession
 Documentation/*.nettrace*.diagsession
 *.nettrace
