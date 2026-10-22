@@ -86,12 +86,12 @@ namespace Byte.Rooms
         {
             foreach (AbstractEnemy enemy in enemies)
                 enemy.Update(gametime);
-            enemies.RemoveAll(enemy => enemy.IsDefeated);
+            _ = enemies.RemoveAll(enemy => enemy.IsDefeated);
             foreach (IBlock block in blocks)
                 block.Update(gametime);
             foreach (IItem item in items)
                 item.Update(gametime);
-            items.RemoveAll(item => item.IsCollected);
+            _ = items.RemoveAll(item => item.IsCollected);
         }
     }
 }

@@ -6,9 +6,9 @@ namespace Byte.Command
 {
     public class MoveLeftCommand : ICommand
     {
-        private Link player;
+        private readonly Link player;
 
-        Game gameGet;
+        readonly Game gameGet;
 
 
 
@@ -47,7 +47,7 @@ namespace Byte.Command
                 player.GetNewState(new PlayerMoveLeftState());
             }
             // update position based on direction and time
-            
+
         }
 
     }

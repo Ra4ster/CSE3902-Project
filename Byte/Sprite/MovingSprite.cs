@@ -13,10 +13,10 @@ public class MovingSprite : ISprite
     public bool IsFinished { get; set; } = false;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private Vector2 position;
-    private Texture2D texture;
+    private readonly Texture2D texture;
     public Vector2 Velocity { get; set; }
     public Color Color { get; set; }
-    private float scale;
+    private readonly float scale;
     public Vector2 Origin { get; set; } = Vector2.Zero;
     public readonly Rectangle sourceRectangle;
 

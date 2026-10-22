@@ -10,8 +10,8 @@ namespace Byte.Sprite.Enemy
         {
             public static readonly Rectangle[] SOURCE_RECTS =
             [
-            	new(394, 11, 15, 16),
-            	new(411, 11, 15, 16)
+                new(394, 11, 15, 16),
+                new(411, 11, 15, 16)
             ];
             public static readonly Vector2[] REL_PATHS =
             [

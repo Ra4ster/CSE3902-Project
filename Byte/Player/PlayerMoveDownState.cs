@@ -1,15 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Byte.Sprite;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Player
 {
     public class PlayerMoveDownState : IPlayerState
     {
         // frames for walking south animation
-        Rectangle[] southFrames =
+        readonly Rectangle[] southFrames =
         {
             new Rectangle(1, 11, 16, 16),
             new Rectangle(18,11,16,16)
@@ -33,7 +29,7 @@ namespace Byte.Player
                     southFrames,
                     .1f,
                     6.0f);
-                
+
             }
             if (link.currentSprite is MovingAnimatedSprite)
             {
