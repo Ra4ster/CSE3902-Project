@@ -67,7 +67,6 @@ namespace Byte.Rooms
                 };
                 items.Add(itemFactory.Create(worldData));
             }
-
             foreach (DoorData doorData in data.Doors)
                 doors.Add(new Door(doorData));
         }
@@ -80,6 +79,8 @@ namespace Byte.Rooms
                 item.Draw(spriteBatch);
             foreach (AbstractEnemy enemy in enemies)
                 enemy.Draw(spriteBatch);
+            foreach(Door door in doors)
+                door.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
