@@ -7,7 +7,7 @@ using Byte.Sprite;
 /// </summary>
 public class MovingAnimatedSprite : ISprite
 {
-    public bool Loop { get; set; } = true;
+    public bool loopAnimation { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
@@ -65,7 +65,7 @@ public class MovingAnimatedSprite : ISprite
             {
                 currentFrame++;
             }
-            else if (Loop)
+            else if (loopAnimation)
             {
                 currentFrame = 0;
             }

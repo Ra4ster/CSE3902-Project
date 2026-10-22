@@ -10,10 +10,10 @@ namespace Byte.Command
         readonly Game gameGet;
 
 
-        public MoveRightCommand(Game game, Link link)
+        public MoveRightCommand(Game _, Link link)
         {
+            gameGet = _;
             player = link;
-            ;
         }
 
         public void Execute(GameTime gameTime)

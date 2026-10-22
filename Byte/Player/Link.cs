@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Byte.Collidable;
 using Byte.Controller;
 using Byte.Sprite;
@@ -60,10 +61,10 @@ namespace Byte.Player
         public IPlayerState state { get; set; } = new PlayerIdleState();
 
         // the current frames that need to be drawn
-        public Rectangle[] sourceRects { get; set; } = new Rectangle[1];
+        public Collection<Rectangle> sourceRects { get; set; } = new Collection<Rectangle> { new Rectangle() };
 
         // the sprite that is active for link
-        public ISprite? currentSprite { get; set; } = newSprite;
+        public ISprite currentSprite { get; set; } = newSprite;
 
         // the sprite batch used for drawing
         public SpriteBatch spriteBatch { get; set; } = newSpriteBatch;
@@ -80,9 +81,6 @@ namespace Byte.Player
 
         // The list of keys pressed
         private Keys[] keys = new Keys[1];
-
-
-
 
         public void Update(GameTime gameTime)
         {
@@ -199,10 +197,7 @@ namespace Byte.Player
             // if the state passed is the same as current state dont do anything
             if (this.state.GetType() != state.GetType())
             {
-
-
                 this.state = state;
-                this.currentSprite = null;
             }
         }
 

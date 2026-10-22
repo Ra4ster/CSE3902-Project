@@ -103,7 +103,7 @@ namespace Byte.Player
                 link.currentSprite.MoveOrigin(Link.LinkOrigin);
 
                 // set loop to false so animation plays once
-                link.currentSprite.Loop = false;
+                link.currentSprite.loopAnimation = false;
 
             }
             if (link.currentSprite is MovingAnimatedSprite)
@@ -133,8 +133,7 @@ namespace Byte.Player
 
         public void Draw(Link link)
         {
-
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite!.Draw(link.spriteBatch!);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Byte.Player
         }
         public void Draw(Link link)
         {
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite.Draw(link.spriteBatch!);
         }
     }
 }

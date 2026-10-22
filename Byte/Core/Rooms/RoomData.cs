@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace Byte.Rooms
 {
     public readonly record struct GridPosition(int X, int Y);
@@ -12,9 +14,9 @@ namespace Byte.Rooms
         public required int Height { get; set; }
 
         public Dictionary<string, List<GridPosition>> Tiles { get; set; } = [];
-        public List<EnemyData> Enemies { get; set; } = [];
-        public List<ItemData> Items { get; set; } = [];
-        public List<DoorData> Doors { get; set; } = [];
+        public ReadOnlyCollection<EnemyData> Enemies { get; set; } = [];
+        public ReadOnlyCollection<ItemData> Items { get; set; } = [];
+        public ReadOnlyCollection<DoorData> Doors { get; set; } = [];
     }
 
     public class GameObjectData
@@ -34,7 +36,7 @@ namespace Byte.Rooms
 
     public sealed class EnemyData : GameObjectData
     {
-        public GridPosition[]? Path { get; set; }
+        public ReadOnlyCollection<GridPosition>? Path { get; set; }
         public float? Speed { get; set; }
         public float? FrameDuration { get; set; }
         public float? WaitDuration { get; set; }

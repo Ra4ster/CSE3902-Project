@@ -9,7 +9,7 @@ using Byte.Sprite;
 public class MovingSprite : ISprite
 
 {
-    public bool Loop { get; set; } = true;
+    public bool loopAnimation { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private Vector2 position;
