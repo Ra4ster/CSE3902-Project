@@ -1,48 +1,55 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Byte.Projectile;
-
-// flies out to its range, turns around, and disappears when it gets back to where it was thrown
-public class Boomerang : IProjectile
+namespace Byte.Projectile
 {
-    private const float SPEED = 600f;
-    private const float RANGE = 450f;
-
-    private readonly MovingAnimatedSprite sprite;
-    private Vector2 velocity;
-    private Vector2 position;
-    private float distanceTraveled;
-    private bool isReturning;
-
-    public bool IsExpired { get; private set; }
-
-    public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+    public class Boomerang : AbstractProjectile
     {
-        this.sprite = sprite;
-        this.position = position;
-        velocity = direction * SPEED;
-    }
+        private const float SPEED = 600f;
+        private const float RANGE = 450f;
+        private const float SCALE = 6.0f;
 
-    public void Update(GameTime gameTime)
-    {
-        float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        position += velocity * seconds;
-        distanceTraveled += SPEED * seconds;
+        private readonly MovingAnimatedSprite movingSprite;
+        private Vector2 startPosition;
+        private float distanceTraveled;
+        private bool isReturning = false;
 
-        if (!isReturning && distanceTraveled >= RANGE)
+        public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
+            : base(
+                sprite,
+                new Point((int)(8 * SCALE), (int)(16 * SCALE)), 
+                position,
+                direction * SPEED,
+                PlayerProjectileProperties
+            )
         {
-            isReturning = true;
-            velocity = -velocity;
-        }
-        else if (isReturning && distanceTraveled >= 2 * RANGE)
-        {
-            IsExpired = true;
+            this.movingSprite = sprite;
+            this.startPosition = position;
         }
 
-        sprite.SetPos(position);
-        sprite.Update(gameTime);
-    }
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime); 
 
-    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            distanceTraveled += SPEED * seconds;
+
+            if (!isReturning && distanceTraveled >= RANGE)
+            {
+                isReturning = true;
+                Velocity = -Velocity; 
+            }
+            else if (isReturning)
+            {
+                float distanceToStart = Vector2.Distance(Position, startPosition);
+
+                if (distanceToStart <= 5f || distanceTraveled >= RANGE * 2f)
+                {
+                    IsExpired = true;
+                }
+            }
+
+            movingSprite.SetPos(Position);
+        }
+    }
 }

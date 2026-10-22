@@ -8,6 +8,8 @@ public class ProjectileManager
 {
     private readonly List<IProjectile> projectiles = new List<IProjectile>();
 
+    public List<IProjectile> Projectiles => projectiles;
+
     public void Add(IProjectile projectile) => projectiles.Add(projectile);
 
     public void Clear() => projectiles.Clear();
@@ -19,6 +21,7 @@ public class ProjectileManager
             projectile.Update(gameTime);
         }
         _ = projectiles.RemoveAll(projectile => projectile.IsExpired);
+        projectiles.RemoveAll(projectile => projectile.IsExpired || projectile.HasCollided);
     }
 
     public void Draw(SpriteBatch spriteBatch)

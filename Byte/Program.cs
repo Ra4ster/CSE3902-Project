@@ -11,6 +11,7 @@ using Byte.Rooms;
 using Byte.Factory;
 using Byte.Collidable;
 
+
 /// <summary>
 /// Class representing the game, containing the graphics device and sprite painter. Also the entrypoint of the application.
 /// </summary>
@@ -229,6 +230,11 @@ public class Program : Game
 
             foreach (ICollidable collidable in roomManager.CurrentRoom.Collidables)
                 BoundingBoxDrawer.Draw(SpritePainter!, collidable.BoundingBox, BoundingBoxColor(collidable));
+
+            foreach (ICollidable projectile in projectileManager.Projectiles)
+            {
+                BoundingBoxDrawer.Draw(SpritePainter!, projectile.BoundingBox, Color.Cyan);
+            }
         }
 
         SpritePainter!.DrawString(statusFont,
@@ -252,10 +258,20 @@ public class Program : Game
             DispatchCollisions(new List<ICollidable> { link, block });
         LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
 
+        foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
+        {
+            foreach (IProjectile projectile in projectileManager.Projectiles) 
+            {
+                DispatchCollisions(new List<ICollidable> { projectile, block });
+            }
+        }
+
         var collidables = new List<ICollidable> { link };
         collidables.AddRange(room.Enemies);
         collidables.AddRange(room.Items);
         collidables.AddRange(room.Doors);
+
+        collidables.AddRange(projectileManager.Projectiles);
 
         link.Sword.Update(link);
         if (!link.Sword.BoundingBox.IsEmpty)
