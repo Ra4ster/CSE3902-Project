@@ -63,7 +63,7 @@ namespace Byte.Player
         public void Draw(Link link)
         {
             // draw in current spritebatch
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite.Draw(link.spriteBatch!);
         }
     }
 }

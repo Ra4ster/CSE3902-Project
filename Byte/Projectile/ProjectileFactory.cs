@@ -75,7 +75,7 @@ public class ProjectileFactory
     {
         MovingAnimatedSprite bombSprite = CreateSprite(new[] { BOMB }, 1f, position);
         MovingAnimatedSprite explosionSprite = CreateSprite(EXPLOSION_FRAMES, EXPLOSION_FRAME_DURATION, position);
-        explosionSprite.Loop = false;
+        explosionSprite.loopAnimation = false;
         return new Bomb(bombSprite, explosionSprite, position);
     }
 

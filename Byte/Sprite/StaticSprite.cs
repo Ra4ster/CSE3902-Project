@@ -8,7 +8,7 @@ namespace Byte.Sprite;
 /// </summary>
 public class StaticSprite : ISprite
 {
-    public bool Loop { get; set; } = true;
+    public bool loopAnimation { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     private readonly Texture2D texture;
     private Vector2 position;

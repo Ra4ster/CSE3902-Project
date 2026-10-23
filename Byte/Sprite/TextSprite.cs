@@ -7,7 +7,7 @@ using Byte.Sprite;
 /// </summary>
 public class TextSprite : ISprite
 {
-    public bool Loop { get; set; } = true;
+    public bool loopAnimation { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     public Vector2 Origin { get; set; } = Vector2.Zero;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
