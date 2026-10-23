@@ -20,12 +20,8 @@ public class ProjectileManager
         {
             projectile.Update(gameTime);
         }
-        _ = projectiles.RemoveAll(projectile => projectile.IsExpired);
+
         projectiles.RemoveAll(projectile => projectile.IsExpired || projectile.HasCollided);
-        foreach (AbstractProjectile projectile in projectiles)
-        {
-            projectile.Update(gameTime);
-        }
     }
 
     public void Draw(SpriteBatch spriteBatch)

@@ -54,6 +54,7 @@ public abstract class AbstractEnemy : ICollidable
 
     public virtual void Update(GameTime gameTime)
     {
+        UpdateDamage(gameTime);
         Move(gameTime);
 
         if (enemySprite is MovingSprite movingSprite)
