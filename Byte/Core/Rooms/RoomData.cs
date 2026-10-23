@@ -14,9 +14,9 @@ namespace Byte.Rooms
         public required int Height { get; set; }
 
         public Dictionary<string, List<GridPosition>> Tiles { get; set; } = [];
-        public ReadOnlyCollection<EnemyData> Enemies { get; set; } = [];
-        public ReadOnlyCollection<ItemData> Items { get; set; } = [];
-        public ReadOnlyCollection<DoorData> Doors { get; set; } = [];
+        public IList<EnemyData> Enemies { get; set; } = [];
+        public IList<ItemData> Items { get; set; } = [];
+        public IList<DoorData> Doors { get; set; } = [];
     }
 
     public class GameObjectData
@@ -32,7 +32,6 @@ namespace Byte.Rooms
         public required string Direction { get; set; }
         public required string TargetRoom { get; set; }
         public GridPosition? ArrivalPosition { get; set; }
-        public required string doorState { get; set; }
     }
 
     public sealed class EnemyData : GameObjectData
