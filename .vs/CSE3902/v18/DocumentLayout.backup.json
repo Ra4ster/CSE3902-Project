@@ -74,7 +74,7 @@
               "RelativeDocumentMoniker": "Byte\\Core\\Rooms\\DoorFactory.cs",
               "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\Rooms\\DoorFactory.cs",
               "RelativeToolTip": "Byte\\Core\\Rooms\\DoorFactory.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAcwCwAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAACkAAAAAAAAAAAAAAC8AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-23T00:51:04.44Z",
               "EditorCaption": ""
@@ -149,8 +149,7 @@
               "RelativeToolTip": "Byte\\Player\\LinkInterface.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAgwCEAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-18T16:38:40.805Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-18T16:38:40.805Z"
             },
             {
               "$type": "Document",

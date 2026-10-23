@@ -36,17 +36,19 @@ namespace Byte.Core.Rooms
         {
             switch (direction) { 
             case DoorDirection.North:
-                CreateNorthDoor(position);
-                break;
+                return CreateNorthDoor(position);
+               
             case DoorDirection.East:
-                CreateEastDoor(position);
-                break;
+                return CreateEastDoor(position);
+              
             case DoorDirection.South:
-                CreateSouthDoor(position);
+                return CreateSouthDoor(position);
                 break;
             case DoorDirection.West:
-                CreateWestDoor(position);
-                break;
+                return CreateWestDoor(position);
+                
+                default:
+                    return CreateNorthDoor(position);
             }
          }
         private (StaticSprite open, StaticSprite closed) CreateNorthDoor(Vector2 position)
