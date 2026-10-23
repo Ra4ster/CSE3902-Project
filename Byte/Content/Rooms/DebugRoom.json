@@ -8,15 +8,15 @@
   "tiles": {
     "Square": [[14, 14]],
     "Keystone": [[13, 14]],
-    "StatueLeft": [[12, 13]],
-    "StatueRight": [[13, 14]],
-    "Void": [[11, 13]],
-    "SpeckledFloor": [[11, 12]],
+    "StatueLeft": [[12, 14]],
+    "StatueRight": [[11, 14]],
+    "Void": [[14, 13]],
+    "SpeckledFloor": [[13, 13]],
     "Water": [[12, 13]],
-    "Stairs": [[12, 12]],
-    "Brick": [[13, 13]],
-    "Ladder": [[13, 12]],
-    "Sand": [[14, 12]]
+    "Stairs": [[11, 13]],
+    "Brick": [[13, 12]],
+    "Ladder": [[12, 12]],
+    "Sand": [[11, 12]]
   },
   "enemies": [
     {

@@ -34,23 +34,20 @@ namespace Byte.Core.Rooms
 
         private (StaticSprite open, StaticSprite closed) CreateDoorSprites(DoorDirection direction, Vector2 position)
         {
-            switch (direction) { 
-            case DoorDirection.North:
-                return CreateNorthDoor(position);
-               
-            case DoorDirection.East:
-                return CreateEastDoor(position);
-              
-            case DoorDirection.South:
-                return CreateSouthDoor(position);
-                break;
-            case DoorDirection.West:
-                return CreateWestDoor(position);
-                
+            switch (direction)
+            {
+                case DoorDirection.North:
+                    return CreateNorthDoor(position);
+                case DoorDirection.East:
+                    return CreateEastDoor(position);
+                case DoorDirection.South:
+                    return CreateSouthDoor(position);
+                case DoorDirection.West:
+                    return CreateWestDoor(position);
                 default:
                     return CreateNorthDoor(position);
             }
-         }
+        }
         private (StaticSprite open, StaticSprite closed) CreateNorthDoor(Vector2 position)
         {
             Rectangle openFrame = new Rectangle(848, 11, 32, 32);
