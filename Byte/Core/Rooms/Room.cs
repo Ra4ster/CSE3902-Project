@@ -67,7 +67,6 @@ namespace Byte.Rooms
                 };
                 items.Add(itemFactory.Create(worldData));
             }
-
             foreach (DoorData doorData in data.Doors)
                 doors.Add(new Door(doorData));
         }
@@ -80,18 +79,20 @@ namespace Byte.Rooms
                 item.Draw(spriteBatch);
             foreach (AbstractEnemy enemy in enemies)
                 enemy.Draw(spriteBatch);
+            foreach(Door door in doors)
+                door.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
         {
             foreach (AbstractEnemy enemy in enemies)
                 enemy.Update(gametime);
-            enemies.RemoveAll(enemy => enemy.IsDefeated);
+            _ = enemies.RemoveAll(enemy => enemy.IsDefeated);
             foreach (IBlock block in blocks)
                 block.Update(gametime);
             foreach (IItem item in items)
                 item.Update(gametime);
-            items.RemoveAll(item => item.IsCollected);
+            _ = items.RemoveAll(item => item.IsCollected);
         }
     }
 }

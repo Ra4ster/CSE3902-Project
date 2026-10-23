@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Byte.Collidable
 {
     public class CollisionDispatcher
@@ -18,13 +14,14 @@ namespace Byte.Collidable
             if (handlers.TryGetValue((a.Properties.Type, b.Properties.Type), out var handler))
             {
                 handler(a, b, side);
-            } else if(handlers.TryGetValue((b.Properties.Type, a.Properties.Type), out handler))
+            }
+            else if (handlers.TryGetValue((b.Properties.Type, a.Properties.Type), out handler))
             {
                 handler(b, a, Reverse(side));
             }
         }
-    
-    private static CollisionSide Reverse(CollisionSide side)
+
+        private static CollisionSide Reverse(CollisionSide side)
         {
             return side switch
             {

@@ -1,7 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Player
@@ -14,7 +11,7 @@ namespace Byte.Player
         public Rectangle[] useItemSouthFrames =
         {
             new Rectangle(1,47,16,14),
-            
+
 
         };
 
@@ -23,7 +20,7 @@ namespace Byte.Player
         public Rectangle[] useItemEastWestFrames =
        {
             new Rectangle(1,77,16,16),
-            
+
 
         };
         // contains frames for attacking north
@@ -31,7 +28,7 @@ namespace Byte.Player
         public Rectangle[] useItemNorthFrames =
        {
             new Rectangle(1,109,16,16),
-           
+
 
         };
 
@@ -106,7 +103,7 @@ namespace Byte.Player
                 link.currentSprite.MoveOrigin(Link.LinkOrigin);
 
                 // set loop to false so animation plays once
-                link.currentSprite.Loop = false;
+                link.currentSprite.loopAnimation = false;
 
             }
             if (link.currentSprite is MovingAnimatedSprite)
@@ -124,7 +121,7 @@ namespace Byte.Player
                     link.IsAttacking = false;
                     link.Velocity = Vector2.Zero;
                     link.GetNewState(new PlayerIdleState());
-                    link.state.Update(link, gametime);
+                    _ = link.state.Update(link, gametime);
                 }
 
             }
@@ -136,8 +133,7 @@ namespace Byte.Player
 
         public void Draw(Link link)
         {
-
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite!.Draw(link.spriteBatch!);
         }
     }
 }

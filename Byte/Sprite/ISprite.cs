@@ -26,6 +26,6 @@ public interface ISprite
     public void SetFrameOrigin(Vector2[] Origins);
 
     // Loop and Is finished used for animations that don't loop such as attacking - can be used to stop animations
-    public bool Loop { get; set; }
-    public bool IsFinished {  get; set; }
+    public bool loopAnimation { get; set; }
+    public bool IsFinished { get; set; }
 }

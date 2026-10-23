@@ -10,6 +10,7 @@ using Byte;
 using Byte.Rooms;
 using Byte.Factory;
 using Byte.Collidable;
+using System.Collections.ObjectModel;
 
 
 /// <summary>
@@ -19,6 +20,7 @@ public class Program : Game
 {
     public GraphicsDeviceManager graphicsDeviceManager;
     private const float SCREEN_FILL_RATIO = 0.85f;
+    private const int LINK_SOURCE_RECT_COUNT = 10;
 
     public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
@@ -32,12 +34,12 @@ public class Program : Game
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
 
-    Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
-    Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
-    Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
+    readonly Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
+    readonly Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
+    readonly Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
 
-    private IController mouseControls;
-    private IController kbControls;
+    private readonly IController mouseControls;
+    private readonly IController kbControls;
 
     private bool resetRequested = false;
 
@@ -142,7 +144,8 @@ public class Program : Game
             SpritePainter!, GameAssets.Instance.LinkSheet,
             mouseControls, kbControls);
 
-        link.sourceRects = new Rectangle[10];
+        link.sourceRects = new Collection<Rectangle>(
+            Enumerable.Repeat(Rectangle.Empty, LINK_SOURCE_RECT_COUNT).ToList());
 
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
@@ -260,7 +263,7 @@ public class Program : Game
 
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
         {
-            foreach (IProjectile projectile in projectileManager.Projectiles) 
+            foreach (IProjectile projectile in projectileManager.Projectiles)
             {
                 DispatchCollisions(new List<ICollidable> { projectile, block });
             }

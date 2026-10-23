@@ -1,6 +1,5 @@
 
 using Byte.Projectile;
-using Byte.Rooms;
 using Byte.Sprite.Enemy;
 using Byte.Sprite.Enemy.Minion;
 using Microsoft.Xna.Framework;
@@ -21,9 +20,7 @@ namespace Byte.Factory
 
     public class EnemyFactory : IFactory<EnemyFactoryData, AbstractEnemy>
     {
-
         private readonly ProjectileManager projectileManager;
-
         public EnemyFactory(ProjectileManager projectileManager)
         {
             this.projectileManager = projectileManager;
@@ -46,15 +43,15 @@ namespace Byte.Factory
         public static AbstractEnemy CreateEnemy(
             EnemyType type,
             Vector2 at,
-            ProjectileManager? projectileManager = null,
-            Vector2[]? path = null,
+            ProjectileManager? projectileManager = null, // Should remove eventually; decoupling
+            Vector2[]? path = null, // Should not be necessary anymore.
             float? speed = null,
             float? frameDuration = null,
             float? waitDuration = null,
             float? scale = null)
         {
             if (type is EnemyType.Goriya or EnemyType.Aquamentus)
-                RequireProjectileManager(projectileManager, type);
+                _ = RequireProjectileManager(projectileManager, type);
 
             Texture2D enemyTex = GameAssets.Instance.EnemySheet;
             Texture2D bossTex = GameAssets.Instance.BossSheet;

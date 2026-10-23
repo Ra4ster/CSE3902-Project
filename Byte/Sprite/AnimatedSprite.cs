@@ -9,8 +9,8 @@ namespace Byte.Sprite;
 /// </summary>
 public class AnimatedSprite : ISprite
 {
-    
-    public bool Loop { get; set; } = true;
+
+    public bool loopAnimation { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
@@ -19,8 +19,8 @@ public class AnimatedSprite : ISprite
     public Color Color { get; set; } = Color.White;
     public Vector2 Origin { get; set; } = Vector2.Zero;
 
-    private Rectangle[] sourceRectangles;
-    private float scale;
+    private readonly Rectangle[] sourceRectangles;
+    private readonly float scale;
     private readonly double frameDuration;
 
     private int currentFrame;

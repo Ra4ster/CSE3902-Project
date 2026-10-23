@@ -1,17 +1,14 @@
 ﻿using Byte.Player;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Command
 {
     public class MoveDownCommand : ICommand
     {
-        private Link player;
-        Game gameGet;
+        private readonly Link player;
+        readonly Game gameGet;
 
-        
+
 
         public MoveDownCommand(Game game, Link link)
         {
@@ -37,7 +34,7 @@ namespace Byte.Command
             {
                 player.GetNewState(new PlayerMoveDownState());
             }
-            
+
         }
     }
 }

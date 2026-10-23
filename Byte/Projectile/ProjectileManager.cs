@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 
 namespace Byte.Projectile;
 
@@ -17,6 +16,11 @@ public class ProjectileManager
 
     public void Update(GameTime gameTime)
     {
+        foreach (IProjectile projectile in projectiles)
+        {
+            projectile.Update(gameTime);
+        }
+        _ = projectiles.RemoveAll(projectile => projectile.IsExpired);
         projectiles.RemoveAll(projectile => projectile.IsExpired || projectile.HasCollided);
         foreach (AbstractProjectile projectile in projectiles)
         {

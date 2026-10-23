@@ -1,8 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Byte.Sprite;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Player
@@ -10,7 +6,7 @@ namespace Byte.Player
     public class PlayerMoveLeftState : IPlayerState
     {
         // contains frames for walking west 
-        Rectangle[] westFrames =
+        readonly Rectangle[] westFrames =
         {
             new Rectangle(35, 11, 16, 16),
             new Rectangle(52,11,16,16)
@@ -50,7 +46,7 @@ namespace Byte.Player
         }
         public void Draw(Link link)
         {
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite.Draw(link.spriteBatch!);
         }
     }
 }

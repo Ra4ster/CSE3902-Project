@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 public class QuitCommand : ICommand
 {
-    private Game game;
+    private readonly Game game;
 
     public QuitCommand(Game game) => this.game = game;
 

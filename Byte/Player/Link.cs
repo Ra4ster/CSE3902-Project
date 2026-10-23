@@ -1,7 +1,7 @@
+using System.Collections.ObjectModel;
 using Byte.Collidable;
 using Byte.Controller;
 using Byte.Sprite;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -61,10 +61,10 @@ namespace Byte.Player
         public IPlayerState state { get; set; } = new PlayerIdleState();
 
         // the current frames that need to be drawn
-        public Rectangle[] sourceRects { get; set; } = new Rectangle[1];
+        public Collection<Rectangle> sourceRects { get; set; } = new Collection<Rectangle> { new Rectangle() };
 
         // the sprite that is active for link
-        public ISprite? currentSprite { get; set; } = newSprite;
+        public ISprite currentSprite { get; set; } = newSprite;
 
         // the sprite batch used for drawing
         public SpriteBatch spriteBatch { get; set; } = newSpriteBatch;
@@ -82,9 +82,6 @@ namespace Byte.Player
         // The list of keys pressed
         private Keys[] keys = new Keys[1];
 
-
-
-
         public void Update(GameTime gameTime)
         {
             // Check which keys are pressed - if they affect idle state update if not set to idle
@@ -94,12 +91,12 @@ namespace Byte.Player
                 GetNewState(new PlayerIdleState());
                 ApplyVelocityDecay(gameTime);
             }
-           
+
             if (IsAttacking)
             {
                 Velocity = Vector2.Zero;
             }
-            state.Update(this, gameTime);
+            _ = state.Update(this, gameTime);
             float seconds =
                 (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -158,7 +155,7 @@ namespace Byte.Player
             else if (currentSprite is StaticSprite staticSprite)
                 staticSprite.SetPos(position);
 
-            
+
 
         }
 
@@ -200,10 +197,7 @@ namespace Byte.Player
             // if the state passed is the same as current state dont do anything
             if (this.state.GetType() != state.GetType())
             {
-
-
                 this.state = state;
-                this.currentSprite = null;
             }
         }
 

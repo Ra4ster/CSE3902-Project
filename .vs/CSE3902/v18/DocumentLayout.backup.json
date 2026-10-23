@@ -3,20 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\core\\rooms\\doorfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\core\\rooms\\doorfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\projectile\\projectilemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\projectile\\projectilemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\projectile\\arrow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\projectile\\arrow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\projectile\\bomb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\projectile\\bomb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\projectile\\arrow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\projectile\\arrow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\link.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\core\\gameconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\core\\gameconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|c:\\users\\rayra\\onedrive\\desktop\\cse3902local\\byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{26938773-08DA-4C4E-AE64-D2D8DA6512DD}|Byte\\Byte.csproj|solutionrelative:byte\\player\\linkinterface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -48,7 +52,7 @@
         },
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -64,7 +68,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
+              "Title": "DoorFactory.cs",
+              "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\Rooms\\DoorFactory.cs",
+              "RelativeDocumentMoniker": "Byte\\Core\\Rooms\\DoorFactory.cs",
+              "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\Rooms\\DoorFactory.cs",
+              "RelativeToolTip": "Byte\\Core\\Rooms\\DoorFactory.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAcwCwAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-23T00:51:04.44Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Bomb.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Projectile\\Bomb.cs",
               "RelativeDocumentMoniker": "Byte\\Projectile\\Bomb.cs",
@@ -72,29 +89,23 @@
               "RelativeToolTip": "Byte\\Projectile\\Bomb.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-21T13:43:29.521Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+              "WhenOpened": "2026-10-21T13:43:29.521Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ProjectileManager.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Projectile\\ProjectileManager.cs",
               "RelativeDocumentMoniker": "Byte\\Projectile\\ProjectileManager.cs",
               "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Projectile\\ProjectileManager.cs",
               "RelativeToolTip": "Byte\\Projectile\\ProjectileManager.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAYwBQAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-21T13:41:13.317Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-21T13:41:13.317Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Program.cs",
               "RelativeDocumentMoniker": "Byte\\Program.cs",
@@ -102,8 +113,7 @@
               "RelativeToolTip": "Byte\\Program.cs",
               "ViewState": "AgIAAL4AAAAAAAAAAAA8wAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-21T13:40:57.679Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-21T13:40:57.679Z"
             },
             {
               "$type": "Document",
@@ -113,14 +123,13 @@
               "RelativeDocumentMoniker": "Byte\\Projectile\\Arrow.cs",
               "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Projectile\\Arrow.cs",
               "RelativeToolTip": "Byte\\Projectile\\Arrow.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-21T13:40:30.213Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-21T13:40:30.213Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "GameConstants.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Core\\GameConstants.cs",
               "RelativeDocumentMoniker": "Byte\\Core\\GameConstants.cs",
@@ -132,19 +141,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "LinkInterface.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\LinkInterface.cs",
               "RelativeDocumentMoniker": "Byte\\Player\\LinkInterface.cs",
               "ToolTip": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\LinkInterface.cs",
               "RelativeToolTip": "Byte\\Player\\LinkInterface.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAgwCQAAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAgwCEAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-18T16:38:40.805Z"
+              "WhenOpened": "2026-10-18T16:38:40.805Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Link.cs",
               "DocumentMoniker": "C:\\Users\\rayra\\OneDrive\\Desktop\\CSE3902Local\\Byte\\Player\\Link.cs",
               "RelativeDocumentMoniker": "Byte\\Player\\Link.cs",
@@ -152,8 +162,11 @@
               "RelativeToolTip": "Byte\\Player\\Link.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAJ0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T20:07:57.308Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-30T20:07:57.308Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             }
           ]
         }

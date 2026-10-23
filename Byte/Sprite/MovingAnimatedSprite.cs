@@ -7,7 +7,7 @@ using Byte.Sprite;
 /// </summary>
 public class MovingAnimatedSprite : ISprite
 {
-    public bool Loop { get; set; } = true;
+    public bool loopAnimation { get; set; } = true;
     public bool IsFinished { get; set; } = false;
     private Vector2[]? frameOrigins;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
@@ -20,11 +20,11 @@ public class MovingAnimatedSprite : ISprite
     public float scale;
     public Vector2 Origin { get; set; } = Vector2.Zero;
 
-    private Rectangle[] sourceRectangles;
+    private readonly Rectangle[] sourceRectangles;
 
     public int currentFrame;
     private float animationTimer = 0;
-    private float frameDuration;
+    private readonly float frameDuration;
 
     public MovingAnimatedSprite(Texture2D texture, ref Vector2 position, ref Vector2 velocity, Color color,
         Rectangle[] sourceRectangles, float frameDuration, float scale = 1.0f, SpriteEffects spriteEffects = SpriteEffects.None)
@@ -65,7 +65,7 @@ public class MovingAnimatedSprite : ISprite
             {
                 currentFrame++;
             }
-            else if (Loop)
+            else if (loopAnimation)
             {
                 currentFrame = 0;
             }

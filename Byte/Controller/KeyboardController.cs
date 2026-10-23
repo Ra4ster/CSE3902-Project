@@ -8,8 +8,8 @@ namespace Byte.Controller;
 /// </summary>
 public class KeyboardController : IController
 {
-    private Dictionary<Keys, ICommand> keyboardCommands;
-    private HashSet<Keys> pressOnlyCommands = new HashSet<Keys>();
+    private readonly Dictionary<Keys, ICommand> keyboardCommands;
+    private readonly HashSet<Keys> pressOnlyCommands = new HashSet<Keys>();
 
     public KeyboardState currentState;
 
@@ -24,7 +24,7 @@ public class KeyboardController : IController
     public KeyboardController(Dictionary<Keys, ICommand> keyboardCommands, Keys[] pressOnlyKeys) : this(keyboardCommands)
     {
         foreach (Keys k in pressOnlyKeys)
-            pressOnlyCommands.Add(k);
+            _ = pressOnlyCommands.Add(k);
     }
 
     public void Update(GameTime gameTime)
@@ -48,6 +48,6 @@ public class KeyboardController : IController
 
     public void SetPressOnly(Keys key)
     {
-        pressOnlyCommands.Add(key);
+        _ = pressOnlyCommands.Add(key);
     }
 }

@@ -1,16 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Byte.Sprite;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Player
 {
     public class PlayerMoveUpState : IPlayerState
     {
-        
+
         // frames for north walking
-        Rectangle[] northFrames =
+        readonly Rectangle[] northFrames =
         {
             new Rectangle(69, 11, 16,16),
             new Rectangle(86,11,16,16)
@@ -24,7 +20,7 @@ namespace Byte.Player
         {
             link.Velocity = new Vector2(0, -link.MovementSpeed);
             // Check if already walking if not start
-            if (link.currentSprite is not MovingAnimatedSprite )
+            if (link.currentSprite is not MovingAnimatedSprite)
             {
                 link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                      link.Position,
@@ -46,7 +42,7 @@ namespace Byte.Player
         }
         public void Draw(Link link)
         {
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite.Draw(link.spriteBatch!);
         }
     }
 }

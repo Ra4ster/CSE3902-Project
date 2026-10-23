@@ -7,15 +7,15 @@ using Byte.Sprite;
 /// </summary>
 public class TextSprite : ISprite
 {
-    public bool Loop { get; set; } = true;
-    public bool IsFinished { get;  set; } = false;
+    public bool loopAnimation { get; set; } = true;
+    public bool IsFinished { get; set; } = false;
     public Vector2 Origin { get; set; } = Vector2.Zero;
     public SpriteEffects Effects { get; set; } = SpriteEffects.None;
     private readonly SpriteFont font;
     public string Text { get; set; }
     private readonly Vector2 position;
     public Color Color { get; set; } = Color.White;
-    private float scale;
+    private readonly float scale;
 
 
     public TextSprite(SpriteFont font, string text, ref Vector2 position, Color color, float scale = 1f)
@@ -34,7 +34,7 @@ public class TextSprite : ISprite
     public void MoveOrigin(Vector2 origin)
     {
 
-       // Does nothing in this iSprite  
+        // Does nothing in this iSprite  
     }
     public void SetFrameOrigin(Vector2[] Origins)
     {

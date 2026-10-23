@@ -1,8 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Byte.Sprite;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Byte.Player
 {
@@ -10,7 +6,7 @@ namespace Byte.Player
     {
 
         // Contains walking east frames
-        Rectangle[] eastFrames =
+        readonly Rectangle[] eastFrames =
         {
             new Rectangle(35, 11, 16, 16),
             new Rectangle(52,11,16,16)
@@ -22,7 +18,7 @@ namespace Byte.Player
         }
         public IPlayerState Update(Link link, GameTime gametime)
         {
-            link.Velocity = new Vector2(link.MovementSpeed, 0 );
+            link.Velocity = new Vector2(link.MovementSpeed, 0);
             // check if already walking if not start walking
             if (link.currentSprite is not MovingAnimatedSprite)
             {
@@ -47,7 +43,7 @@ namespace Byte.Player
         }
         public void Draw(Link link)
         {
-            link.currentSprite.Draw(link.spriteBatch);
+            link.currentSprite.Draw(link.spriteBatch!);
         }
     }
 }
