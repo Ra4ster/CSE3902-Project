@@ -7,19 +7,21 @@ namespace Byte.Projectile
     {
         private const float SCALE = 6.0f;
         private const float EXPLOSION_DURATION = 0.3f;
+        private const float FUSE_DURATION = 2.0f; 
 
         private readonly MovingAnimatedSprite bombSprite;
         private readonly MovingAnimatedSprite explosionSprite;
 
         private bool isExploding = false;
         private float explosionTimer = 0f;
+        private float fuseTimer = 0f;
 
-        public Bomb(MovingAnimatedSprite bombSprite, MovingAnimatedSprite explosionSprite, Vector2 position)
+        public Bomb(MovingAnimatedSprite bombSprite, MovingAnimatedSprite explosionSprite, Vector2 position, Vector2 velocity)
             : base(
                 bombSprite,
-                new Point((int)(8 * SCALE), (int)(16 * SCALE)), 
+                new Point((int)(8 * SCALE), (int)(16 * SCALE)),
                 position,
-                Vector2.Zero,
+                velocity, 
                 PlayerProjectileProperties
             )
         {
@@ -31,19 +33,22 @@ namespace Byte.Projectile
         {
             base.Update(gameTime); 
 
+            float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             if (!isExploding)
             {
                 bombSprite.SetPos(Position);
+                bombSprite.Update(gameTime);
 
+                fuseTimer += seconds;
 
-                if (HasCollided)
+                if (HasCollided || fuseTimer >= FUSE_DURATION)
                 {
                     StartExplosion();
                 }
             }
             else
             {
-                float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 explosionTimer += seconds;
 
                 explosionSprite.SetPos(Position);
@@ -60,7 +65,6 @@ namespace Byte.Projectile
         {
             isExploding = true;
         }
-
 
         public override void Draw(SpriteBatch spriteBatch)
         {

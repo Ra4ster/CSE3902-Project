@@ -46,7 +46,7 @@ public class ProjectileFactory
         this.bossSheet = bossSheet;
     }
 
-    // direction is a unit vector in screen space (+Y is down)
+
     public IProjectile CreateArrow(Vector2 position, Vector2 direction)
     {
         bool isHorizontal = direction.X != 0;
@@ -71,12 +71,13 @@ public class ProjectileFactory
         return new Boomerang(sprite, position, direction);
     }
 
-    public IProjectile CreateBomb(Vector2 position)
+    public IProjectile CreateBomb(Vector2 position, Vector2 direction)
     {
+        const float THROW_SPEED = 300f;
         MovingAnimatedSprite bombSprite = CreateSprite(new[] { BOMB }, 1f, position);
         MovingAnimatedSprite explosionSprite = CreateSprite(EXPLOSION_FRAMES, EXPLOSION_FRAME_DURATION, position);
         explosionSprite.loopAnimation = false;
-        return new Bomb(bombSprite, explosionSprite, position);
+        return new Bomb(bombSprite, explosionSprite, position, direction * THROW_SPEED);
     }
 
     public IProjectile CreateFireball(Vector2 position, Vector2 direction)
@@ -85,7 +86,6 @@ public class ProjectileFactory
         return new Fireball(sprite, position, direction);
     }
 
-    // sprites are centered on the projectile's position
     private MovingAnimatedSprite CreateSprite(Rectangle[] frames, float frameDuration, Vector2 position)
         => CreateSprite(frames, frameDuration, position, sheet);
 
