@@ -5,5 +5,5 @@ namespace Byte.Block;
 
 public class SquareBlock : AbstractBlock
 {
-    public SquareBlock(ISprite sprite, Vector2 position) : base(sprite, position) { }
+    public SquareBlock(ISprite sprite, Vector2 position) : base(sprite, position) { Properties.BlocksPlayer = false; }
 }

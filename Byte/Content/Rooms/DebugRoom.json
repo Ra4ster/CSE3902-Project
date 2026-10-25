@@ -56,7 +56,7 @@
       "position": [14, 7],
       "direction": "East",
       "targetRoom": "Hall",
-      "arrivalPosition": [0, 3]
+      "arrivalPosition": [1, 3]
     }
   ]
 }
