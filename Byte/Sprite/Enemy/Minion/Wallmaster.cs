@@ -12,5 +12,7 @@ namespace Byte.Sprite.Enemy
             patrolPath ?? EnemyConstants.Wallmaster.REL_PATHS, patrolSpeed)
         {
         }
+
+        public override bool IsBlockedByBlocks => false;
     }
 }

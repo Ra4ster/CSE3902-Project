@@ -27,6 +27,8 @@ namespace Byte.Sprite.Enemy
         {
         }
 
+        public override bool IsBlockedByBlocks => false;
+
         public override void Update(GameTime gameTime)
         {
             elapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;

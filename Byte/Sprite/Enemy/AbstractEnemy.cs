@@ -34,6 +34,17 @@ public abstract class AbstractEnemy : ICollidable
     public void UpdateDamage(GameTime gameTime)
         => damageTimer = Math.Max(0, damageTimer - (float)gameTime.ElapsedGameTime.TotalSeconds);
 
+    public virtual bool IsBlockedByBlocks => true;
+
+    public virtual void OnBlocked(Vector2 correction)
+    {
+        position += correction;
+        if (enemySprite is MovingAnimatedSprite animatedSprite)
+            animatedSprite.SetPos(position);
+        else if (enemySprite is MovingSprite movingSprite)
+            movingSprite.SetPos(position);
+    }
+
     public Vector2 position;
     public Vector2 startPos;
     protected Vector2 velocity;
