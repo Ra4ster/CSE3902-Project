@@ -61,6 +61,7 @@ public class Program : Game
         Window.ClientSizeChanged += OnClientSizeChanged;
 
         LinkCollisionHandler.Register(dispatcher);
+        ProjectileCollisionHandler.Register(dispatcher);
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -183,7 +184,7 @@ public class Program : Game
 
         ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow);
         ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
-            (position, direction) => projectileFactory.CreateBomb(position));
+            (position, direction) => projectileFactory.CreateBomb(position, direction));
         ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang);
 
         keybindings.Add(Keys.D1, useArrowCommand);
