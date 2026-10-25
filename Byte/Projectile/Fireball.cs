@@ -16,7 +16,7 @@ namespace Byte.Projectile
                 sprite,
                direction.X != 0 ? new Point((int)(10 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(10 * SCALE)),
                 position,
-                direction * SPEED,
+                Vector2.Normalize(direction) * SPEED,
                 EnemyProjectileProperties
             )
         {

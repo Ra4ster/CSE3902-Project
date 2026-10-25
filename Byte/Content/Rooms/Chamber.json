@@ -20,7 +20,12 @@
       [2, 4], [3, 4], [8, 4], [9, 4]
     ]
   },
-  "enemies": [],
+  "enemies": [
+    {
+      "type": "Wallmaster",
+      "position": [4, 2]
+    }
+  ],
   "items": [],
   "doors": [
     {
