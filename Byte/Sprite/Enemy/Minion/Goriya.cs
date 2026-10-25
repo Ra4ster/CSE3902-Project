@@ -58,27 +58,37 @@ namespace Byte.Sprite.Enemy.Minion
 
         public override void Update(GameTime gameTime)
         {
-            if (boomerang is { IsExpired: true })
-                boomerang = null;
+
+            if (boomerang != null)
+            {
+                boomerang.Update(gameTime);
+                if (boomerang.IsExpired || boomerang.HasCollided)
+                {
+                    boomerang = null;
+                }
+            }
 
             if (boomerang != null)
             {
                 velocity = Vector2.Zero;
+                base.Update(gameTime);
                 return;
             }
+
             base.Update(gameTime);
 
-            if (boomerang is { IsExpired: true })
-                boomerang = null;
-            if (boomerang != null)
-                return;
 
             throwTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (throwTimer >= EnemyConstants.Goriya.THROW_INTERVAL)
             {
                 throwTimer = 0f;
                 boomerang = throwBoomerang(position + centerOffset, FacingDirection());
+                if (boomerang is Boomerang b)
+                {
+                    b.Properties = AbstractProjectile.EnemyProjectileProperties;
+                }
                 velocity = Vector2.Zero;
+                base.Update(gameTime);
             }
         }
 

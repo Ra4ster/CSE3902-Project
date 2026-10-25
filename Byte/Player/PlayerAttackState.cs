@@ -7,6 +7,14 @@ namespace Byte.Player
     {
         public PlayerAttackState() { }
 
+        private readonly float attackDuration = 0.1f;
+        private readonly float scale = 6.0f;
+
+        private double timer = 0.0;
+
+        private bool hasStarted = false;
+
+
         // contains frames for attacking south
         public Rectangle[] attackSouthFrames =
         {
@@ -36,14 +44,21 @@ namespace Byte.Player
             new Rectangle(36,98,14,26),
             new Rectangle(52,106,14,18)
 
-        };
+        }; 
+
+        // attackDuration * number of frames * 1000 milliseconds per second 
+        private readonly double maxAttackDuration = 400.0;
+
+
+
 
 
 
         public IPlayerState Update(Link link, GameTime gametime)
         {
+            timer += gametime.ElapsedGameTime.TotalMilliseconds;
             // check if link is already in an attacking animation
-            if (link.currentSprite is not MovingAnimatedSprite)
+            if (!hasStarted) // link.currentSprite is not MovingAnimatedSprite && 
             {
                 // depending on direction set link attack animation
                 if (link.Direction == CardinalDirections.North)
@@ -53,8 +68,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         attackNorthFrames,
-                        .1f,
-                        6.0f);
+                        attackDuration,
+                        scale);
                     // for north update frame origin to prevent sprite moving during animation
                     link.currentSprite.SetFrameOrigin(new Vector2[]
                     {
@@ -72,8 +87,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         attackSouthFrames,
-                        .1f,
-                        6.0f);
+                        attackDuration,
+                        scale);
                 }
                 else if (link.Direction == CardinalDirections.East)
                 {
@@ -83,8 +98,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         attackEastWestFrames,
-                        .1f,
-                        6.0f);
+                        attackDuration,
+                        scale);
                 }
                 else
                 {
@@ -93,8 +108,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         attackEastWestFrames,
-                        .1f,
-                        6.0f);
+                        attackDuration,
+                        scale);
                     // to prevent weird movement when attacking west - update sprite origins
                     link.currentSprite.SetFrameOrigin(new Vector2[]
                     {
@@ -110,6 +125,7 @@ namespace Byte.Player
 
                 // set loop to false so animation plays once
                 link.currentSprite.loopAnimation = false;
+                hasStarted = true;
 
             }
             if (link.currentSprite is MovingAnimatedSprite)
@@ -129,6 +145,15 @@ namespace Byte.Player
                     link.GetNewState(new PlayerIdleState());
                     _ = link.state.Update(link, gametime);
                 }
+                else if (timer >= maxAttackDuration)
+                {
+                    link.IsAttacking = false;
+                    link.Velocity = Vector2.Zero;
+                    link.GetNewState(new PlayerIdleState());
+                    _ = link.state.Update(link, gametime);
+                    timer = 0;
+                }
+
 
             }
 

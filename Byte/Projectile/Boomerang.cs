@@ -1,3 +1,4 @@
+using Byte.Collidable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,6 +15,8 @@ namespace Byte.Projectile
         private float distanceTraveled;
         private bool isReturning = false;
 
+        //Player boomerang
+
         public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
@@ -26,6 +29,21 @@ namespace Byte.Projectile
             this.movingSprite = sprite;
             this.startPosition = position;
         }
+
+        //Enemy boomerang
+        public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction, CollisionProperties properties)
+            : base(
+                sprite,
+                new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                position,
+                direction * SPEED,
+                properties
+            )
+        {
+            this.movingSprite = sprite;
+            this.startPosition = position;
+        }
+
 
         public override void Update(GameTime gameTime)
         {
@@ -50,6 +68,12 @@ namespace Byte.Projectile
             }
 
             movingSprite.SetPos(Position);
+        }
+
+        new public CollisionProperties Properties
+        {
+            get => base.Properties;
+            set => base.Properties = value;
         }
     }
 }

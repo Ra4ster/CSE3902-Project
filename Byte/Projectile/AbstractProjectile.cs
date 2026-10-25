@@ -43,7 +43,7 @@ namespace Byte.Projectile
             DamagesEnemies = false,
             DamagesPlayer = true
         };
-        public CollisionProperties Properties { get; protected set; }
+        public CollisionProperties Properties { get; set; }
 
         protected AbstractProjectile(ISprite sprite, Point size, Vector2 position, Vector2 velocity, CollisionProperties properties)
         {
