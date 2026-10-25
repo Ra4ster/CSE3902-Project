@@ -17,9 +17,9 @@ namespace Byte.Sprite.Enemy
             public static readonly Rectangle[] ALL_FRAMES =
             [
                 DOWN_FRAME,
-            UP_FRAME,
-            SIDE_FRAMES[0],
-            SIDE_FRAMES[1]
+                UP_FRAME,
+                SIDE_FRAMES[0],
+                SIDE_FRAMES[1]
             ];
             public static readonly Vector2[] REL_PATHS = Stalfos.REL_PATHS;
             public static readonly float SPEED = 150f;

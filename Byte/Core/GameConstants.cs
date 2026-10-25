@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 public static class GameConstants
 {
-    public const float SCALE = 10.0f;
+    public const float SCALE = 6.0f;
     public const int TILE_SIZE = 16;
 
     public static readonly Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
