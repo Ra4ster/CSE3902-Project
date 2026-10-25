@@ -23,7 +23,10 @@
   "enemies": [
     {
       "type": "Wallmaster",
-      "position": [4, 2]
+      "position": [4, 2],
+      "path": [
+        [4, 2], [4, 5], [2, 5]
+      ]
     }
   ],
   "items": [],
