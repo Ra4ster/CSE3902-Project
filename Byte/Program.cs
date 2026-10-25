@@ -62,6 +62,7 @@ public class Program : Game
 
         LinkCollisionHandler.Register(dispatcher);
         ProjectileCollisionHandler.Register(dispatcher);
+        EnemyCollisionHandler.Register(dispatcher);
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -270,6 +271,10 @@ public class Program : Game
             foreach (IProjectile projectile in projectileManager.Projectiles)
             {
                 DispatchCollisions(new List<ICollidable> { projectile, block });
+            }
+            foreach (ICollidable enemy in room.Enemies)
+            {
+                DispatchCollisions(new List<ICollidable> { enemy, block });
             }
         }
 

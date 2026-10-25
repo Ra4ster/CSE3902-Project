@@ -50,6 +50,12 @@ namespace Byte.Sprite.Enemy
             velocity = direction * speed;
         }
 
+        public override void OnBlocked(Vector2 correction)
+        {
+            base.OnBlocked(correction);
+            PickNewTarget();
+        }
+
         private void PickNewTarget()
         {
             targetPosition = ClampToWindow(position + new Vector2(
