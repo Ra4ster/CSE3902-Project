@@ -74,7 +74,7 @@ namespace Byte.Player
         private KeyboardController kbControls { get; set; } = (KeyboardController)kbControl;
 
         // How quickly Link slows down (higher = more friction)
-        public float Deceleration { get; set; } = 1600f;
+        public float Deceleration { get; set; } = 2000f;
 
         // Minimum velocity before Link fully stops
         private const float StopThreshold = 5f;
