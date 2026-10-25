@@ -1,3 +1,4 @@
+using Byte.Collidable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -94,5 +95,11 @@ public class ProjectileFactory
         MovingAnimatedSprite sprite = new MovingAnimatedSprite(texture, position, Vector2.Zero, Color.White, frames, frameDuration, SCALE);
         sprite.MoveOrigin(new Vector2(frames[0].Width / 2f, frames[0].Height / 2f));
         return sprite;
+    }
+
+    public IProjectile CreateEnemyBoomerang(Vector2 position, Vector2 direction)
+    {
+        MovingAnimatedSprite sprite = CreateSprite(BOOMERANG_FRAMES, BOOMERANG_FRAME_DURATION, position);
+        return new Boomerang(sprite, position, direction, AbstractProjectile.EnemyProjectileProperties);
     }
 }
