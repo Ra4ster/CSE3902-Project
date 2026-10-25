@@ -12,5 +12,8 @@ namespace Byte.Sprite.Enemy
             patrolPath ?? EnemyConstants.Wallmaster.REL_PATHS, patrolSpeed)
         {
         }
+
+        // Wallmasters crawl out of the walls.
+        public override bool IsBlockedByBlocks => false;
     }
 }

@@ -73,6 +73,13 @@ namespace Byte.Sprite.Enemy
             velocity = direction * speed;
         }
 
+        // Hitting a barrier ends the charge early, the trap slides back home.
+        public override void OnBlocked(Vector2 correction)
+        {
+            base.OnBlocked(correction);
+            goingHome = true;
+        }
+
         protected virtual float GetMovementSpeed(bool goingHome, float currentSpeed, float elapsedSeconds) => MovementSpeed;
     }
 }

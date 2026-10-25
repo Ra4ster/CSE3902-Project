@@ -51,5 +51,12 @@ namespace Byte.Sprite.Enemy
             else
                 velocity = Vector2.Zero;
         }
+
+        // A block sits on the way to this waypoint, so head for the next one instead.
+        public override void OnBlocked(Vector2 correction)
+        {
+            base.OnBlocked(correction);
+            currentWaypoint = (currentWaypoint + 1) % patrolPath.Length;
+        }
     }
 }

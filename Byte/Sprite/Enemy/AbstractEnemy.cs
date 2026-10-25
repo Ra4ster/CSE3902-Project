@@ -34,6 +34,21 @@ public abstract class AbstractEnemy : ICollidable
     public void UpdateDamage(GameTime gameTime)
         => damageTimer = Math.Max(0, damageTimer - (float)gameTime.ElapsedGameTime.TotalSeconds);
 
+    // Flying and wall-dwelling enemies override this to pass over blocks, as in the original game.
+    public virtual bool IsBlockedByBlocks => true;
+
+    /// <summary>
+    /// Pushes the enemy out of a barrier block. Subclasses also change course so they don't keep walking into it.
+    /// </summary>
+    public virtual void OnBlocked(Vector2 correction)
+    {
+        position += correction;
+        if (enemySprite is MovingAnimatedSprite animatedSprite)
+            animatedSprite.SetPos(position);
+        else if (enemySprite is MovingSprite movingSprite)
+            movingSprite.SetPos(position);
+    }
+
     public Vector2 position;
     public Vector2 startPos;
     protected Vector2 velocity;

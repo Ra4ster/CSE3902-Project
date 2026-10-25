@@ -27,6 +27,9 @@ namespace Byte.Sprite.Enemy
         {
         }
 
+        // Keese fly over blocks.
+        public override bool IsBlockedByBlocks => false;
+
         public override void Update(GameTime gameTime)
         {
             elapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
