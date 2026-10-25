@@ -1,11 +1,10 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Projectile
 {
     public class Fireball : AbstractProjectile
     {
-        private const float SPEED = 800f;
+        private const float SPEED = 300f;
         private const float MAX_DISTANCE = 700f;
         private const float SCALE = 6.0f;
 
