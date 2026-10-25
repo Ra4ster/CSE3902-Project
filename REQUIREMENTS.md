@@ -66,7 +66,7 @@
 ### Various Sprint 2 Cleanups:
 
 - [x] Enemy cycling with projectiles causes projectiles to disappear along with previous enemy.
-- [ ] Various enemy classes need implementing
+- [x] Various enemy classes need implementing
 - [x] Enemy factory needs enemy description (_as per functionality check-in_).
 
 ### Sprint 3 Goals:
@@ -89,8 +89,8 @@
   - [x] Link flashes red and loses 1 HP when touching an enemy, 0.5 s invulnerable after.
   - [x] Enemies flash red and lose 1 HP when the sword hits them during an attack, once per swing.
   - [x] Items disappear when Link touches them.
-  - [ ] Projectiles collide with enemies and walls.
-  - [ ] Link death at 0 HP.
+  - [x] Projectiles collide with enemies and walls.
+  - [x] Link death at 0 HP.
 - Other:
   - [x] Remove Sprint 2 cycling code and dependencies.
   - [x] `Tests/CollisionChecks` covers blocks, enemies, sword, items, doors and corner nudging.
