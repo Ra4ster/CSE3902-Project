@@ -53,10 +53,10 @@
   ],
   "doors": [
     {
-      "position": [4, 2],
+      "position": [14, 7],
       "direction": "East",
       "targetRoom": "Hall",
-      "arrivalPosition": [1, 2]
+      "arrivalPosition": [0, 3]
     }
   ]
 }
