@@ -18,8 +18,14 @@ namespace Byte.Projectile
 
         public bool IsExpired { get; protected set; }
         bool IProjectile.IsExpired => IsExpired;
+        Rectangle ICollidable.BoundingBox => new Rectangle(
+            (int)(Position.X - size.X / 2f),
+            (int)(Position.Y - size.Y / 2f),
+            size.X,
+            size.Y
+        );
 
-        Rectangle ICollidable.BoundingBox => new Rectangle((int)Position.X, (int)Position.Y, size.X, size.Y);
+
 
         //This distinguishes between player's projectiles that should damage enemy and enemy projectiles that should damage the player.
         public static CollisionProperties PlayerProjectileProperties { get; } = new CollisionProperties
