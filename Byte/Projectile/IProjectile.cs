@@ -17,4 +17,6 @@ public interface IProjectile : ICollidable
     void Draw(SpriteBatch spriteBatch);
 
     void Collided();
+    new CollisionProperties Properties { get; set; }
 }
+

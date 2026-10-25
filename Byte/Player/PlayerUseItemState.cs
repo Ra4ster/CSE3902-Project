@@ -7,6 +7,12 @@ namespace Byte.Player
     {
         public PlayerUseItemState() { }
 
+        private readonly float useItemDuration = 0.1f;
+        private readonly float scale = 6.0f;
+
+        private double timer = 0.0;
+        private readonly double maxUseItemDuration = 100.0;
+
         // contains frames for using item south
         public Rectangle[] useItemSouthFrames =
         {
@@ -36,6 +42,7 @@ namespace Byte.Player
 
         public IPlayerState Update(Link link, GameTime gametime)
         {
+            timer += gametime.ElapsedGameTime.TotalMilliseconds;
             // check if link is already in an attacking animation
             if (link.currentSprite is not MovingAnimatedSprite)
             {
@@ -47,8 +54,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         useItemNorthFrames,
-                        .1f,
-                        6.0f);
+                        useItemDuration,
+                        scale);
                     // for north update frame origin to prevent sprite moving during animation
                     link.currentSprite.SetFrameOrigin(new Vector2[]
                     {
@@ -66,8 +73,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         useItemSouthFrames,
-                        .1f,
-                        6.0f);
+                        useItemDuration,
+                        scale);
                 }
                 else if (link.Direction == CardinalDirections.East)
                 {
@@ -77,8 +84,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         useItemEastWestFrames,
-                        .1f,
-                        6.0f);
+                        useItemDuration,
+                        scale);
                 }
                 else
                 {
@@ -87,8 +94,8 @@ namespace Byte.Player
                          link.Velocity,
                         Color.White,
                         useItemEastWestFrames,
-                        .1f,
-                        6.0f);
+                        useItemDuration,
+                        scale);
                     // to prevent weird movement when using item west - update sprite origins
                     link.currentSprite.SetFrameOrigin(new Vector2[]
                     {
@@ -122,6 +129,15 @@ namespace Byte.Player
                     link.Velocity = Vector2.Zero;
                     link.GetNewState(new PlayerIdleState());
                     _ = link.state.Update(link, gametime);
+                }
+                //This is to fix a bug where the sprite did not always return back to idle state. Now if it is not updated back to idle state from Sprite.IsFinished, this forces it to.
+                else if (timer >= maxUseItemDuration)
+                {
+                    link.IsAttacking = false;
+                    link.Velocity = Vector2.Zero;
+                    link.GetNewState(new PlayerIdleState());
+                    _ = link.state.Update(link, gametime);
+                    timer = 0;
                 }
 
             }
