@@ -4,6 +4,7 @@ namespace Byte.Collidable
 {
     public enum CollisionSide
     {
+        None,
         Top,
         Bottom,
         Left,

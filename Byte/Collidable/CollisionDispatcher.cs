@@ -29,6 +29,7 @@ namespace Byte.Collidable
                 CollisionSide.Bottom => CollisionSide.Top,
                 CollisionSide.Left => CollisionSide.Right,
                 CollisionSide.Right => CollisionSide.Left,
+                CollisionSide.None => CollisionSide.None,
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(side))
             };

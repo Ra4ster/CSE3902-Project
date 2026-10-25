@@ -45,7 +45,7 @@ public class Program : Game
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.OemOpenBrackets, Keys.OemCloseBrackets]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -158,6 +158,7 @@ public class Program : Game
         ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
         ICommand nextRoomCommand = new NextRoomCommand(this);
         ICommand previousRoomCommand = new PreviousRoomCommand(this);
+        ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -168,13 +169,15 @@ public class Program : Game
         keybindings.Add(Keys.Down, moveDownCommand);
         keybindings.Add(Keys.Left, moveLeftCommand);
         keybindings.Add(Keys.Right, moveRightCommand);
-        rightClickBindings.Add(GameConstants.WINDOW_SIZE, quitCommand);
+        leftClickBindings.Add(GameConstants.WINDOW_SIZE, previousRoomCommand);
+        rightClickBindings.Add(GameConstants.WINDOW_SIZE, nextRoomCommand);
         keybindings.Add(Keys.Z, attackCommand);
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
+        keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
         AddProjectileCommands();
     }
 
