@@ -34,7 +34,7 @@
       "position": [11, 3],
       "direction": "East",
       "targetRoom": "Vault",
-      "arrivalPosition": [0, 3]
+      "arrivalPosition": [1, 3]
     }
   ]
 }
