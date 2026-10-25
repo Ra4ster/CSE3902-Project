@@ -26,7 +26,10 @@
   "enemies": [
     {
       "type": "Aquamentus",
-      "position": [9, 2]
+      "position": [9, 2],
+      "path": [
+        [6, 2]
+      ]
     }
   ],
   "items": [
@@ -37,10 +40,10 @@
   ],
   "doors": [
     {
-      "position": [0, 2],
+      "position": [0, 3],
       "direction": "West",
       "targetRoom": "Chamber",
-      "arrivalPosition": [3, 2]
+      "arrivalPosition": [1, 3]
     }
   ]
 }

@@ -36,7 +36,7 @@ namespace Byte.Rooms
 
     public sealed class EnemyData : GameObjectData
     {
-        public ReadOnlyCollection<GridPosition>? Path { get; set; }
+        public IList<GridPosition>? Path { get; set; }
         public float? Speed { get; set; }
         public float? FrameDuration { get; set; }
         public float? WaitDuration { get; set; }
