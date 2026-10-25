@@ -80,7 +80,7 @@
   - [x] Doors in the room file: position, direction, target room, arrival tile.
   - [x] Walking into a door moves Link to the target room.
   - [x] `[` / `]` jump to the previous / next room (debug).
-  - [ ] Every room has at least one enemy and one item (`Hall` and `Chamber` are still empty).
+  - [x] Every room has at least one enemy and one item (`Hall` and `Chamber` are still empty).
 - Collisions:
   - [x] `ICollidable` + detector that finds overlapping pairs and which side they hit on.
   - [x] Dispatcher that maps a (type, type) pair to one handler, either order.
