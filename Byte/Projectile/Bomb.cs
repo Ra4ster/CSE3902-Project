@@ -31,12 +31,12 @@ namespace Byte.Projectile
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime); 
 
             float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (!isExploding)
             {
+                base.Update(gameTime);
                 bombSprite.SetPos(Position);
                 bombSprite.Update(gameTime);
 
@@ -49,6 +49,7 @@ namespace Byte.Projectile
             }
             else
             {
+                Velocity = Vector2.Zero;
                 explosionTimer += seconds;
 
                 explosionSprite.SetPos(Position);
@@ -57,10 +58,17 @@ namespace Byte.Projectile
                 if (explosionTimer >= EXPLOSION_DURATION)
                 {
                     IsExpired = true;
+                    HasCollided = true;
                 }
             }
         }
-
+        public override void Collided()
+        {
+            if (!isExploding)
+            {
+                StartExplosion();
+            }
+        }
         private void StartExplosion()
         {
             isExploding = true;

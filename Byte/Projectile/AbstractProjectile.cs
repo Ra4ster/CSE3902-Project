@@ -54,7 +54,11 @@ namespace Byte.Projectile
             Properties = properties;
         }
 
-        void IProjectile.Collided() => HasCollided = true;
+        public virtual void Collided()
+        {
+            HasCollided = true;
+        }
+        void IProjectile.Collided() => Collided();
 
         public virtual void Update(GameTime gameTime)
         {
