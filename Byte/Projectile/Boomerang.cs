@@ -1,12 +1,11 @@
 using Byte.Collidable;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Projectile
 {
     public class Boomerang : AbstractProjectile
     {
-        private const float SPEED = 600f;
+        private const float SPEED = 400f;
         private const float RANGE = 450f;
         private const float SCALE = 6.0f;
 
@@ -20,7 +19,7 @@ namespace Byte.Projectile
         public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
-                new Point((int)(8 * SCALE), (int)(16 * SCALE)), 
+                new Point((int)(8 * SCALE), (int)(16 * SCALE)),
                 position,
                 direction * SPEED,
                 PlayerProjectileProperties
@@ -47,7 +46,7 @@ namespace Byte.Projectile
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime); 
+            base.Update(gameTime);
 
             float seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
             distanceTraveled += SPEED * seconds;
@@ -55,7 +54,7 @@ namespace Byte.Projectile
             if (!isReturning && distanceTraveled >= RANGE)
             {
                 isReturning = true;
-                Velocity = -Velocity; 
+                Velocity = -Velocity;
             }
             else if (isReturning)
             {

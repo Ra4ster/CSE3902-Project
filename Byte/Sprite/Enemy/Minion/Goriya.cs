@@ -61,7 +61,6 @@ namespace Byte.Sprite.Enemy.Minion
 
             if (boomerang != null)
             {
-                boomerang.Update(gameTime);
                 if (boomerang.IsExpired || boomerang.HasCollided)
                 {
                     boomerang = null;
@@ -71,7 +70,7 @@ namespace Byte.Sprite.Enemy.Minion
             if (boomerang != null)
             {
                 velocity = Vector2.Zero;
-                base.Update(gameTime);
+                sideSprite.currentFrame = 0;
                 return;
             }
 
@@ -88,7 +87,7 @@ namespace Byte.Sprite.Enemy.Minion
                     b.Properties = AbstractProjectile.EnemyProjectileProperties;
                 }
                 velocity = Vector2.Zero;
-                base.Update(gameTime);
+                sideSprite.currentFrame = 0;
             }
         }
 
