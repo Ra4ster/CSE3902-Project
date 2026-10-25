@@ -43,7 +43,7 @@ namespace Byte.Player
         // Current position of the character
         public Vector2 Position { get; set; } = position;
         // Misleading name - direction sprite should be moving
-        public float MovementSpeed { get; set; } = 200f;
+        public float MovementSpeed { get; set; } = 400f;
 
         public Vector2 Velocity { get; set; } = Vector2.Zero;
 
