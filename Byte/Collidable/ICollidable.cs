@@ -20,6 +20,7 @@ namespace Byte.Collidable
 
         public bool BlocksPlayer = false;
 
+
         public Action<ICollidable>? OnCollide { get; set; }
 
         public string Type = CollidableTypes.Base;
