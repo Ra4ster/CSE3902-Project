@@ -1,6 +1,7 @@
 
 using Byte.Block;
 using Byte.Collidable;
+using Byte.Core.Rooms;
 using Byte.Factory;
 using Byte.Item;
 using Byte.Sprite.Enemy;
@@ -67,8 +68,9 @@ namespace Byte.Rooms
                 };
                 items.Add(itemFactory.Create(worldData));
             }
+            DoorFactory doorFactory = new DoorFactory(GameAssets.Instance.BlockSheet);
             foreach (DoorData doorData in data.Doors)
-                doors.Add(new Door(doorData));
+                doors.Add(doorFactory.CreateDoor(doorData));
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -79,7 +81,7 @@ namespace Byte.Rooms
                 item.Draw(spriteBatch);
             foreach (AbstractEnemy enemy in enemies)
                 enemy.Draw(spriteBatch);
-            foreach(Door door in doors)
+            foreach (Door door in doors)
                 door.Draw(spriteBatch);
         }
 

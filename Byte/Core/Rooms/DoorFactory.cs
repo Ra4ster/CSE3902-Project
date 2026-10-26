@@ -2,14 +2,12 @@
 using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace Byte.Core.Rooms
 {
     internal class DoorFactory
     {
         private readonly Texture2D blockSheet;
-        private const float scale = 5f;
 
         public DoorFactory(Texture2D blockSheet)
         {
@@ -23,6 +21,9 @@ namespace Byte.Core.Rooms
             DoorDirection direction = Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir)
                 ? parsedDir
                 : DoorDirection.Default;
+            // East/west doors are centered in cells
+            if (direction is DoorDirection.East or DoorDirection.West)
+                position.Y -= RoomGrid.TILE_WORLD_SIZE / 2f;
 
             Door door = new Door(data);
             (StaticSprite openSprite, StaticSprite closedSprite) = CreateDoorSprites(direction, position);
@@ -58,8 +59,8 @@ namespace Byte.Core.Rooms
 
         private (StaticSprite open, StaticSprite closed) CreateSouthDoor(Vector2 position)
         {
-            Rectangle openFrame = new Rectangle(848, 44, 32, 32);
-            Rectangle closedFrame = new Rectangle(881, 44, 32, 32);
+            Rectangle openFrame = new Rectangle(848, 110, 32, 32);
+            Rectangle closedFrame = new Rectangle(881, 110, 32, 32);
 
             return CreateOpenClosedSprites(position, openFrame, closedFrame);
         }
@@ -75,8 +76,8 @@ namespace Byte.Core.Rooms
 
         private (StaticSprite open, StaticSprite closed) CreateWestDoor(Vector2 position)
         {
-            Rectangle openFrame = new Rectangle(848, 110, 32, 32);
-            Rectangle closedFrame = new Rectangle(881, 110, 32, 32);
+            Rectangle openFrame = new Rectangle(848, 44, 32, 32);
+            Rectangle closedFrame = new Rectangle(881, 44, 32, 32);
 
             return CreateOpenClosedSprites(position, openFrame, closedFrame);
         }
@@ -88,7 +89,7 @@ namespace Byte.Core.Rooms
                 position,
                 Color.White,
                 openFrame,
-                scale
+                GameConstants.SCALE
             );
 
             StaticSprite closedSprite = new StaticSprite(
@@ -96,7 +97,7 @@ namespace Byte.Core.Rooms
                 position,
                 Color.White,
                 closedFrame,
-                scale
+                GameConstants.SCALE
             );
 
             return (openSprite, closedSprite);
