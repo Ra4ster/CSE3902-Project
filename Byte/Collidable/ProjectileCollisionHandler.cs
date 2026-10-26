@@ -20,7 +20,6 @@ public static class ProjectileCollisionHandler
         {
             if (a is IProjectile proj) proj.Collided();
         });
-
         dispatcher.Register(CollidableTypes.EnemyProjectile, CollidableTypes.Player, (a, b, side) =>
         {
             if (a is IProjectile proj) proj.Collided();
