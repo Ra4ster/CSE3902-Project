@@ -22,6 +22,7 @@ public class BlockFactory
 
     public IBlock Create(string type, Vector2 position) => type switch
     {
+        "Boundary" => CreateBoundaryBlock(position),
         "Square" => CreateSquareBlock(position),
         "Keystone" => CreateKeystoneBlock(position),
         "StatueLeft" => CreateStatueLeftBlock(position),
@@ -44,6 +45,8 @@ public class BlockFactory
             RoomGrid.TILE_SIZE, RoomGrid.TILE_SIZE);
         return new StaticSprite(blockSheet, position, Color.White, source, RoomGrid.BLOCK_SCALE);
     }
+
+    public IBlock CreateBoundaryBlock(Vector2 position) => new BoundaryBlock(CreateSprite(0, 0, position), position);
 
     public IBlock CreateSquareBlock(Vector2 position) => new SquareBlock(CreateSprite(0, 0, position), position);
 

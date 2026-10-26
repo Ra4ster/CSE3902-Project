@@ -12,13 +12,13 @@ public static class ProjectileCollisionHandler
             if (a is IProjectile proj) proj.Collided();
             if (b is AbstractEnemy enemy)
             {
-                enemy.TakeDamage(); 
+                enemy.TakeDamage();
             }
         });
 
         dispatcher.Register(CollidableTypes.Projectile, CollidableTypes.Block, (a, b, side) =>
         {
-            if (a is IProjectile proj) proj.Collided();
+            if (a is IProjectile proj && b.Properties.BlocksPlayer) proj.Collided();
         });
 
         dispatcher.Register(CollidableTypes.EnemyProjectile, CollidableTypes.Player, (a, b, side) =>
