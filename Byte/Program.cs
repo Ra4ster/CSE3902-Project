@@ -63,6 +63,7 @@ public class Program : Game
         LinkCollisionHandler.Register(dispatcher);
         ProjectileCollisionHandler.Register(dispatcher);
         EnemyCollisionHandler.Register(dispatcher);
+
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
