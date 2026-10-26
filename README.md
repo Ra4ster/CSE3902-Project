@@ -64,6 +64,8 @@ dotnet run --project Tests/CollisionChecks
 
 - **No death state:** Link stays at 0 HP until you press `R`.
 - **Tight doors:** Link's hitbox is one tile and so is the door gap. He gets nudged in if he's within a quarter tile, otherwise he stops on the wall.
+- **Barrier tile entry:** Link can arrive in barrier tiles from doors.
+- `ProcessCollisions` creates a new `CollisionDetector` and a list for every block × projectile and block × enemy pair, every frame. Blocks sit on a grid, so you could look up only the cells under a hitbox instead of scanning every block.
 
 ## Tools & Processes Used
 
@@ -71,11 +73,6 @@ dotnet run --project Tests/CollisionChecks
 2. **Visual Studio Diagnostic Tools:** Heap, memory and CPU/GPU usage from the built-in diagnostics in Visual Studio Community.
 3. **Code review:** Each PR gets one reviewer before merge. Code analysis is also done as a chat review, transcript in `Documentation/ClaudeAnalysis`.
 4. **Collision checks:** `Tests/CollisionChecks` is a small console program that runs Link into blocks, enemies, items and doors without a window and fails loudly if a rule breaks.
-
-### Diagnostic Visualizations
-
-![Diagnostic Trace](Documentation/Resources/diagnostic.png)
-![Speedscope Flamegraph](Documentation/Resources/speedscope.png)
 
 ## Visualization of Player States
 
