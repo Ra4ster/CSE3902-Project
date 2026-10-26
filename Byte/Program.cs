@@ -225,7 +225,7 @@ public class Program : Game
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
             samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
-            transformMatrix: spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
+            transformMatrix: Matrix.CreateTranslation(RoomOffset().X, RoomOffset().Y, 0f) * spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
         );
 
         roomManager.Draw(SpritePainter!);
@@ -266,6 +266,7 @@ public class Program : Game
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
             DispatchCollisions(new List<ICollidable> { link, block });
         LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
+        LinkCollisionHandler.ClampToRoom(link, room.Bounds);
 
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
         {
@@ -304,6 +305,15 @@ public class Program : Game
         var detector = new CollisionDetector();
         foreach (var collision in detector.DetectCollisions(collidables))
             dispatcher.Dispatch(collision.A, collision.B, collision.Side);
+    }
+
+    private Vector2 RoomOffset()
+    {
+        Rectangle bounds = roomManager.CurrentRoom.Bounds;
+        return new Vector2(
+            (GameConstants.WINDOW_SIZE.Width - bounds.Width) / 2f,
+            (GameConstants.WINDOW_SIZE.Height - bounds.Height) / 2f
+        );
     }
 
     private static Color BoundingBoxColor(ICollidable collidable)

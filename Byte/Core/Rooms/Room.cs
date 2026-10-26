@@ -17,6 +17,8 @@ namespace Byte.Rooms
         private readonly List<IItem> items = [];
         private readonly List<Door> doors = [];
 
+        public Rectangle Bounds { get; }
+
         public IReadOnlyList<AbstractEnemy> Enemies => enemies;
         public IReadOnlyList<IBlock> Blocks => blocks;
         public IReadOnlyList<IItem> Items => items;
@@ -39,10 +41,15 @@ namespace Byte.Rooms
             Name = data.Name;
             PlayerSpawnPosition = RoomGrid.ToWorld(data.PlayerSpawn);
             IsStartingRoom = data.IsStartingRoom;
+            Bounds = new Rectangle(0, 0,
+            (int)(data.Width * RoomGrid.TILE_WORLD_SIZE),
+            (int)(data.Height * RoomGrid.TILE_WORLD_SIZE));
 
             foreach ((string tileType, List<GridPosition> positions) in data.Tiles)
                 foreach (GridPosition position in positions)
                     blocks.Add(blockFactory.Create(tileType, RoomGrid.ToWorld(position)));
+
+            AddBoundary(data, blockFactory);
 
             foreach (EnemyData enemyData in data.Enemies)
             {
@@ -56,7 +63,9 @@ namespace Byte.Rooms
                     WaitDuration = enemyData.WaitDuration,
                     Scale = enemyData.Scale
                 };
-                enemies.Add(enemyFactory.Create(worldData));
+                AbstractEnemy enemy = enemyFactory.Create(worldData);
+                enemy.Bounds = Bounds;
+                enemies.Add(enemy);
             }
 
             foreach (ItemData itemData in data.Items)
@@ -95,6 +104,23 @@ namespace Byte.Rooms
             foreach (IItem item in items)
                 item.Update(gametime);
             _ = items.RemoveAll(item => item.IsCollected);
+        }
+
+        private void AddBoundary(RoomData data, BlockFactory blockFactory)
+        {
+            void Add(int x, int y) =>
+                blocks.Add(blockFactory.CreateBoundaryBlock(RoomGrid.ToWorld(new GridPosition(x, y))));
+
+            for (int x = -1; x <= data.Width; ++x)
+            {
+                Add(x, -1);
+                Add(x, data.Height);
+            }
+            for (int y = 0; y < data.Height; ++y)
+            {
+                Add(-1, y);
+                Add(data.Width, y);
+            }
         }
     }
 }

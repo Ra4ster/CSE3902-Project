@@ -76,6 +76,8 @@ namespace Byte.Rooms
 
         public Vector2 EnterDoor(Door door)
         {
+            if (door == null) throw new ArgumentNullException("Door must exist");
+
             if (!CurrentRoom.Doors.Contains(door))
                 throw new InvalidOperationException($"Door does not belong to current room '{CurrentRoom.Name}'.");
             if (!roomsByName.TryGetValue(door.TargetRoom, out Room? targetRoom))

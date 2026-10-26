@@ -18,6 +18,9 @@ public abstract class AbstractEnemy : ICollidable
     public bool IsDefeated => health <= 0;
     public bool IsDamaged => damageTimer > 0;
     public Rectangle BoundingBox => new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+
+    public Rectangle Bounds { get; set; } = GameConstants.WINDOW_SIZE;
+
     public CollisionProperties Properties { get; } = new CollisionProperties
     {
         Type = CollidableTypes.Enemy,
@@ -109,7 +112,7 @@ public abstract class AbstractEnemy : ICollidable
     /// </summary>
     protected Vector2 ClampToWindow(Vector2 point)
     {
-        Rectangle window = GameConstants.WINDOW_SIZE;
+        Rectangle window = Bounds;
         Vector2 min = new Vector2(window.Left, window.Top);
         Vector2 max = Vector2.Max(min, new Vector2(window.Right, window.Bottom) - size);
         return Vector2.Clamp(point, min, max);

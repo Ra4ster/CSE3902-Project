@@ -29,7 +29,12 @@
       ]
     }
   ],
-  "items": [],
+  "items": [
+    {
+      "type": "Heart",
+      "position": [3, 5]
+    }
+  ],
   "doors": [
     {
       "position": [0, 3],

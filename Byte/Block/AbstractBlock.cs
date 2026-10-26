@@ -28,5 +28,5 @@ public abstract class AbstractBlock : IBlock, ICollidable
 
     public void Update(GameTime gameTime) => sprite.Update(gameTime);
 
-    public void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
+    public virtual void Draw(SpriteBatch spriteBatch) => sprite.Draw(spriteBatch);
 }
