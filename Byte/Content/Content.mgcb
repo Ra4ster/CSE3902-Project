@@ -112,11 +112,6 @@
 /processorParam:Version=3.8.5.1
 /build:Roboto.spritefont
 
-#begin Sounds/_README_.txt
-/importer:
-/processor:
-/build:Sounds/_README_.txt
-
 #begin Sounds/Dungeon_Theme.mp3
 /importer:Mp3Importer
 /processor:SongProcessor

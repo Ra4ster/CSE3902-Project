@@ -11,6 +11,7 @@ using Byte.Rooms;
 using Byte.Factory;
 using Byte.Collidable;
 using System.Collections.ObjectModel;
+using Byte.Sounds;
 
 
 /// <summary>
@@ -40,6 +41,8 @@ public class Program : Game
 
     private readonly IController mouseControls;
     private readonly IController kbControls;
+
+    public static SoundManager soundManager = new SoundManager();
 
     private bool resetRequested = false;
 
@@ -86,6 +89,9 @@ public class Program : Game
         SpritePainter = new SpriteBatch(GraphicsDevice);
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         BuildLevel();
+        soundManager.LoadSound(Content);
+
+        soundManager.PlayMusic();
 
         OnClientSizeChanged(this, EventArgs.Empty);
         base.LoadContent();
@@ -161,6 +167,7 @@ public class Program : Game
         ICommand nextRoomCommand = new NextRoomCommand(this);
         ICommand previousRoomCommand = new PreviousRoomCommand(this);
         ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
+        ICommand pauseMusic  = new PauseMusicCommand();
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -180,7 +187,9 @@ public class Program : Game
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
+        keybindings.Add(Keys.M, pauseMusic);
         AddProjectileCommands();
+        
     }
 
     private void AddProjectileCommands()
@@ -195,10 +204,12 @@ public class Program : Game
         keybindings.Add(Keys.D1, useArrowCommand);
         keybindings.Add(Keys.D2, useBombCommand);
         keybindings.Add(Keys.D3, useBoomerangCommand);
+        
     }
 
     protected override void Update(GameTime gameTime)
     {
+        soundManager.Update();
         kbControls.Update(gameTime);
         mouseControls.Update(gameTime);
 
