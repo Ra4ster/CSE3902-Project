@@ -171,7 +171,10 @@ namespace Byte.Player
         public void Attack()
         {
             if (!IsAttacking)
+            {
                 Sword.BeginAttack();
+                Program.soundManager.PlaySound("SwordSlash");
+            }
             this.IsAttacking = true;
             Velocity = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)

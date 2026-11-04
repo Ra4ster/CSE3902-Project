@@ -34,15 +34,27 @@ namespace Byte.Sounds
         }
         public void PlaySound(string SoundName)
         {
+            switch (SoundName)
+            {
+                case "SwordSlash":
+                    SoundEffectInstance swordSlashInstance = swordSlash.CreateInstance();
+                    swordSlashInstance.Play();
+                    soundEffects.Add(swordSlashInstance);
+                    break;
+                default:
+                    break;
+            }
 
         }
         public void Update()
         {
-            foreach (SoundEffectInstance sound in soundEffects)
+            for (int i = soundEffects.Count - 1; i >= 0; i--)
             {
-                if (sound.Equals(null) || sound.State == SoundState.Stopped)
+                SoundEffectInstance sound = soundEffects[i];
+
+                if (sound == null || sound.State == SoundState.Stopped)
                 {
-                    soundEffects.Remove(sound);
+                    soundEffects.RemoveAt(i);
                 }
             }
         }

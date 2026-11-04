@@ -209,7 +209,7 @@ public class Program : Game
 
     protected override void Update(GameTime gameTime)
     {
-        soundManager.Update();
+        
         kbControls.Update(gameTime);
         mouseControls.Update(gameTime);
 
@@ -224,7 +224,7 @@ public class Program : Game
 
         link.Update(gameTime);
         ProcessCollisions();
-
+        soundManager.Update();
         base.Update(gameTime);
     }
 
