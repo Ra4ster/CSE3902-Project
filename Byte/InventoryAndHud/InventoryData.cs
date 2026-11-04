@@ -6,7 +6,7 @@ using System.Text;
 namespace Byte.InventoryAndHud;
 
 
-internal class InventoryData
+public class InventoryData
 {
     public int Rupees { get; set; } = 10;
     public int Keys { get; set; } = 1;
