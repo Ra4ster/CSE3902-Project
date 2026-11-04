@@ -6,7 +6,10 @@ namespace Byte.InventoryAndHud;
 
 public enum GameState
 {
+    Playing,
     Inventory,
-    Playing
+    TransitionToInventory,
+    TransitionToPlaying,
+    Paused,
+    GameOver
 }
-

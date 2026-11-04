@@ -14,13 +14,16 @@ internal sealed class GameAssets
     public Texture2D BlockSheet { get; }
     public Texture2D ItemSheet { get; }
 
-    private GameAssets(Texture2D enemySheet, Texture2D bossSheet, Texture2D linkSheet, Texture2D blockSheet, Texture2D itemSheet)
+    public Texture2D InventorySheet { get; }
+    private GameAssets(Texture2D enemySheet, Texture2D bossSheet, Texture2D linkSheet, Texture2D blockSheet, Texture2D itemSheet, Texture2D inventorySheet)
     {
         EnemySheet = enemySheet;
         BossSheet = bossSheet;
         LinkSheet = linkSheet;
         BlockSheet = blockSheet;
         ItemSheet = itemSheet;
+        InventorySheet = inventorySheet;
+
     }
 
     public static void Load(ContentManager content)
@@ -30,7 +33,8 @@ internal sealed class GameAssets
             content.Load<Texture2D>("AssetSheets/bossSheet"),
             content.Load<Texture2D>("AssetSheets/linkSheet2"),
             content.Load<Texture2D>("AssetSheets/blockSheet"),
-            content.Load<Texture2D>("AssetSheets/items")
+            content.Load<Texture2D>("AssetSheets/items"),
+            content.Load<Texture2D>("AssetSheets/InventoryAndHUD")
         );
 
     }
