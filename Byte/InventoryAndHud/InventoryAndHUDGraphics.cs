@@ -7,20 +7,27 @@ namespace Byte.InventoryAndHud;
 internal class InventoryAndHUDGraphics
 {
     private readonly Texture2D spriteSheet;
+
+    private readonly Texture2D itemSheet;
     private readonly SpriteFont font;
     private readonly InventoryData inventory;
     private readonly SelectionController selectionController;
 
+    private static readonly Rectangle BoomerangSourceRect = new Rectangle(129, 3, 5, 8);
+    private static readonly Rectangle BombSourceRect = new Rectangle(136, 0, 8, 16);
+    private static readonly Rectangle BowSourceRect = new Rectangle(144, 0, 8, 16);
+
     private float screenPosition = 0f;
 
-    private readonly float maxOffset = GameConstants.WINDOW_SIZE.Y * 0.66f;
+    private readonly float maxOffset = GameConstants.WINDOW_SIZE.Y - 175;
 
-    public InventoryAndHUDGraphics(Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController)
+    public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController)
     {
         this.spriteSheet = spriteSheet;
         this.font = font;
         this.inventory = inventory;
         this.selectionController = selectionController;
+        this.itemSheet = itemSheet;
     }
 
     public void UpdateAnimation(GameTime gameTime, GameState currentState)
@@ -30,7 +37,7 @@ internal class InventoryAndHUDGraphics
         if (currentState == GameState.TransitionToInventory)
         {
             screenPosition += 1000f * delta;
-            if (screenPosition >= maxOffset) screenPosition = screenPosition;
+            if (screenPosition >= maxOffset) screenPosition = maxOffset;
         }
         else if (currentState == GameState.TransitionToPlaying)
         {
@@ -62,12 +69,101 @@ internal class InventoryAndHUDGraphics
 
     private void DrawHUD(SpriteBatch spriteBatch, Vector2 hudPosition)
     {
-        throw new NotImplementedException();
+
+        Rectangle hudBgRect = new Rectangle(338, 11, 175, 55); 
+        spriteBatch.Draw(spriteSheet, hudPosition, hudBgRect, Color.White);
+
+        Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
+
+        spriteBatch.DrawString(font, $"X{inventory.Rupees}", hudPosition + new Vector2(128f, 32f) * scaleOffset, Color.White);
+        spriteBatch.DrawString(font, $"X{inventory.Keys}", hudPosition + new Vector2(128f, 48f) * scaleOffset, Color.White);
+        spriteBatch.DrawString(font, $"X{inventory.Bombs}", hudPosition + new Vector2(128f, 64f) * scaleOffset, Color.White);
+
+        int fullHearts = inventory.CurrentHalfHearts / 2;
+        bool hasHalfHeart = (inventory.CurrentHalfHearts % 2) != 0;
+
+        Vector2 heartStartPos = hudPosition + new Vector2(175, 30) * scaleOffset;
+
+        Rectangle fullHeartRect = new Rectangle(645, 117, 8, 8);
+        Rectangle halfHeartRect = new Rectangle(636, 117, 8, 8);
+        Rectangle emptyHeartRect = new Rectangle(627, 117, 8, 8);
+        if (selectionController.EquippedItem == ItemType.Boomerang && inventory.HasBoomerang)
+        {
+            Vector2 bItemPos = hudPosition + new Vector2(104f, 24f) * scaleOffset; // Adjust to your B-box coordinates
+            spriteBatch.Draw(itemSheet, bItemPos, BoomerangSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        }
+        else if (selectionController.EquippedItem == ItemType.Bomb && inventory.HasBomb)
+        {
+            Vector2 bItemPos = hudPosition + new Vector2(104f, 24f) * scaleOffset;
+            spriteBatch.Draw(itemSheet, bItemPos, BombSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        }
+        int maxContainers = inventory.MaxHalfHearts / 2;
+        for (int i = 0; i < maxContainers; i++)
+        {
+            Rectangle heartRect;
+            int currentHeartValue = inventory.CurrentHalfHearts - (i * 2);
+
+            if (currentHeartValue >= 2)
+                heartRect = fullHeartRect;
+            else if (currentHeartValue == 1)
+                heartRect = halfHeartRect;
+            else
+                heartRect = emptyHeartRect;
+
+            Vector2 heartPos = heartStartPos + new Vector2(i * 8f, 0) * scaleOffset;
+            spriteBatch.Draw(spriteSheet, heartPos, heartRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        }
+
+
+
     }
 
     private void DrawInventoryScreen(SpriteBatch spriteBatch, Vector2 inventoryPosition)
     {
-        throw new NotImplementedException();
+        Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
+
+
+        Rectangle invBgRect = new Rectangle(1, 11, 255, 87);
+        spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White);
+
+
+        if (selectionController.EquippedItem == ItemType.Boomerang && inventory.HasBoomerang)
+        {
+        }
+        else if (selectionController.EquippedItem == ItemType.Bomb && inventory.HasBomb)
+        {
+
+        }
+
+        if (inventory.HasBoomerang)
+        {
+            Vector2 drawPos = inventoryPosition + new Vector2(125f, 40f) * scaleOffset;
+            spriteBatch.Draw(itemSheet, drawPos, BoomerangSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        }
+
+        if (inventory.HasBomb)
+        {
+            Vector2 drawPos = inventoryPosition + new Vector2(145f, 40f) * scaleOffset;
+            spriteBatch.Draw(itemSheet, drawPos, BombSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        }
+
+        if (inventory.HasBow)
+        {
+            Vector2 drawPos = inventoryPosition + new Vector2(165f, 40f) * scaleOffset;
+            spriteBatch.Draw(itemSheet, drawPos, BowSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        }
+            if (inventory.HasMap)
+        {
+        }
+        if (inventory.HasCompass)
+        {
+        }
+
+        foreach (Point room in inventory.VisitedRooms)
+        {
+            Vector2 roomMapDrawPos = inventoryPosition + new Vector2(120f + (room.X * 8f), 100f + (room.Y * 8f)) * scaleOffset;
+
+        }
     }
 }
 
