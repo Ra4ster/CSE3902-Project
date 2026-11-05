@@ -1,15 +1,16 @@
-﻿using Byte.Command;
+﻿using Byte;
+using Byte.Collidable;
+using Byte.Command;
+using Byte.Controller;
+using Byte.Factory;
+using Byte.InventoryAndHud;
+using Byte.Player;
+using Byte.Projectile;
+using Byte.Rooms;
+using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Byte.Controller;
-using Byte.Player;
-using Byte.Projectile;
-using Byte.Sprite;
-using Byte;
-using Byte.Rooms;
-using Byte.Factory;
-using Byte.Collidable;
 using System.Collections.ObjectModel;
 
 
@@ -42,6 +43,11 @@ public class Program : Game
     private readonly IController kbControls;
 
     private bool resetRequested = false;
+
+    public InventoryData inventoryData = new();
+    public SelectionController selectionController = new(new InventoryData());
+    private InventoryAndHUDGraphics inventoryGraphics;
+    public GameState CurrentGameState { get; set; } = GameState.Playing;
 
     public Program()
     {
@@ -139,6 +145,8 @@ public class Program : Game
         projectileManager = new ProjectileManager();
         LoadRooms();
 
+
+
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
         link = new Link(linkPos, new StaticSprite(
@@ -149,6 +157,15 @@ public class Program : Game
 
         link.sourceRects = new Collection<Rectangle>(
             Enumerable.Repeat(Rectangle.Empty, LINK_SOURCE_RECT_COUNT).ToList());
+
+        selectionController = new SelectionController(inventoryData);
+        inventoryGraphics = new InventoryAndHUDGraphics(
+            GameAssets.Instance.ItemSheet,
+            GameAssets.Instance.InventorySheet,
+            statusFont,
+            inventoryData,
+            selectionController
+        );
 
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
@@ -180,6 +197,8 @@ public class Program : Game
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
+
+
         AddProjectileCommands();
     }
 
@@ -253,6 +272,8 @@ public class Program : Game
             SpritePainter.DrawString(statusFont,
                 "HP is zero. Collision testing stays active; press R to reset.",
                 new Vector2(20, GameConstants.WINDOW_SIZE.Height - 100), Color.Black);
+
+        inventoryGraphics.Draw(SpritePainter!, CurrentGameState);
 
         SpritePainter?.End();
 

@@ -70,8 +70,8 @@ internal class InventoryAndHUDGraphics
     private void DrawHUD(SpriteBatch spriteBatch, Vector2 hudPosition)
     {
 
-        Rectangle hudBgRect = new Rectangle(338, 11, 175, 55); 
-        spriteBatch.Draw(spriteSheet, hudPosition, hudBgRect, Color.White);
+        Rectangle hudBgRect = new Rectangle(338, 11, 175, 55);
+        spriteBatch.Draw(spriteSheet, hudPosition, hudBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
 
         Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
 
