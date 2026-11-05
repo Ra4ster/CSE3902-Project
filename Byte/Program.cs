@@ -273,9 +273,20 @@ public class Program : Game
                 "HP is zero. Collision testing stays active; press R to reset.",
                 new Vector2(20, GameConstants.WINDOW_SIZE.Height - 100), Color.Black);
 
-        inventoryGraphics.Draw(SpritePainter!, CurrentGameState);
+
 
         SpritePainter?.End();
+
+        SpritePainter?.Begin(
+            sortMode: SpriteSortMode.Deferred,
+            blendState: BlendState.NonPremultiplied,
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: spriteTransform 
+        );
+        inventoryGraphics.Draw(SpritePainter!, CurrentGameState);
+        SpritePainter?.End();
+
+
 
         base.Draw(gameTime);
     }

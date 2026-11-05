@@ -8,6 +8,6 @@ public static class GameConstants
 
     public static readonly Rectangle WINDOW_SIZE = new Rectangle(0, 0, 1600, 1600);
     public static readonly Rectangle MIN_WINDOW_SIZE = new Rectangle(0, 0, 800, 600);
-    public static readonly Color BG_COLOR = Color.SkyBlue;
+    public static readonly Color BG_COLOR = Color.Black;
 
 }
