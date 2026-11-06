@@ -10,10 +10,10 @@ namespace Byte
         private BackgroundManager() {/* Eager Singleton */}
 
         private const int START_X = 1;
-        private const int START_Y = 190;
+        private const int START_Y = 192;
         private const int WIDTH = 192;
-        private const int HEIGHT = 114;
-        private const int GAP = 4;
+        private const int HEIGHT = 112;
+        private const int GAP = 3;
         private const string ROOM_PREFIX = "room";
 
         private static Vector2 SCALE_VEC = new Vector2(GameConstants.SCALE);
@@ -54,7 +54,7 @@ namespace Byte
         public void Draw(string bgName, SpriteBatch painter)
         {
             Rectangle box = Map(bgName);
-            painter.Draw(GameAssets.Instance.BlockSheet, Vector2.Zero, box, Color.White, 0f, Vector2.Zero, SCALE_VEC, SpriteEffects.None, -1);
+            painter.Draw(GameAssets.Instance.BlockSheet, Vector2.Zero, box, Color.White, 0f, Vector2.Zero, SCALE_VEC, SpriteEffects.None, 0f);
         }
     }
 }
