@@ -20,7 +20,8 @@ internal class InventoryAndHUDGraphics
 
     private float screenPosition = 0f;
 
-    private readonly float maxOffset = GameConstants.WINDOW_SIZE.Height - 600;
+    // private readonly float maxOffset = GameConstants.WINDOW_SIZE.Height - 600;
+    private readonly float maxOffset = 174f * GameConstants.SCALE;
 
     public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController)
     {
@@ -70,8 +71,16 @@ internal class InventoryAndHUDGraphics
 
     public void Draw(SpriteBatch spriteBatch, GameState currentState)
     {
-        Rectangle bgRect = new Rectangle(0, 0, (int)(256 * GameConstants.SCALE), (int)(GameConstants.WINDOW_SIZE.Y));
-        spriteBatch.Draw(blackPixel, bgRect, Color.Black);
+        if (currentState == GameState.Inventory)
+        {
+            Rectangle bgRect = new Rectangle(
+                0,
+                (int)(-maxOffset + screenPosition),
+                (int)(256 * GameConstants.SCALE),
+                (int)(GameConstants.WINDOW_SIZE.Height * 2)
+            );
+            spriteBatch.Draw(blackPixel, bgRect, Color.Black);
+        }
 
         Vector2 inventoryPosition = new Vector2(0, -maxOffset + screenPosition);
         DrawInventoryScreen(spriteBatch, inventoryPosition);
