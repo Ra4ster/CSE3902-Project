@@ -8,9 +8,9 @@ namespace Byte.InventoryAndHud;
 
 public class InventoryData
 {
-    public int Rupees { get; set; } = 10;
-    public int Keys { get; set; } = 1;
-    public int Bombs { get; set; } = 10;
+    public int Rupees { get; set; } = 0;
+    public int Keys { get; set; } = 0;
+    public int Bombs { get; set; } = 0;
 
     public int MaxHalfHearts { get; set; } = 6;
     public int CurrentHalfHearts { get; set; } = 6;

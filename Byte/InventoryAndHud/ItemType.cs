@@ -9,6 +9,8 @@ public enum ItemType
     None,
     Bow,
     Boomerang,
-    Bomb
+    Bomb,
+
+    Rupee
 
 }

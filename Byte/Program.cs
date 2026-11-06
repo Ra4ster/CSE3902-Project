@@ -48,6 +48,8 @@ public class Program : Game
     private bool resetRequested = false;
 
     public InventoryData inventoryData = new();
+
+
     public SelectionController selectionController = new(new InventoryData());
     private InventoryAndHUDGraphics inventoryGraphics;
 
@@ -147,7 +149,7 @@ public class Program : Game
         projectileManager = new ProjectileManager();
         LoadRooms();
 
-
+        InventoryManager inventoryManager = new InventoryManager(inventoryData);
 
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
