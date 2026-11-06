@@ -11,6 +11,7 @@ public enum ItemType
     Boomerang,
     Bomb,
 
+    Sword,
     Rupee
 
 }

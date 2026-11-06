@@ -16,7 +16,9 @@ internal class InventoryAndHUDGraphics
     private static readonly Rectangle BoomerangSourceRect = new Rectangle(129, 3, 5, 8);
     private static readonly Rectangle BombSourceRect = new Rectangle(136, 0, 8, 16);
     private static readonly Rectangle BowSourceRect = new Rectangle(144, 0, 8, 16);
+    private static readonly Rectangle SwordSourceRect = new Rectangle(104, 0, 8, 16);
 
+    private static readonly Rectangle CursorSelectRectangle = new Rectangle(519, 137, 16, 16);
     private float screenPosition = 0f;
     private readonly float maxOffset = 174f * GameConstants.SCALE;
 
@@ -86,6 +88,18 @@ internal class InventoryAndHUDGraphics
         DrawHUD(spriteBatch, hudPosition);
     }
 
+    private Rectangle GetItemSourceRect(ItemType itemType)
+    {
+        return itemType switch
+        {
+            ItemType.Boomerang => BoomerangSourceRect,
+            ItemType.Bomb => BombSourceRect,
+            ItemType.Bow => BowSourceRect,
+            ItemType.Sword => SwordSourceRect,
+            _ => Rectangle.Empty
+        };
+    }
+
     private void DrawHUD(SpriteBatch spriteBatch, Vector2 hudPosition)
     {
         Rectangle hudBgRect = new Rectangle(258, 11, 256, 55);
@@ -93,19 +107,22 @@ internal class InventoryAndHUDGraphics
 
         Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
 
-        spriteBatch.DrawString(font, $"X{inventory.Rupees}", hudPosition + new Vector2(128f, 16f) * scaleOffset, Color.White);
-        spriteBatch.DrawString(font, $"X{inventory.Keys}", hudPosition + new Vector2(128f, 28f) * scaleOffset, Color.White);
-        spriteBatch.DrawString(font, $"X{inventory.Bombs}", hudPosition + new Vector2(128f, 40f) * scaleOffset, Color.White);
+        spriteBatch.DrawString(font, $"X{inventory.Rupees}", hudPosition + new Vector2(95f, 16f) * scaleOffset, Color.White);
+        spriteBatch.DrawString(font, $"X{inventory.Keys}", hudPosition + new Vector2(95f, 32f) * scaleOffset, Color.White);
+        spriteBatch.DrawString(font, $"X{inventory.Bombs}", hudPosition + new Vector2(95f, 40f) * scaleOffset, Color.White);
 
-        if (selectionController.EquippedItem == ItemType.Boomerang && inventory.HasBoomerang)
+        Rectangle bSourceRect = GetItemSourceRect(selectionController.EquippedItem);
+        if (bSourceRect != Rectangle.Empty)
         {
-            Vector2 bItemPos = hudPosition + new Vector2(104f, 24f) * scaleOffset;
-            spriteBatch.Draw(itemSheet, bItemPos, BoomerangSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+            Vector2 itemPos = hudPosition + new Vector2(104f, 24f) * scaleOffset;
+            spriteBatch.Draw(itemSheet, itemPos, bSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
-        else if (selectionController.EquippedItem == ItemType.Bomb && inventory.HasBomb)
+
+        Rectangle aSourceRect = GetItemSourceRect(selectionController.EquippedAItem);
+        if (aSourceRect != Rectangle.Empty)
         {
-            Vector2 bItemPos = hudPosition + new Vector2(104f, 24f) * scaleOffset;
-            spriteBatch.Draw(itemSheet, bItemPos, BombSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+            Vector2 itemPos = hudPosition + new Vector2(153f, 24f) * scaleOffset;
+            spriteBatch.Draw(itemSheet, itemPos, aSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
 
         Vector2 heartStartPos = hudPosition + new Vector2(176, 24) * scaleOffset;
@@ -143,6 +160,7 @@ internal class InventoryAndHUDGraphics
 
         spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        spriteBatch.Draw(spriteSheet, inventoryPosition + new Vector2(125, 45) * GameConstants.SCALE, CursorSelectRectangle, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
 
         if (inventory.HasBoomerang)
         {
@@ -170,3 +188,4 @@ internal class InventoryAndHUDGraphics
         }
     }
 }
+

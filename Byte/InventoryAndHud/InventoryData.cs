@@ -18,8 +18,8 @@ public class InventoryData
     public bool HasMap { get; set; } = true;
     public bool HasCompass { get; set; } = true;
 
-    public bool HasBoomerang { get; set; } = true;
-    public bool HasBomb { get; set; } = true;
+    public bool HasBoomerang { get; set; } = false;
+    public bool HasBomb { get; set; } = false;
     public bool HasBow { get; set; } = false;
 
     public bool HasSword { get; set; } = true;
