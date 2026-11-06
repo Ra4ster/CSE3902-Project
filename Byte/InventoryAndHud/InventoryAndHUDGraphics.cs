@@ -8,6 +8,7 @@ internal class InventoryAndHUDGraphics
 {
     private readonly Texture2D spriteSheet;
 
+    private readonly Texture2D blackPixel;
     private readonly Texture2D itemSheet;
     private readonly SpriteFont font;
     private readonly InventoryData inventory;
@@ -19,7 +20,7 @@ internal class InventoryAndHUDGraphics
 
     private float screenPosition = 0f;
 
-    private readonly float maxOffset = GameConstants.WINDOW_SIZE.Y - 175;
+    private readonly float maxOffset = GameConstants.WINDOW_SIZE.Height - 600;
 
     public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController)
     {
@@ -28,21 +29,32 @@ internal class InventoryAndHUDGraphics
         this.inventory = inventory;
         this.selectionController = selectionController;
         this.itemSheet = itemSheet;
+
+        blackPixel = new Texture2D(spriteSheet.GraphicsDevice, 1, 1);
+        blackPixel.SetData(new[] { Color.Black });
     }
 
-    public void UpdateAnimation(GameTime gameTime, GameState currentState)
+    public GameState UpdateAnimation(GameTime gameTime, GameState currentState)
     {
         float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         if (currentState == GameState.TransitionToInventory)
         {
             screenPosition += 1000f * delta;
-            if (screenPosition >= maxOffset) screenPosition = maxOffset;
+            if (screenPosition >= maxOffset)
+            {
+                screenPosition = maxOffset;
+                return GameState.Inventory; 
+            }
         }
         else if (currentState == GameState.TransitionToPlaying)
         {
             screenPosition -= 1000f * delta;
-            if (screenPosition <= 0f) screenPosition = 0f;
+            if (screenPosition <= 0f)
+            {
+                screenPosition = 0f;
+                return GameState.Playing; 
+            }
         }
         else if (currentState == GameState.Inventory)
         {
@@ -52,21 +64,21 @@ internal class InventoryAndHUDGraphics
         {
             screenPosition = 0f;
         }
+
+        return currentState;
     }
 
     public void Draw(SpriteBatch spriteBatch, GameState currentState)
     {
+        Rectangle bgRect = new Rectangle(0, 0, (int)(256 * GameConstants.SCALE), (int)(GameConstants.WINDOW_SIZE.Y));
+        spriteBatch.Draw(blackPixel, bgRect, Color.Black);
 
-        if (screenPosition > 0f)
-        {
-            Vector2 inventoryPosition = new Vector2(0, -maxOffset + screenPosition);
-            DrawInventoryScreen(spriteBatch, inventoryPosition);
-        }
+        Vector2 inventoryPosition = new Vector2(0, -maxOffset + screenPosition);
+        DrawInventoryScreen(spriteBatch, inventoryPosition);
 
         Vector2 hudPosition = new Vector2(0, screenPosition);
         DrawHUD(spriteBatch, hudPosition);
     }
-
     private void DrawHUD(SpriteBatch spriteBatch, Vector2 hudPosition)
     {
 
@@ -124,8 +136,11 @@ internal class InventoryAndHUDGraphics
 
 
         Rectangle invBgRect = new Rectangle(1, 11, 255, 87);
-        spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White);
+        Rectangle mapBgRect = new Rectangle(258, 112, 255, 87);
+        Vector2 HUDPosition = inventoryPosition + new Vector2(0, invBgRect.Height * GameConstants.SCALE);
 
+        spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
 
         if (selectionController.EquippedItem == ItemType.Boomerang && inventory.HasBoomerang)
         {

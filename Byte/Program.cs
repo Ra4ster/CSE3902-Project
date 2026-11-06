@@ -2,6 +2,7 @@
 using Byte.Collidable;
 using Byte.Command;
 using Byte.Controller;
+using Byte.Core;
 using Byte.Factory;
 using Byte.InventoryAndHud;
 using Byte.Player;
@@ -35,6 +36,8 @@ public class Program : Game
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
 
+    public GameStateManager StateManager { get; private set; } = new();
+
     readonly Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
     readonly Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
     readonly Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
@@ -47,11 +50,10 @@ public class Program : Game
     public InventoryData inventoryData = new();
     public SelectionController selectionController = new(new InventoryData());
     private InventoryAndHUDGraphics inventoryGraphics;
-    public GameState CurrentGameState { get; set; } = GameState.Playing;
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -166,7 +168,7 @@ public class Program : Game
             inventoryData,
             selectionController
         );
-
+        ICommand openInventoryCommand = new OpenInventoryCommand(StateManager);
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
         ICommand moveDownCommand = new MoveDownCommand(this, link);
@@ -197,6 +199,7 @@ public class Program : Game
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
+        keybindings.Add(Keys.I, openInventoryCommand);
 
 
         AddProjectileCommands();
@@ -233,7 +236,8 @@ public class Program : Game
         link.Update(gameTime);
         ProcessCollisions();
 
-        base.Update(gameTime);
+        StateManager.CurrentState = inventoryGraphics.UpdateAnimation(gameTime, StateManager.CurrentState);
+
     }
 
     protected override void Draw(GameTime gameTime)
@@ -265,6 +269,7 @@ public class Program : Game
             }
         }
 
+
         SpritePainter!.DrawString(statusFont,
             $"{roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}",
             new Vector2(20, GameConstants.WINDOW_SIZE.Height - 60), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
@@ -281,9 +286,9 @@ public class Program : Game
             sortMode: SpriteSortMode.Deferred,
             blendState: BlendState.NonPremultiplied,
             samplerState: SamplerState.PointClamp,
-            transformMatrix: spriteTransform 
+            transformMatrix: spriteTransform
         );
-        inventoryGraphics.Draw(SpritePainter!, CurrentGameState);
+        inventoryGraphics.Draw(SpritePainter!, StateManager.CurrentState);
         SpritePainter?.End();
 
 
