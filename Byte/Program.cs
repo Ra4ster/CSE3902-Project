@@ -45,10 +45,11 @@ public class Program : Game
     private readonly IController mouseControls;
     private readonly IController kbControls;
 
+    private KeyboardState previousKeyboardState = Keyboard.GetState();
+
     private bool resetRequested = false;
 
     public InventoryData inventoryData = new();
-
 
     public SelectionController selectionController = new(new InventoryData());
     private InventoryAndHUDGraphics inventoryGraphics;
@@ -202,7 +203,17 @@ public class Program : Game
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
         keybindings.Add(Keys.I, openInventoryCommand);
+        ICommand moveCursorRight = new MoveCursorCommand(selectionController, 1, 0);
+        ICommand moveCursorLeft = new MoveCursorCommand(selectionController, -1, 0);
+        ICommand moveCursorUp = new MoveCursorCommand(selectionController, 0, -1);
+        ICommand moveCursorDown = new MoveCursorCommand(selectionController, 0, 1);
+        ICommand selectCursorCommand = new SelectCursorCommand(selectionController);
+        keybindings.Add(Keys.NumPad6, new MoveCursorCommand(selectionController, 1, 0));
+        keybindings.Add(Keys.NumPad4, new MoveCursorCommand(selectionController, -1, 0));
+        keybindings.Add(Keys.NumPad8, new MoveCursorCommand(selectionController, 0, -1));
+        keybindings.Add(Keys.NumPad2, new MoveCursorCommand(selectionController, 0, 1));
 
+        keybindings.Add(Keys.Enter, selectCursorCommand);
 
         AddProjectileCommands();
     }
@@ -237,9 +248,20 @@ public class Program : Game
 
         link.Update(gameTime);
         ProcessCollisions();
+        KeyboardState currentKeyboardState = Keyboard.GetState();
 
         StateManager.CurrentState = inventoryGraphics.UpdateAnimation(gameTime, StateManager.CurrentState);
+        if (StateManager.CurrentState == GameState.Inventory)
+        {
+            selectionController.HandleInput(Keyboard.GetState(), previousKeyboardState);
+        }
+        else
+        {
+            kbControls.Update(gameTime);
+            mouseControls.Update(gameTime);
+        }
 
+        previousKeyboardState = currentKeyboardState;
     }
 
     protected override void Draw(GameTime gameTime)

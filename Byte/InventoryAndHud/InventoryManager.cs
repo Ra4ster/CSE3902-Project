@@ -4,34 +4,36 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Byte.InventoryAndHud;
-
-
-public class InventoryManager
+namespace Byte.InventoryAndHud
 {
-    private readonly InventoryData inventoryData;
-    public InventoryManager(InventoryData invData) 
+    public class InventoryManager
     {
-        this.inventoryData = invData;
+        private readonly InventoryData inventoryData;
 
-        LinkCollisionHandler.PickUpItemEvent += HandleItemPickUp;
-    }
-
-    private void HandleItemPickUp(IItem item)
-    {
-        switch (item)
+        public InventoryManager(InventoryData invData)
         {
-            case Rupee:
-                inventoryData.Rupees++;
-                break;
-            case Bomb:
-                inventoryData.Bombs++;
-                break;
-            case Boomerang:
-                inventoryData.HasBoomerang = true;
-                break;
+            this.inventoryData = invData;
+            LinkCollisionHandler.PickUpItemEvent += HandleItemPickUp;
+        }
+
+        private void HandleItemPickUp(IItem item)
+        {
+            switch (item)
+            {
+                case Rupee:
+                    inventoryData.Rupees++;
+                    break;
+                case Bomb:
+                    inventoryData.Bombs++;
+                    inventoryData.HasBomb = true; 
+                    break;
+                case Boomerang:
+                    inventoryData.HasBoomerang = true;
+                    break;
+                case Bow:
+                    inventoryData.HasBow = true;
+                    break;
+            }
         }
     }
-
 }
-

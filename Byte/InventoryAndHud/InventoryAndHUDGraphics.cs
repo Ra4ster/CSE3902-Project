@@ -114,7 +114,7 @@ internal class InventoryAndHUDGraphics
         Rectangle bSourceRect = GetItemSourceRect(selectionController.EquippedItem);
         if (bSourceRect != Rectangle.Empty)
         {
-            Vector2 itemPos = hudPosition + new Vector2(104f, 24f) * scaleOffset;
+            Vector2 itemPos = hudPosition + new Vector2(126f, 24f) * scaleOffset;
             spriteBatch.Draw(itemSheet, itemPos, bSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
 
@@ -124,6 +124,7 @@ internal class InventoryAndHUDGraphics
             Vector2 itemPos = hudPosition + new Vector2(153f, 24f) * scaleOffset;
             spriteBatch.Draw(itemSheet, itemPos, aSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
+
 
         Vector2 heartStartPos = hudPosition + new Vector2(176, 24) * scaleOffset;
         Rectangle fullHeartRect = new Rectangle(645, 117, 8, 8);
@@ -157,28 +158,31 @@ internal class InventoryAndHUDGraphics
         Rectangle invBgRect = new Rectangle(1, 11, 255, 87);
         Rectangle mapBgRect = new Rectangle(258, 112, 255, 87);
         Vector2 HUDPosition = inventoryPosition + new Vector2(0, invBgRect.Height * GameConstants.SCALE);
-
+        Rectangle bSlotItem = GetItemSourceRect(selectionController.EquippedItem);
         spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
-        spriteBatch.Draw(spriteSheet, inventoryPosition + new Vector2(125, 45) * GameConstants.SCALE, CursorSelectRectangle, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+        spriteBatch.Draw(spriteSheet, inventoryPosition +  new Vector2(105, 105), bSlotItem, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
 
+        Vector2 cursorOffset = new Vector2(125f + (selectionController.CursorGridPosition.X * 24f), 45f + (selectionController.CursorGridPosition.Y * 24f));
+        spriteBatch.Draw(spriteSheet, inventoryPosition + cursorOffset * GameConstants.SCALE, CursorSelectRectangle, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         if (inventory.HasBoomerang)
         {
-            Vector2 drawPos = inventoryPosition + new Vector2(128f, 24f) * scaleOffset;
+            Vector2 drawPos = inventoryPosition + new Vector2(128f, 45f) * scaleOffset;
             spriteBatch.Draw(itemSheet, drawPos, BoomerangSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
 
         if (inventory.HasBomb)
         {
-            Vector2 drawPos = inventoryPosition + new Vector2(152f, 24f) * scaleOffset;
+            Vector2 drawPos = inventoryPosition + new Vector2(152f, 45f) * scaleOffset;
             spriteBatch.Draw(itemSheet, drawPos, BombSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
 
         if (inventory.HasBow)
         {
-            Vector2 drawPos = inventoryPosition + new Vector2(176f, 24f) * scaleOffset;
+            Vector2 drawPos = inventoryPosition + new Vector2(176f, 45f) * scaleOffset;
             spriteBatch.Draw(itemSheet, drawPos, BowSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
         }
+
 
         Rectangle roomRect = new Rectangle(645, 117, 8, 8);
         foreach (Point room in inventory.VisitedRooms)
