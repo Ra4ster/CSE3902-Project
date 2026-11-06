@@ -3,12 +3,11 @@ using Byte.Core.Rooms;
 using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace Byte.Rooms
 {
 
-    public sealed class Door : ICollidable
+    public sealed class Door : ICollidable, Byte.Drawing.IDrawable
     {
         public DoorDirection doorDirection;
 
@@ -66,13 +65,13 @@ namespace Byte.Rooms
             IsOpen = true;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch painter)
         {
             StaticSprite? spriteToDraw = IsOpen ? openSprite : closedSprite;
 
             if (spriteToDraw != null)
             {
-                spriteToDraw.Draw(spriteBatch);
+                spriteToDraw.Draw(painter);
             }
         }
     }

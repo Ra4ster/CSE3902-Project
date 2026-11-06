@@ -17,6 +17,8 @@ namespace Byte.Rooms
         private readonly List<IItem> items = [];
         private readonly List<Door> doors = [];
 
+        private readonly DrawSystem _drawSystem;
+
         public Rectangle Bounds { get; }
 
         public IReadOnlyList<AbstractEnemy> Enemies => enemies;
@@ -24,6 +26,7 @@ namespace Byte.Rooms
         public IReadOnlyList<IItem> Items => items;
         public IReadOnlyList<Door> Doors => doors;
         public string Name { get; }
+        private readonly string BGName;
         public Vector2 PlayerSpawnPosition { get; }
         public bool IsStartingRoom { get; }
 
@@ -39,6 +42,7 @@ namespace Byte.Rooms
         IFactory<ItemFactoryData, IItem> itemFactory)
         {
             Name = data.Name;
+            BGName = data.Background;
             PlayerSpawnPosition = RoomGrid.ToWorld(data.PlayerSpawn);
             IsStartingRoom = data.IsStartingRoom;
             Bounds = new Rectangle(0, 0,
@@ -79,7 +83,11 @@ namespace Byte.Rooms
             }
             DoorFactory doorFactory = new DoorFactory(GameAssets.Instance.BlockSheet);
             foreach (DoorData doorData in data.Doors)
-                doors.Add(doorFactory.CreateDoor(doorData));
+            {
+                Door door = doorFactory.CreateDoor(doorData);
+                doors.Add(door);
+                _drawSystem.AddDrawable(door);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -92,6 +100,8 @@ namespace Byte.Rooms
                 enemy.Draw(spriteBatch);
             foreach (Door door in doors)
                 door.Draw(spriteBatch);
+
+            BackgroundManager.Instance.Draw(BGName, spriteBatch);
         }
 
         public void Update(GameTime gametime)
