@@ -24,7 +24,7 @@ namespace Byte.Sprite.Enemy
 
         protected override void Move(GameTime gameTime)
         {
-            Vector2 target = patrolPath[currentWaypoint];
+            Vector2 target = ClampToWindow(patrolPath[currentWaypoint]);
 
             float dx = target.X - position.X;
             float dy = target.Y - position.Y;
@@ -36,7 +36,7 @@ namespace Byte.Sprite.Enemy
                 position = target;
                 currentWaypoint = (currentWaypoint + 1) % patrolPath.Length;
 
-                target = patrolPath[currentWaypoint];
+                target = ClampToWindow(patrolPath[currentWaypoint]);
                 dx = target.X - position.X;
                 dy = target.Y - position.Y;
             }

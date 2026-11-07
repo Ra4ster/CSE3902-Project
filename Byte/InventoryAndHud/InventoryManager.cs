@@ -8,16 +8,21 @@ using System.Text;
 
 namespace Byte.InventoryAndHud
 {
-    public class InventoryManager
+    public sealed class InventoryManager : IDisposable
     {
         private readonly InventoryData inventoryData;
-
 
         public InventoryManager(InventoryData invData)
         {
             this.inventoryData = invData;
             LinkCollisionHandler.PickUpItemEvent += HandleItemPickUp;
             UseProjectileCommand.OnProjectileFired += HandleProjectileFired;
+        }
+
+        public void Dispose()
+        {
+            LinkCollisionHandler.PickUpItemEvent -= HandleItemPickUp;
+            UseProjectileCommand.OnProjectileFired -= HandleProjectileFired;
         }
 
         public bool CanUseItem(IProjectile projectile)
@@ -30,6 +35,7 @@ namespace Byte.InventoryAndHud
                 _ => true
             };
         }
+
         private void HandleItemPickUp(IItem item)
         {
             switch (item)
@@ -71,7 +77,5 @@ namespace Byte.InventoryAndHud
                 }
             }
         }
-
-        //Handle Key Use here:
     }
 }

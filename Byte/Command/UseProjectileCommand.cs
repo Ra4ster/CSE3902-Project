@@ -42,10 +42,7 @@ namespace Byte.Command
             {
                 return;
             }
-            lastUsed = gameTime.TotalGameTime;
-
             // CardinalDirections.North is +Y, but on screen up is -Y
-            player.UseItem();
             Vector2 direction = new Vector2(player.Direction.X, -player.Direction.Y);
             Vector2 spawnPosition = player.Position + LINK_CENTER_OFFSET + direction * SPAWN_DISTANCE;
             IProjectile createdProjectile = createProjectile(spawnPosition, direction);
@@ -60,8 +57,6 @@ namespace Byte.Command
             projectileManager.Add(createdProjectile);
 
             OnProjectileFired?.Invoke(createdProjectile);
-
         }
     }
 }
-
