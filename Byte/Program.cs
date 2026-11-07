@@ -1,15 +1,17 @@
-﻿using Byte.Command;
+﻿using Byte;
+using Byte.Collidable;
+using Byte.Command;
+using Byte.Controller;
+using Byte.Core;
+using Byte.Factory;
+using Byte.InventoryAndHud;
+using Byte.Player;
+using Byte.Projectile;
+using Byte.Rooms;
+using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Byte.Controller;
-using Byte.Player;
-using Byte.Projectile;
-using Byte.Sprite;
-using Byte;
-using Byte.Rooms;
-using Byte.Factory;
-using Byte.Collidable;
 using System.Collections.ObjectModel;
 
 
@@ -34,6 +36,8 @@ public class Program : Game
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
 
+    public GameStateManager StateManager { get; private set; } = new();
+
     readonly Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
     readonly Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
     readonly Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
@@ -41,11 +45,18 @@ public class Program : Game
     private readonly IController mouseControls;
     private readonly IController kbControls;
 
+    private KeyboardState previousKeyboardState = Keyboard.GetState();
+
     private bool resetRequested = false;
+
+    public InventoryData inventoryData = new();
+
+    public SelectionController selectionController = new(new InventoryData());
+    private InventoryAndHUDGraphics inventoryGraphics;
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -139,6 +150,8 @@ public class Program : Game
         projectileManager = new ProjectileManager();
         LoadRooms();
 
+        InventoryManager inventoryManager = new InventoryManager(inventoryData);
+
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
         link = new Link(linkPos, new StaticSprite(
@@ -150,6 +163,15 @@ public class Program : Game
         link.sourceRects = new Collection<Rectangle>(
             Enumerable.Repeat(Rectangle.Empty, LINK_SOURCE_RECT_COUNT).ToList());
 
+        selectionController = new SelectionController(inventoryData);
+        inventoryGraphics = new InventoryAndHUDGraphics(
+            GameAssets.Instance.ItemSheet,
+            GameAssets.Instance.InventorySheet,
+            statusFont,
+            inventoryData,
+            selectionController
+        );
+        ICommand openInventoryCommand = new OpenInventoryCommand(StateManager);
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
         ICommand moveDownCommand = new MoveDownCommand(this, link);
@@ -180,6 +202,19 @@ public class Program : Game
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
+        keybindings.Add(Keys.I, openInventoryCommand);
+        ICommand moveCursorRight = new MoveCursorCommand(selectionController, 1, 0);
+        ICommand moveCursorLeft = new MoveCursorCommand(selectionController, -1, 0);
+        ICommand moveCursorUp = new MoveCursorCommand(selectionController, 0, -1);
+        ICommand moveCursorDown = new MoveCursorCommand(selectionController, 0, 1);
+        ICommand selectCursorCommand = new SelectCursorCommand(selectionController);
+        keybindings.Add(Keys.NumPad6, new MoveCursorCommand(selectionController, 1, 0));
+        keybindings.Add(Keys.NumPad4, new MoveCursorCommand(selectionController, -1, 0));
+        keybindings.Add(Keys.NumPad8, new MoveCursorCommand(selectionController, 0, -1));
+        keybindings.Add(Keys.NumPad2, new MoveCursorCommand(selectionController, 0, 1));
+
+        keybindings.Add(Keys.Enter, selectCursorCommand);
+
         AddProjectileCommands();
     }
 
@@ -213,8 +248,20 @@ public class Program : Game
 
         link.Update(gameTime);
         ProcessCollisions();
+        KeyboardState currentKeyboardState = Keyboard.GetState();
 
-        base.Update(gameTime);
+        StateManager.CurrentState = inventoryGraphics.UpdateAnimation(gameTime, StateManager.CurrentState);
+        if (StateManager.CurrentState == GameState.Inventory)
+        {
+            selectionController.HandleInput(Keyboard.GetState(), previousKeyboardState);
+        }
+        else
+        {
+            kbControls.Update(gameTime);
+            mouseControls.Update(gameTime);
+        }
+
+        previousKeyboardState = currentKeyboardState;
     }
 
     protected override void Draw(GameTime gameTime)
@@ -246,6 +293,7 @@ public class Program : Game
             }
         }
 
+
         SpritePainter!.DrawString(statusFont,
             $"{roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}",
             new Vector2(20, GameConstants.WINDOW_SIZE.Height - 60), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
@@ -254,7 +302,20 @@ public class Program : Game
                 "HP is zero. Collision testing stays active; press R to reset.",
                 new Vector2(20, GameConstants.WINDOW_SIZE.Height - 100), Color.Black);
 
+
+
         SpritePainter?.End();
+
+        SpritePainter?.Begin(
+            sortMode: SpriteSortMode.Deferred,
+            blendState: BlendState.NonPremultiplied,
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: spriteTransform
+        );
+        inventoryGraphics.Draw(SpritePainter!, StateManager.CurrentState);
+        SpritePainter?.End();
+
+
 
         base.Draw(gameTime);
     }
