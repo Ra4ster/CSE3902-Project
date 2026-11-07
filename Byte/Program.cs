@@ -53,7 +53,7 @@ public class Program : Game
     private bool resetRequested = false;
 
     public InventoryData inventoryData = new();
-    private InventoryManager? inventoryManager;
+    public InventoryManager? inventoryManager;
 
     public SelectionController selectionController = new(new InventoryData());
     private InventoryAndHUDGraphics inventoryGraphics;
@@ -229,12 +229,17 @@ public class Program : Game
 
     private void AddProjectileCommands()
     {
-        ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, GameAssets.Instance.BossSheet);
+        ProjectileFactory projectileFactory = new ProjectileFactory(
+                GameAssets.Instance.LinkSheet,
+                GameAssets.Instance.BossSheet
+            );
 
-        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow);
+        Func<IProjectile, bool> canUse = projectile => inventoryManager!.CanUseItem(projectile);
+
+        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow, canUse);
         ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
-            (position, _) => projectileFactory.CreateBomb(position));
-        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang);
+            (position, _) => projectileFactory.CreateBomb(position), canUse);
+        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang, canUse);
 
         keybindings.Add(Keys.D1, useArrowCommand);
         keybindings.Add(Keys.D2, useBombCommand);
