@@ -4,6 +4,7 @@ namespace Byte.Player
 {
     public class PlayerMoveDownState : IPlayerState
     {
+        private bool hasSprite;
         // frames for walking south animation
         readonly Rectangle[] southFrames =
         {
@@ -19,8 +20,9 @@ namespace Byte.Player
         {
             link.Velocity = new Vector2(0, link.MovementSpeed);
             // check if in walking sprite already
-            if (link.currentSprite is not MovingAnimatedSprite)
+            if (!hasSprite || link.currentSprite is not MovingAnimatedSprite)
             {
+                hasSprite = true;
                 // create new walking sprite
                 link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                      link.Position,

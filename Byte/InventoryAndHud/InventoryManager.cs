@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Byte.InventoryAndHud
 {
-    public class InventoryManager
+    public sealed class InventoryManager : IDisposable
     {
         private readonly InventoryData inventoryData;
 
@@ -15,6 +15,8 @@ namespace Byte.InventoryAndHud
             this.inventoryData = invData;
             LinkCollisionHandler.PickUpItemEvent += HandleItemPickUp;
         }
+
+        public void Dispose() => LinkCollisionHandler.PickUpItemEvent -= HandleItemPickUp;
 
         private void HandleItemPickUp(IItem item)
         {

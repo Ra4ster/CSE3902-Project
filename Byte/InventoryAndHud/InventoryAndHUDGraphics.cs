@@ -19,8 +19,8 @@ namespace Byte.InventoryAndHud
         private static readonly Rectangle SwordSourceRect = new Rectangle(104, 0, 8, 16);
 
         private static readonly Rectangle CursorSelectRectangle = new Rectangle(519, 137, 16, 16);
-        private float screenPosition = 0f;
-        private readonly float maxOffset = 174f * GameConstants.SCALE;
+        public const float MaxSlideOffset = 174f * GameConstants.SCALE;
+        public const float HudHeight = 55f * GameConstants.SCALE;
 
         public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController)
         {
@@ -34,57 +34,23 @@ namespace Byte.InventoryAndHud
             blackPixel.SetData(new[] { Color.Black });
         }
 
-        public GameState UpdateAnimation(GameTime gameTime, GameState currentState)
+        public void Draw(SpriteBatch spriteBatch, float slideOffset)
         {
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (currentState == GameState.TransitionToInventory)
-            {
-                screenPosition += 1000f * delta;
-                if (screenPosition >= maxOffset)
-                {
-                    screenPosition = maxOffset;
-                    return GameState.Inventory;
-                }
-            }
-            else if (currentState == GameState.TransitionToPlaying)
-            {
-                screenPosition -= 1000f * delta;
-                if (screenPosition <= 0f)
-                {
-                    screenPosition = 0f;
-                    return GameState.Playing;
-                }
-            }
-            else if (currentState == GameState.Inventory)
-            {
-                screenPosition = maxOffset;
-            }
-            else if (currentState == GameState.Playing)
-            {
-                screenPosition = 0f;
-            }
-
-            return currentState;
-        }
-
-        public void Draw(SpriteBatch spriteBatch, GameState currentState)
-        {
-            if (currentState == GameState.Inventory)
+            if (slideOffset > 0f)
             {
                 Rectangle bgRect = new Rectangle(
                     0,
-                    (int)(-maxOffset + screenPosition),
-                    (int)(256 * GameConstants.SCALE),
-                    (int)(GameConstants.WINDOW_SIZE.Height * 2)
+                    (int)(-MaxSlideOffset + slideOffset),
+                    GameConstants.WINDOW_SIZE.Width,
+                    (int)MaxSlideOffset
                 );
                 spriteBatch.Draw(blackPixel, bgRect, Color.Black);
             }
 
-            Vector2 inventoryPosition = new Vector2(0, -maxOffset + screenPosition);
+            Vector2 inventoryPosition = new Vector2(0, -MaxSlideOffset + slideOffset);
             DrawInventoryScreen(spriteBatch, inventoryPosition);
 
-            Vector2 hudPosition = new Vector2(0, screenPosition);
+            Vector2 hudPosition = new Vector2(0, slideOffset);
             DrawHUD(spriteBatch, hudPosition);
         }
 
