@@ -49,7 +49,9 @@ public class Program : Game
 
     private bool resetRequested = false;
 
-    public InventoryData inventoryData = new();
+    public InventoryData inventoryData;
+
+    public InventoryManager inventoryManager;
 
     public SelectionController selectionController = new(new InventoryData());
     private InventoryAndHUDGraphics inventoryGraphics;
@@ -150,7 +152,8 @@ public class Program : Game
         projectileManager = new ProjectileManager();
         LoadRooms();
 
-        InventoryManager inventoryManager = new InventoryManager(inventoryData);
+        inventoryData = new InventoryData();
+        inventoryManager = new InventoryManager(inventoryData);
 
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
@@ -220,12 +223,33 @@ public class Program : Game
 
     private void AddProjectileCommands()
     {
-        ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, GameAssets.Instance.BossSheet);
+        ProjectileFactory projectileFactory = new ProjectileFactory(
+                GameAssets.Instance.LinkSheet,
+                GameAssets.Instance.BossSheet
+            );
 
-        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow);
-        ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
-            (position, direction) => projectileFactory.CreateBomb(position, direction));
-        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang);
+        Func<IProjectile, bool> canUseCheck = inventoryData => inventoryManager.CanUseItem(inventoryData);
+
+        ICommand useArrowCommand = new UseProjectileCommand(
+            link,
+            projectileManager,
+            (pos, dir) => projectileFactory.CreateArrow(pos, dir),
+            canUseItemCallback: canUseCheck
+        );
+
+        ICommand useBombCommand = new UseProjectileCommand(
+            link,
+            projectileManager,
+            (pos, dir) => projectileFactory.CreateBomb(pos, dir),
+            canUseItemCallback: canUseCheck
+        );
+
+        ICommand useBoomerangCommand = new UseProjectileCommand(
+            link,
+            projectileManager,
+            (pos, dir) => projectileFactory.CreateBoomerang(pos, dir),
+            canUseItemCallback: canUseCheck
+        );
 
         keybindings.Add(Keys.D1, useArrowCommand);
         keybindings.Add(Keys.D2, useBombCommand);

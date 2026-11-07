@@ -22,6 +22,7 @@ public class InventoryData
     public bool HasBomb { get; set; } = false;
     public bool HasBow { get; set; } = false;
 
+
     public bool HasSword { get; set; } = true;
 
     public List<Point> VisitedRooms { get; private set; } = new List<Point>();
