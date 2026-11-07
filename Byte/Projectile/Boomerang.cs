@@ -63,6 +63,7 @@ namespace Byte.Projectile
                 if (distanceToStart <= 5f || distanceTraveled >= RANGE * 2f)
                 {
                     IsExpired = true;
+                    Program.soundManager.StopBoomerangSound(this);
                 }
             }
 

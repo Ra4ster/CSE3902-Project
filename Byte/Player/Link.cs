@@ -132,9 +132,10 @@ namespace Byte.Player
         // Show damage texture
         public void TakeDamage()
         {
+           
             if (isDamaged)
                 return;
-
+            Program.soundManager.PlaySound("Link_Hurt");
             isDamaged = true;
             damageTimer = DamageDuration;
             // This framework scene has no death state yet; keep collisions testable at zero HP.

@@ -50,6 +50,7 @@ public class ProjectileFactory
 
     public IProjectile CreateArrow(Vector2 position, Vector2 direction)
     {
+        Program.soundManager.PlaySound("Arrow_Boomerang");
         bool isHorizontal = direction.X != 0;
         SpriteEffects flip = SpriteEffects.None;
         if (direction.X < 0)
@@ -68,12 +69,22 @@ public class ProjectileFactory
 
     public IProjectile CreateBoomerang(Vector2 position, Vector2 direction)
     {
-        MovingAnimatedSprite sprite = CreateSprite(BOOMERANG_FRAMES, BOOMERANG_FRAME_DURATION, position);
-        return new Boomerang(sprite, position, direction);
+        MovingAnimatedSprite sprite = CreateSprite(
+       BOOMERANG_FRAMES,
+       BOOMERANG_FRAME_DURATION,
+       position
+   );
+
+        IProjectile boomerang = new Boomerang(sprite, position, direction);
+
+        Program.soundManager.PlayBoomerangSound(boomerang);
+
+        return boomerang;
     }
 
     public IProjectile CreateBomb(Vector2 position, Vector2 direction)
     {
+        Program.soundManager.PlaySound("Bomb_Drop");
         const float THROW_SPEED = 300f;
         MovingAnimatedSprite bombSprite = CreateSprite(new[] { BOMB }, 1f, position);
         MovingAnimatedSprite explosionSprite = CreateSprite(EXPLOSION_FRAMES, EXPLOSION_FRAME_DURATION, position);
@@ -99,6 +110,7 @@ public class ProjectileFactory
 
     public IProjectile CreateEnemyBoomerang(Vector2 position, Vector2 direction)
     {
+        
         MovingAnimatedSprite sprite = CreateSprite(BOOMERANG_FRAMES, BOOMERANG_FRAME_DURATION, position);
         return new Boomerang(sprite, position, direction, AbstractProjectile.EnemyProjectileProperties);
     }

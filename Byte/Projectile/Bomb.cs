@@ -44,7 +44,10 @@ namespace Byte.Projectile
 
                 if (HasCollided || fuseTimer >= FUSE_DURATION)
                 {
+                    
                     StartExplosion();
+                    Program.soundManager.PlaySound("Bomb_Blow");
+
                 }
             }
             else
@@ -66,6 +69,7 @@ namespace Byte.Projectile
         {
             if (!isExploding)
             {
+                Program.soundManager.PlaySound("Bomb_Blow");
                 StartExplosion();
             }
         }
