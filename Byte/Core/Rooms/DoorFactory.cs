@@ -21,9 +21,10 @@ namespace Byte.Core.Rooms
             DoorDirection direction = Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir)
                 ? parsedDir
                 : DoorDirection.Default;
-            // East/west doors are centered in cells
             if (direction is DoorDirection.East or DoorDirection.West)
                 position.Y -= RoomGrid.TILE_WORLD_SIZE / 2f;
+            if (direction is DoorDirection.West)
+                position.X -= RoomGrid.TILE_WORLD_SIZE;
 
             Door door = new Door(data);
             (StaticSprite openSprite, StaticSprite closedSprite) = CreateDoorSprites(direction, position);
