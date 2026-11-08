@@ -8,7 +8,6 @@ namespace Byte.Core.Rooms
     internal class DoorFactory
     {
         private readonly Texture2D blockSheet;
-
         public DoorFactory(Texture2D blockSheet)
         {
             this.blockSheet = blockSheet;
@@ -32,23 +31,46 @@ namespace Byte.Core.Rooms
             };
 
             Door door = new Door(data);
-            (StaticSprite openSprite, StaticSprite closedSprite) = CreateDoorSprites(direction, position);
+            StaticSprite sprite = CreateDoorSprite(direction, door.doorState);
+            sprite.SetPos(position);
 
-            door.SetSprites(openSprite, closedSprite);
-
+            door.sprite = sprite;
             return door;
         }
 
-        public Door? CreateDoorWall(DoorDirection dir)
+        private static Rectangle WallDoorNFrame = new Rectangle(815, 11, 32, 32);
+        private static Rectangle OpenDoorNFrame = new Rectangle(848, 11, 32, 32);
+        private static Rectangle LockedDoorNFrame = new Rectangle(881, 11, 32, 32);
+        private static Rectangle SealedDoorNFrame = new Rectangle(914, 11, 32, 32);
+        private static Rectangle BlownDoorNFrame = new Rectangle(947, 11, 32, 32);
+
+        private StaticSprite CreateDoorSprite(DoorDirection direction, DoorState state)
         {
-            return (dir) switch
+            const int stride = 34;
+
+            Rectangle relFrame = (state) switch
             {
-                DoorDirection.North => null,
-                DoorDirection.South => null,
-                DoorDirection.East => null,
-                DoorDirection.West => null,
-                _ => null
+                DoorState.Open => OpenDoorNFrame,
+                DoorState.Locked => LockedDoorNFrame,
+                DoorState.Sealed => SealedDoorNFrame,
+                DoorState.Blown => BlownDoorNFrame,
+                _ => WallDoorNFrame
             };
+            Rectangle absFrame = (direction) switch
+            {
+                DoorDirection.West => new Rectangle(relFrame.X, relFrame.Y + stride, relFrame.Width, relFrame.Height),
+                DoorDirection.East => new Rectangle(relFrame.X, relFrame.Y + stride * 2, relFrame.Width, relFrame.Height),
+                DoorDirection.South => new Rectangle(relFrame.X, relFrame.Y + stride * 3, relFrame.Width, relFrame.Height),
+                _ => relFrame
+            };
+
+            return new StaticSprite(
+                blockSheet,
+                Vector2.Zero,
+                Color.White,
+                absFrame,
+                GameConstants.SCALE
+            );
         }
 
         private (StaticSprite open, StaticSprite closed) CreateDoorSprites(DoorDirection direction, Vector2 position)

@@ -1,3 +1,5 @@
+using Byte.Core.Rooms;
+
 namespace Byte.Rooms
 {
     public readonly record struct GridPosition(int X, int Y);
@@ -49,7 +51,7 @@ namespace Byte.Rooms
         /// <summary>
         /// Type (i.e. locked, sealed, blown, wall, etc.)
         /// </summary>
-        public required string Type { get; set; }
+        public required DoorState Type { get; set; }
         /// <summary>
         /// Position on the room grid (must be within room size)
         /// </summary>

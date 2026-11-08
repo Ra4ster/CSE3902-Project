@@ -6,19 +6,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Rooms
 {
-
     public sealed class Door : ICollidable, Byte.Drawing.IDrawable
     {
         public DoorDirection doorDirection;
-
         public DoorState doorState;
         public DoorData Data { get; }
         public Rectangle BoundingBox { get; }
+        public bool CanEnter = false;
 
         public bool IsOpen { get; private set; } = true;
 
-        private StaticSprite? openSprite;
-        private StaticSprite? closedSprite;
+        public StaticSprite? sprite;
 
         public CollisionProperties Properties { get; private set; } = new CollisionProperties
         {
@@ -31,15 +29,8 @@ namespace Byte.Rooms
         public Door(DoorData data)
         {
             Data = data;
-
-            if (Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir))
-            {
-                doorDirection = parsedDir;
-            }
-            else
-            {
-                doorDirection = DoorDirection.Default;
-            }
+            doorDirection = (Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir)) ? parsedDir : DoorDirection.Default;
+            doorState = data.Type;
 
             Vector2 topLeft = RoomGrid.ToWorld(data.Position);
             int side = (int)RoomGrid.TILE_WORLD_SIZE;
@@ -66,10 +57,9 @@ namespace Byte.Rooms
             BoundingBox = new Rectangle(x, y, side, side);
         }
 
-        public void SetSprites(StaticSprite open, StaticSprite closed)
+        public void SetState(DoorState state)
         {
-            openSprite = open;
-            closedSprite = closed;
+            this.doorState = state;
         }
 
         public void Close()
@@ -84,12 +74,7 @@ namespace Byte.Rooms
 
         public void Draw(SpriteBatch painter)
         {
-            StaticSprite? spriteToDraw = IsOpen ? openSprite : closedSprite;
-
-            if (spriteToDraw != null)
-            {
-                spriteToDraw.Draw(painter);
-            }
+            sprite!.Draw(painter);
         }
     }
 }
