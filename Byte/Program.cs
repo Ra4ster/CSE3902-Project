@@ -375,20 +375,15 @@ public class Program : Game
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
         {
             foreach (IProjectile projectile in projectileManager.Projectiles)
-            {
                 DispatchCollisions(new List<ICollidable> { projectile, block });
-            }
             foreach (ICollidable enemy in room.Enemies)
-            {
                 DispatchCollisions(new List<ICollidable> { enemy, block });
-            }
         }
 
         var collidables = new List<ICollidable> { link };
         collidables.AddRange(room.Enemies);
         collidables.AddRange(room.Items);
         collidables.AddRange(room.Doors);
-
         collidables.AddRange(projectileManager.Projectiles);
 
         link.Sword.Update(link);

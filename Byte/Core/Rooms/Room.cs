@@ -24,7 +24,7 @@ namespace Byte.Rooms
         public IReadOnlyList<IItem> Items => items;
         public IReadOnlyList<Door> Doors => doors;
         public string Name { get; }
-        private readonly string BGName;
+        public string Background { get; }
         public Vector2 PlayerSpawnPosition { get; }
         public bool IsStartingRoom { get; }
 
@@ -40,7 +40,7 @@ namespace Byte.Rooms
         IFactory<ItemFactoryData, IItem> itemFactory)
         {
             Name = data.Name;
-            BGName = data.Background;
+            Background = data.Background;
             PlayerSpawnPosition = RoomGrid.ToWorld(data.PlayerSpawn);
             IsStartingRoom = data.IsStartingRoom;
             Bounds = new Rectangle(0, 0,
@@ -93,7 +93,7 @@ namespace Byte.Rooms
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            BackgroundManager.Instance.Draw(BGName, spriteBatch);
+            BackgroundManager.Instance.Draw(Background, spriteBatch);
 
             foreach (IBlock block in blocks)
                 block.Draw(spriteBatch);

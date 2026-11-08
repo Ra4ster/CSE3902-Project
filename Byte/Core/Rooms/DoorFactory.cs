@@ -34,6 +34,18 @@ namespace Byte.Core.Rooms
             return door;
         }
 
+        public Door? CreateDoorWall(DoorDirection dir)
+        {
+            return (dir) switch
+            {
+                DoorDirection.North => null,
+                DoorDirection.South => null,
+                DoorDirection.East => null,
+                DoorDirection.West => null,
+                _ => null
+            };
+        }
+
         private (StaticSprite open, StaticSprite closed) CreateDoorSprites(DoorDirection direction, Vector2 position)
         {
             switch (direction)

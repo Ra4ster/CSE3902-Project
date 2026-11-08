@@ -1,6 +1,7 @@
 
 using System.Collections.ObjectModel;
 using Byte.Drawing;
+using Byte.Rooms;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte
@@ -22,12 +23,21 @@ namespace Byte
             drawables.Add(drawable);
         }
 
+        public void DrawRoom(IRoom room, SpriteBatch painter)
+        {
+            BackgroundManager.Instance.Draw(room.Background, painter);
+            foreach (var block in room.Blocks) block.Draw(painter);
+            foreach (var item in room.Items) item.Draw(painter);
+            foreach (var enemy in room.Enemies) enemy.Draw(painter);
+            foreach (var door in room.Doors) door.Draw(painter);
+        }
+
         public void Draw()
         {
+            BackgroundManager.Instance.Draw(background, painter);
+
             foreach (IDrawable drawable in drawables)
                 drawable.Draw(painter);
-
-            BackgroundManager.Instance.Draw(background, painter);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Byte.Rooms
         IReadOnlyList<IItem> Items { get; }
         IReadOnlyList<Door> Doors { get; }
         string Name { get; }
+        string Background { get; }
 
         Rectangle Bounds { get; }
         Vector2 PlayerSpawnPosition { get; }
