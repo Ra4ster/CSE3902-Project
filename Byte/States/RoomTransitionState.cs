@@ -97,16 +97,12 @@ public sealed class RoomTransitionState : IGameState
 
     private void DrawRoom(IRoom room, Vector2 shift, Rectangle camera)
     {
-        game.BeginWorld(Program.RoomOffset(room) + shift, camera);
-        room.Draw(game.Painter);
-        game.EndBatch();
+        game.DrawRoom(room, shift, camera);
     }
 
     private void DrawLinkAt(Vector2 windowPosition, Rectangle camera)
     {
-        game.BeginWorld(windowPosition - game.link.Position, camera);
-        game.link.state.Draw(game.link);
-        game.EndBatch();
+        game.DrawLinkAt(windowPosition, camera);
     }
 
     private static Vector2 RoomSize(IRoom room) => new(room.Bounds.Width, room.Bounds.Height);

@@ -1,41 +1,59 @@
-
-using System.Collections.ObjectModel;
+using Byte.Player;
 using Byte.Rooms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Drawing
 {
-    public class DrawSystem
+    public sealed class DrawSystem
     {
-        public required Collection<IDrawable> drawables;
-        public required string background;
-        public required SpriteBatch painter;
-        private Matrix spriteTransform = Matrix.Identity;
         private static readonly RasterizerState ClipRasterizer = new() { ScissorTestEnable = true };
-
         private readonly GraphicsDevice device;
+        private readonly SpriteBatch painter;
+        private Matrix spriteTransform = Matrix.Identity;
 
-        public DrawSystem(GraphicsDevice device, SpriteBatch painter, IDrawable[] drawables, string background)
+        public DrawSystem(GraphicsDevice device, SpriteBatch painter)
         {
-            this.drawables = new Collection<IDrawable>(drawables.ToList());
-            this.background = background;
-            this.painter = painter;
             this.device = device;
+            this.painter = painter;
         }
 
-        public void AddDrawable(IDrawable drawable)
+        public void SetSpriteTransform(Matrix transform) => spriteTransform = transform;
+
+        public void Begin(Vector2 translation, Rectangle? clip = null)
         {
-            drawables.Add(drawable);
+            device.ScissorRectangle = ToBackBuffer(clip ?? GameConstants.WINDOW_SIZE);
+            painter.Begin(
+                sortMode: SpriteSortMode.Deferred,
+                blendState: BlendState.NonPremultiplied,
+                samplerState: SamplerState.PointClamp,
+                rasterizerState: ClipRasterizer,
+                transformMatrix: Matrix.CreateTranslation(translation.X, translation.Y, 0f) * spriteTransform);
         }
 
-        public void DrawRoom(IRoom room, SpriteBatch painter)
+        public void EndBatch() => painter.End();
+
+        public void DrawRoom(IRoom room)
         {
             BackgroundManager.Instance.Draw(room.Background, painter);
             foreach (var block in room.Blocks) block.Draw(painter);
             foreach (var item in room.Items) item.Draw(painter);
             foreach (var enemy in room.Enemies) enemy.Draw(painter);
             foreach (var door in room.Doors) door.Draw(painter);
+        }
+
+        public void DrawLink(Link link)
+        {
+            ArgumentNullException.ThrowIfNull(link);
+            link.state.Draw(link);
+        }
+
+        public void DrawLink(Link link, Vector2 worldPosition, Rectangle? clip = null)
+        {
+            ArgumentNullException.ThrowIfNull(link);
+            Begin(worldPosition - link.Position, clip);
+            DrawLink(link);
+            EndBatch();
         }
 
         private Rectangle ToBackBuffer(Rectangle area)
@@ -45,27 +63,6 @@ namespace Byte.Drawing
             Rectangle pixels = new Rectangle((int)topLeft.X, (int)topLeft.Y,
                 (int)Math.Ceiling(bottomRight.X - topLeft.X), (int)Math.Ceiling(bottomRight.Y - topLeft.Y));
             return Rectangle.Intersect(pixels, device.Viewport.Bounds);
-        }
-
-        public void Begin(SpriteBatch painter, Vector2 translation, Rectangle? clip = null)
-        {
-            device.ScissorRectangle = ToBackBuffer(clip ?? GameConstants.WINDOW_SIZE);
-
-            painter.Begin(
-                sortMode: SpriteSortMode.Deferred,
-                blendState: BlendState.NonPremultiplied,
-                samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
-                rasterizerState: ClipRasterizer,
-                transformMatrix: Matrix.CreateTranslation(translation.X, translation.Y, 0f) * spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
-            );
-        }
-
-        public void Draw()
-        {
-            BackgroundManager.Instance.Draw(background, painter);
-
-            foreach (IDrawable drawable in drawables)
-                drawable.Draw(painter);
         }
     }
 }

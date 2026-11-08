@@ -6,7 +6,6 @@ using Byte.Factory;
 using Byte.Item;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Rooms
 {
@@ -89,20 +88,6 @@ namespace Byte.Rooms
                 Door door = doorFactory.CreateDoor(doorData);
                 doors.Add(door);
             }
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            BackgroundManager.Instance.Draw(Background, spriteBatch);
-
-            foreach (IBlock block in blocks)
-                block.Draw(spriteBatch);
-            foreach (IItem item in items)
-                item.Draw(spriteBatch);
-            foreach (AbstractEnemy enemy in enemies)
-                enemy.Draw(spriteBatch);
-            foreach (Door door in doors)
-                door.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
