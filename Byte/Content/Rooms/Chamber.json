@@ -2,7 +2,7 @@
   "name": "Chamber",
   "background": "room3",
   "playerSpawn": [1, 2],
-  "width": 13,
+  "width": 12,
   "height": 7,
   "tiles": {
     "Keystone": [
@@ -34,7 +34,7 @@
       "arrivalPosition": [10, 3]
     },
     {
-      "position": [12, 3],
+      "position": [11, 3],
       "direction": "East",
       "targetRoom": "Vault",
       "arrivalPosition": [1, 3]

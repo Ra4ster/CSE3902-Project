@@ -7,6 +7,8 @@ namespace Byte.Drawing
 {
     public sealed class DrawSystem
     {
+        private static readonly Rectangle RoomFrame = new(520, 11, 256, 176);
+
         private static readonly RasterizerState ClipRasterizer = new() { ScissorTestEnable = true };
         private readonly GraphicsDevice device;
         private readonly SpriteBatch painter;
@@ -36,6 +38,21 @@ namespace Byte.Drawing
         public void DrawRoom(IRoom room)
         {
             BackgroundManager.Instance.Draw(room.Background, painter);
+            // Draw room frame:
+            Vector2 framePosition = new(
+                -2 * RoomGrid.TILE_WORLD_SIZE,
+                -2 * RoomGrid.TILE_WORLD_SIZE
+            );
+            painter.Draw(
+                GameAssets.Instance.BlockSheet,
+                framePosition,
+                RoomFrame,
+                Color.White,
+                0f, Vector2.Zero,
+                GameConstants.SCALE,
+                SpriteEffects.None,
+                0f);
+
             foreach (var block in room.Blocks) block.Draw(painter);
             foreach (var item in room.Items) item.Draw(painter);
             foreach (var enemy in room.Enemies) enemy.Draw(painter);
