@@ -14,6 +14,7 @@ namespace Byte
         private const int WIDTH = 192;
         private const int HEIGHT = 112;
         private const int GAP = 3;
+        private const int COLUMNS = 6;
         private const string ROOM_PREFIX = "room";
 
         private static Vector2 SCALE_VEC = new Vector2(GameConstants.SCALE);
@@ -42,8 +43,12 @@ namespace Byte
                 throw new KeyNotFoundException($"No room texture is named {bgName}");
             }
 
-            int x = START_X + (WIDTH + GAP) * (roomNum - 1);
-            return new Rectangle(x, START_Y, WIDTH, HEIGHT);
+            int roomIndex = roomNum - 1;
+            int column = roomIndex % COLUMNS;
+            int row = roomIndex / COLUMNS;
+            int x = START_X + (WIDTH + GAP) * column;
+            int y = START_Y + (HEIGHT + GAP) * row;
+            return new Rectangle(x, y, WIDTH, HEIGHT);
         }
 
         /// <summary>
@@ -54,7 +59,15 @@ namespace Byte
         public void Draw(string bgName, SpriteBatch painter)
         {
             Rectangle box = Map(bgName);
-            painter.Draw(GameAssets.Instance.BlockSheet, Vector2.Zero, box, Color.White, 0f, Vector2.Zero, SCALE_VEC, SpriteEffects.None, 0f);
+            Texture2D blockSheet = GameAssets.Instance.BlockSheet;
+            if (box.Left < 0 || box.Top < 0 ||
+                box.Right > blockSheet.Width || box.Bottom > blockSheet.Height)
+            {
+                throw new InvalidDataException(
+                    $"Background '{bgName}' maps outside the block sheet ({blockSheet.Width}x{blockSheet.Height}).");
+            }
+
+            painter.Draw(blockSheet, Vector2.Zero, box, Color.White, 0f, Vector2.Zero, SCALE_VEC, SpriteEffects.None, 0f);
         }
     }
 }
