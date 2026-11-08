@@ -26,6 +26,12 @@
             "direction": "South",
             "targetRoom": "Vault",
             "arrivalPosition": [3, 3]
+        },
+        {
+            "position": [11, 3],
+            "direction": "East",
+            "targetRoom": "Chamber",
+            "arrvalPosition": [1, 3]
         }
     ]
 }

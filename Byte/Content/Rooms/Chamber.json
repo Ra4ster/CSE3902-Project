@@ -13,31 +13,38 @@
   },
   "enemies": [
     {
-      "type": "Wallmaster",
-      "position": [4, 2],
-      "path": [
-        [4, 2], [4, 5], [2, 5]
-      ]
+      "type": "Stalfos",
+      "position": [3, 0]
+    },
+    {
+      "type": "Stalfos",
+      "position": [6, 2]
+    },
+    {
+      "type": "Stalfos",
+      "position": [3, 6]
+    },
+    {
+      "type":"Stalfos",
+      "position": [10, 5]
+    },
+    {
+      "type": "Stalfos",
+      "position": [11, 3]
     }
   ],
   "items": [
     {
       "type": "Heart",
-      "position": [3, 5]
+      "position": [10, 5]
     }
   ],
   "doors": [
     {
       "position": [0, 3],
       "direction": "West",
-      "targetRoom": "Hall",
+      "targetRoom": "Entrance",
       "arrivalPosition": [10, 3]
-    },
-    {
-      "position": [11, 3],
-      "direction": "East",
-      "targetRoom": "Vault",
-      "arrivalPosition": [1, 3]
     }
   ]
 }
