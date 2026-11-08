@@ -72,13 +72,12 @@ public class ProjectileFactory
         return new Boomerang(sprite, position, direction);
     }
 
-    public IProjectile CreateBomb(Vector2 position, Vector2 direction)
+    public IProjectile CreateBomb(Vector2 position)
     {
-        const float THROW_SPEED = 300f;
         MovingAnimatedSprite bombSprite = CreateSprite(new[] { BOMB }, 1f, position);
         MovingAnimatedSprite explosionSprite = CreateSprite(EXPLOSION_FRAMES, EXPLOSION_FRAME_DURATION, position);
         explosionSprite.loopAnimation = false;
-        return new Bomb(bombSprite, explosionSprite, position, direction * THROW_SPEED);
+        return new Bomb(bombSprite, explosionSprite, position, Vector2.Zero);
     }
 
     public IProjectile CreateFireball(Vector2 position, Vector2 direction)
