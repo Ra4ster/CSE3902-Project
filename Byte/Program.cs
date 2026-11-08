@@ -24,7 +24,7 @@ public class Program : Game
     private const int LINK_SOURCE_RECT_COUNT = 10;
 
     public static bool DrawBoundingBoxes { get; set; } = true;
-    public static Link link = null!;
+    public Link link = null!;
     public ISprite? linkSprite;
     private ProjectileManager projectileManager = new ProjectileManager();
     private RoomManager roomManager = null!;

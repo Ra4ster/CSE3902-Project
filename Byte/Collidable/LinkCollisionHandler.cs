@@ -36,6 +36,7 @@ public static class LinkCollisionHandler
         if (player is Link && pickup is IItem item)
         {
             item.Collect();
+            PickUpItemEvent? Invoke(Item);
             if(item is Rupee)
             {
                 Program.soundManager.PlaySound("Get_Rupee");
@@ -44,7 +45,7 @@ public static class LinkCollisionHandler
             else if (item is Heart)
             {
                 Program.soundManager.PlaySound("Get_Heart");
-                Program.link.Health = Math.Min(Program.link.MaximumHealth, Program.link.Health + 1);
+               
             }
             else
             {
