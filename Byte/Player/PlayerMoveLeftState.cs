@@ -5,6 +5,7 @@ namespace Byte.Player
 {
     public class PlayerMoveLeftState : IPlayerState
     {
+        private bool hasSprite;
         // contains frames for walking west 
         readonly Rectangle[] westFrames =
         {
@@ -20,8 +21,9 @@ namespace Byte.Player
         {
             link.Velocity = new Vector2(-link.MovementSpeed, 0);
             // check if already walking
-            if (link.currentSprite is not MovingAnimatedSprite)
+            if (!hasSprite || link.currentSprite is not MovingAnimatedSprite)
             {
+                hasSprite = true;
                 //start walking if not already
                 link.currentSprite = new MovingAnimatedSprite(link.SpriteSheet,
                      link.Position,

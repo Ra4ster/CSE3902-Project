@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -38,7 +38,7 @@ namespace Byte.Sprite.Enemy
                 return;
             }
 
-            Vector2 target = patrolPath[currentWaypoint];
+            Vector2 target = ClampToWindow(patrolPath[currentWaypoint]);
 
             float dx = target.X - position.X;
             float dy = target.Y - position.Y;
