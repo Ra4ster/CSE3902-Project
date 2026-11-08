@@ -1,5 +1,7 @@
 using Byte.Item;
 using Byte.Player;
+using Byte.Core.Rooms;
+using Byte.Rooms;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
 
@@ -71,11 +73,52 @@ public static class LinkCollisionHandler
     }
 
     public static void ClampToRoom(Link link, Rectangle roomBounds)
+        => ClampToRoom(link, roomBounds, Array.Empty<Door>());
+
+    public static void ClampToRoom(Link link, Rectangle roomBounds, IEnumerable<Door> doors)
     {
         Rectangle body = link.BoundingBox;
         Vector2 offset = link.Position - new Vector2(body.Left, body.Top);
         Vector2 min = new Vector2(roomBounds.Left, roomBounds.Top) + offset;
         Vector2 max = new Vector2(roomBounds.Right - body.Width, roomBounds.Bottom - body.Height) + offset;
+
+        foreach (Door door in doors)
+        {
+            int tileSize = (int)RoomGrid.TILE_WORLD_SIZE;
+            Vector2 doorPosition = RoomGrid.ToWorld(door.Data.Position);
+            switch (door.doorDirection)
+            {
+                case DoorDirection.West when
+                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize)) <= tileSize / 2 ||
+                    body.Right <= roomBounds.Left:
+                    min.X = Math.Min(
+                        min.X,
+                        door.BoundingBox.Left + offset.X - body.Width + 1);
+                    break;
+                case DoorDirection.East when
+                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize)) <= tileSize / 2 ||
+                    body.Left >= roomBounds.Right:
+                    max.X = Math.Max(
+                        max.X,
+                        door.BoundingBox.Right + offset.X - 1);
+                    break;
+                case DoorDirection.North when
+                    Math.Abs(body.Center.X - doorPosition.X) <= tileSize / 2 ||
+                    body.Bottom <= roomBounds.Top:
+                    min.Y = Math.Min(
+                        min.Y,
+                        door.BoundingBox.Top + offset.Y - body.Height + 1);
+                    break;
+                case DoorDirection.South when
+                    Math.Abs(body.Center.X - doorPosition.X) <= tileSize / 2 ||
+                    body.Top >= roomBounds.Bottom:
+                    max.Y = Math.Max(
+                        max.Y,
+                        door.BoundingBox.Bottom + offset.Y - 1);
+                    break;
+            }
+        }
+
         link.CorrectPosition(Vector2.Clamp(link.Position, min, Vector2.Max(min, max)));
     }
 }

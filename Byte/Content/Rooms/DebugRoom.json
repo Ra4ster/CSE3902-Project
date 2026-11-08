@@ -2,7 +2,6 @@
   "name": "DebugRoom",
   "background": "room1",
   "playerSpawn": [1, 1],
-  "isStartingRoom": true,
   "width": 16,
   "height": 16,
   "tiles": {

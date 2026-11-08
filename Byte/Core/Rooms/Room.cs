@@ -104,19 +104,53 @@ namespace Byte.Rooms
 
         private void AddBoundary(RoomData data, BlockFactory blockFactory)
         {
-            void Add(int x, int y) =>
-                blocks.Add(blockFactory.CreateBoundaryBlock(RoomGrid.ToWorld(new GridPosition(x, y))));
+            void Add(float x, float y) =>
+                blocks.Add(blockFactory.CreateBoundaryBlock(new Vector2(
+                    x * RoomGrid.TILE_WORLD_SIZE,
+                    y * RoomGrid.TILE_WORLD_SIZE)));
 
-            for (int x = -1; x <= data.Width; ++x)
+            for (int x = 0; x < data.Width; ++x)
             {
-                Add(x, -1);
-                Add(x, data.Height);
+                if (!IsDoorOpening(data.Doors, x, -1, DoorDirection.North))
+                    Add(x, -1);
+                if (!IsDoorOpening(data.Doors, x, data.Height, DoorDirection.South))
+                    Add(x, data.Height);
             }
             for (int y = 0; y < data.Height; ++y)
             {
-                Add(-1, y);
-                Add(data.Width, y);
+                float shiftedY = y - 0.5f;
+                if (!IsDoorOpening(data.Doors, -1, shiftedY, DoorDirection.West))
+                    Add(-1, shiftedY);
+                if (!IsDoorOpening(data.Doors, data.Width, shiftedY, DoorDirection.East))
+                    Add(data.Width, shiftedY);
             }
+        }
+
+        private static bool IsDoorOpening(
+            IEnumerable<DoorData> doors,
+            float boundaryX,
+            float boundaryY,
+            DoorDirection direction)
+        {
+            foreach (DoorData door in doors)
+            {
+                if (!Enum.TryParse(door.Direction, true, out DoorDirection doorDirection) ||
+                    doorDirection != direction)
+                    continue;
+
+                if (direction is DoorDirection.North or DoorDirection.South)
+                {
+                    if (boundaryX >= door.Position.X - 1 && boundaryX < door.Position.X + 1)
+                        return true;
+                }
+                else if (boundaryY >= door.Position.Y - 0.5f &&
+                    boundaryY < door.Position.Y + 1.5f)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

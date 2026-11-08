@@ -21,10 +21,15 @@ namespace Byte.Core.Rooms
             DoorDirection direction = Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir)
                 ? parsedDir
                 : DoorDirection.Default;
-            if (direction is DoorDirection.East or DoorDirection.West)
-                position.Y -= RoomGrid.TILE_WORLD_SIZE / 2f;
-            if (direction is DoorDirection.West)
-                position.X -= RoomGrid.TILE_WORLD_SIZE;
+            float tileSize = RoomGrid.TILE_WORLD_SIZE;
+            position += direction switch
+            {
+                DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -2 * tileSize),
+                DoorDirection.South => new Vector2(-tileSize + GameConstants.SCALE, tileSize),
+                DoorDirection.East => new Vector2(tileSize, -tileSize / 2f),
+                DoorDirection.West => new Vector2(-2 * tileSize + GameConstants.SCALE, -tileSize / 2f),
+                _ => Vector2.Zero
+            };
 
             Door door = new Door(data);
             (StaticSprite openSprite, StaticSprite closedSprite) = CreateDoorSprites(direction, position);

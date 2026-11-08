@@ -360,8 +360,14 @@ public class Program : Game
         // Resolve barriers first, so body and sword contacts use the corrected position.
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
             DispatchCollisions(new List<ICollidable> { link, block });
-        LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
-        LinkCollisionHandler.ClampToRoom(link, room.Bounds);
+        Vector2 roomOffset = RoomOffset(room);
+        Rectangle visibleWorldBounds = new(
+            (int)-roomOffset.X,
+            (int)-roomOffset.Y,
+            GameConstants.WINDOW_SIZE.Width,
+            GameConstants.WINDOW_SIZE.Height);
+        LinkCollisionHandler.ClampToRoom(link, visibleWorldBounds);
+        LinkCollisionHandler.ClampToRoom(link, room.Bounds, room.Doors);
 
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
         {

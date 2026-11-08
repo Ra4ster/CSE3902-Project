@@ -43,10 +43,27 @@ namespace Byte.Rooms
 
             Vector2 topLeft = RoomGrid.ToWorld(data.Position);
             int side = (int)RoomGrid.TILE_WORLD_SIZE;
-            if (doorDirection is DoorDirection.North or DoorDirection.South)
-                BoundingBox = new Rectangle((int)(topLeft.X + side / 2f), (int)topLeft.Y, side, side);
-            else
-                BoundingBox = new Rectangle((int)topLeft.X, (int)topLeft.Y, side, side);
+            int x = (int)topLeft.X;
+            int y = (int)topLeft.Y;
+            switch (doorDirection)
+            {
+                case DoorDirection.North:
+                    x -= side / 2;
+                    y -= 2 * side;
+                    break;
+                case DoorDirection.South:
+                    x -= side / 2;
+                    y += 2 * side;
+                    break;
+                case DoorDirection.East:
+                    x += 2 * side;
+                    break;
+                case DoorDirection.West:
+                    x -= 2 * side;
+                    break;
+            }
+
+            BoundingBox = new Rectangle(x, y, side, side);
         }
 
         public void SetSprites(StaticSprite open, StaticSprite closed)
