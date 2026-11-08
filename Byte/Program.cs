@@ -1,15 +1,18 @@
-﻿using Byte.Command;
+﻿using Byte;
+using Byte.Collidable;
+using Byte.Command;
+using Byte.Controller;
+using Byte.Core;
+using Byte.Factory;
+using Byte.InventoryAndHud;
+using Byte.Player;
+using Byte.Projectile;
+using Byte.Rooms;
+using Byte.Sprite;
+using Byte.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Byte.Controller;
-using Byte.Player;
-using Byte.Projectile;
-using Byte.Sprite;
-using Byte;
-using Byte.Rooms;
-using Byte.Factory;
-using Byte.Collidable;
 using System.Collections.ObjectModel;
 using Byte.Sounds;
 
@@ -22,6 +25,7 @@ public class Program : Game
     public GraphicsDeviceManager graphicsDeviceManager;
     private const float SCREEN_FILL_RATIO = 0.85f;
     private const int LINK_SOURCE_RECT_COUNT = 10;
+    private const int HALF_HEARTS_PER_HEART = 2;
 
     public static bool DrawBoundingBoxes { get; set; } = true;
     public Link link = null!;
@@ -35,6 +39,11 @@ public class Program : Game
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
 
+    private static readonly RasterizerState ClipRasterizer = new() { ScissorTestEnable = true };
+
+    public GameStateMachine StateMachine { get; } = new();
+    private ScreenOverlay overlay = null!;
+
     readonly Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
     readonly Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
     readonly Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
@@ -46,9 +55,15 @@ public class Program : Game
 
     private bool resetRequested = false;
 
+    public InventoryData inventoryData = new();
+    public InventoryManager? inventoryManager;
+
+    public SelectionController selectionController = new(new InventoryData());
+    private InventoryAndHUDGraphics inventoryGraphics;
+
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I, Keys.P, Keys.T]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -56,9 +71,9 @@ public class Program : Game
         IsMouseVisible = true;
 
         int displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        int windowSide = Math.Min(GameConstants.WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
-        graphicsDeviceManager.PreferredBackBufferWidth = windowSide;
-        graphicsDeviceManager.PreferredBackBufferHeight = windowSide;
+        int windowHeight = Math.Min(GameConstants.WINDOW_SIZE.Height, (int)(displayHeight * SCREEN_FILL_RATIO));
+        graphicsDeviceManager.PreferredBackBufferWidth = windowHeight * GameConstants.WINDOW_SIZE.Width / GameConstants.WINDOW_SIZE.Height;
+        graphicsDeviceManager.PreferredBackBufferHeight = windowHeight;
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
@@ -67,6 +82,14 @@ public class Program : Game
         ProjectileCollisionHandler.Register(dispatcher);
         EnemyCollisionHandler.Register(dispatcher);
 
+        GameEvents.TriforcePickedUp += OnTriforcePickedUp;
+        LinkCollisionHandler.PickUpItemEvent += GameEvents.RaiseItemPickedUp;
+    }
+
+    private void OnTriforcePickedUp()
+    {
+        if (StateMachine.Current is GameplayState)
+            StateMachine.ChangeState(new WinState(this));
     }
 
     private void OnClientSizeChanged(object? sender, EventArgs e)
@@ -89,7 +112,9 @@ public class Program : Game
         statusFont = Content.Load<SpriteFont>("Roboto");
         SpritePainter = new SpriteBatch(GraphicsDevice);
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
+        overlay = new ScreenOverlay(GraphicsDevice, statusFont);
         BuildLevel();
+        StateMachine.Start(new GameplayState(this));
 
         soundManager.PlayMusic();
 
@@ -120,9 +145,9 @@ public class Program : Game
     }
 
     // Link's position is his origin, not the top-left of his hitbox.
-    private static Vector2 LinkPositionAt(Vector2 tileTopLeft) => tileTopLeft + Link.LinkOrigin * Link.SpriteScale;
+    internal static Vector2 LinkPositionAt(Vector2 tileTopLeft) => tileTopLeft + Link.LinkOrigin * Link.SpriteScale;
 
-    private void PlaceLink(Vector2 tileTopLeft)
+    internal void PlaceLink(Vector2 tileTopLeft)
     {
         link.CorrectPosition(LinkPositionAt(tileTopLeft));
         link.Velocity = Vector2.Zero;
@@ -145,6 +170,10 @@ public class Program : Game
         projectileManager = new ProjectileManager();
         LoadRooms();
 
+        inventoryManager?.Dispose();
+        inventoryData = new InventoryData();
+        inventoryManager = new InventoryManager(inventoryData);
+
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
         link = new Link(linkPos, new StaticSprite(
@@ -156,6 +185,17 @@ public class Program : Game
         link.sourceRects = new Collection<Rectangle>(
             Enumerable.Repeat(Rectangle.Empty, LINK_SOURCE_RECT_COUNT).ToList());
 
+        selectionController = new SelectionController(inventoryData);
+        inventoryGraphics = new InventoryAndHUDGraphics(
+            GameAssets.Instance.ItemSheet,
+            GameAssets.Instance.InventorySheet,
+            statusFont,
+            inventoryData,
+            selectionController
+        );
+        ICommand openInventoryCommand = new ChangeStateCommand(StateMachine, () => new InventoryState(this));
+        ICommand pauseCommand = new ChangeStateCommand(StateMachine, () => new PausedState(this));
+        ICommand triggerWinCommand = new TriggerWinCommand();
         ICommand attackCommand = new AttackCommand(this, link);
         ICommand moveUpCommand = new MoveUpCommand(this, link);
         ICommand moveDownCommand = new MoveDownCommand(this, link);
@@ -188,18 +228,27 @@ public class Program : Game
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
         keybindings.Add(Keys.M, pauseMusic);
+        keybindings.Add(Keys.I, openInventoryCommand);
+        keybindings.Add(Keys.P, pauseCommand);
+        keybindings.Add(Keys.T, triggerWinCommand);
+
         AddProjectileCommands();
         
     }
 
     private void AddProjectileCommands()
     {
-        ProjectileFactory projectileFactory = new ProjectileFactory(GameAssets.Instance.LinkSheet, GameAssets.Instance.BossSheet);
+        ProjectileFactory projectileFactory = new ProjectileFactory(
+                GameAssets.Instance.LinkSheet,
+                GameAssets.Instance.BossSheet
+            );
 
-        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow);
+        Func<IProjectile, bool> canUse = projectile => inventoryManager!.CanUseItem(projectile);
+
+        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow, canUse);
         ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
-            (position, direction) => projectileFactory.CreateBomb(position, direction));
-        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang);
+            (position, _) => projectileFactory.CreateBomb(position), canUse);
+        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang, canUse);
 
         keybindings.Add(Keys.D1, useArrowCommand);
         keybindings.Add(Keys.D2, useBombCommand);
@@ -212,32 +261,50 @@ public class Program : Game
         
         kbControls.Update(gameTime);
         mouseControls.Update(gameTime);
+        StateMachine.Update(gameTime);
 
         if (resetRequested)
         {
             resetRequested = false;
             BuildLevel();
+            StateMachine.Start(new GameplayState(this));
         }
 
+        base.Update(gameTime);
+    }
+
+    internal void UpdateGameplayInput(GameTime gameTime)
+    {
+        kbControls.Update(gameTime);
+        mouseControls.Update(gameTime);
+    }
+
+    internal void UpdateWorld(GameTime gameTime)
+    {
         projectileManager.Update(gameTime);
         roomManager.Update(gameTime);
-
         link.Update(gameTime);
         ProcessCollisions();
         soundManager.Update();
         base.Update(gameTime);
+        inventoryData.CurrentHalfHearts = (int)(link.Health * HALF_HEARTS_PER_HEART);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(GameConstants.BG_COLOR);
+        StateMachine.Draw(SpritePainter!);
+        base.Draw(gameTime);
+    }
 
-        SpritePainter?.Begin(
-            sortMode: SpriteSortMode.Deferred,
-            blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
-            transformMatrix: Matrix.CreateTranslation(RoomOffset().X, RoomOffset().Y, 0f) * spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
-        );
+    internal RoomManager Rooms => roomManager;
+    internal SelectionController Selection => selectionController;
+    internal ScreenOverlay Overlay => overlay;
+    internal SpriteBatch Painter => SpritePainter!;
+
+    internal void DrawScene(Vector2 cameraOffset)
+    {
+        BeginWorld(RoomOffset(roomManager.CurrentRoom) + cameraOffset);
 
         roomManager.Draw(SpritePainter!);
         link.state.Draw(link);
@@ -260,15 +327,56 @@ public class Program : Game
         SpritePainter!.DrawString(statusFont,
             $"{roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}",
             new Vector2(20, GameConstants.WINDOW_SIZE.Height - 60), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-        if (link.Health <= 0)
-            SpritePainter.DrawString(statusFont,
-                "HP is zero. Collision testing stays active; press R to reset.",
-                new Vector2(20, GameConstants.WINDOW_SIZE.Height - 100), Color.Black);
 
-        SpritePainter?.End();
-
-        base.Draw(gameTime);
+        EndBatch();
     }
+
+    internal void DrawLink(Vector2 cameraOffset)
+    {
+        BeginWorld(RoomOffset(roomManager.CurrentRoom) + cameraOffset);
+        link.state.Draw(link);
+        EndBatch();
+    }
+
+    internal void DrawHud(float slideOffset)
+    {
+        BeginScreen();
+        inventoryGraphics.Draw(SpritePainter!, slideOffset);
+        EndBatch();
+    }
+
+    internal void BeginWorld(Vector2 translation, Rectangle? clip = null)
+    {
+        GraphicsDevice.ScissorRectangle = ToBackBuffer(clip ?? GameConstants.WINDOW_SIZE);
+
+        SpritePainter!.Begin(
+            sortMode: SpriteSortMode.Deferred,
+            blendState: BlendState.NonPremultiplied,
+            samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
+            rasterizerState: ClipRasterizer,
+            transformMatrix: Matrix.CreateTranslation(translation.X, translation.Y, 0f) * spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
+        );
+    }
+
+    internal void BeginScreen() => BeginWorld(Vector2.Zero);
+
+    internal void EndBatch() => SpritePainter!.End();
+
+    internal Rectangle RoomViewport(IRoom room)
+    {
+        Vector2 offset = RoomOffset(room);
+        return new Rectangle((int)offset.X, (int)offset.Y, room.Bounds.Width, room.Bounds.Height);
+    }
+
+    private Rectangle ToBackBuffer(Rectangle area)
+    {
+        Vector2 topLeft = Vector2.Transform(new Vector2(area.Left, area.Top), spriteTransform);
+        Vector2 bottomRight = Vector2.Transform(new Vector2(area.Right, area.Bottom), spriteTransform);
+        Rectangle pixels = new Rectangle((int)topLeft.X, (int)topLeft.Y,
+            (int)Math.Ceiling(bottomRight.X - topLeft.X), (int)Math.Ceiling(bottomRight.Y - topLeft.Y));
+        return Rectangle.Intersect(pixels, GraphicsDevice.Viewport.Bounds);
+    }
+
     private void ProcessCollisions()
     {
         IRoom room = roomManager.CurrentRoom;
@@ -307,7 +415,7 @@ public class Program : Game
         if (pendingDoor is Door door)
         {
             pendingDoor = null;
-            PlaceLink(roomManager.EnterDoor(door));
+            StateMachine.ChangeState(new RoomTransitionState(this, door));
         }
     }
 
@@ -318,12 +426,13 @@ public class Program : Game
             dispatcher.Dispatch(collision.A, collision.B, collision.Side);
     }
 
-    private Vector2 RoomOffset()
+    internal static Vector2 RoomOffset(IRoom room)
     {
-        Rectangle bounds = roomManager.CurrentRoom.Bounds;
+        Rectangle bounds = room.Bounds;
+        float playHeight = GameConstants.WINDOW_SIZE.Height - InventoryAndHUDGraphics.HudHeight;
         return new Vector2(
             (GameConstants.WINDOW_SIZE.Width - bounds.Width) / 2f,
-            (GameConstants.WINDOW_SIZE.Height - bounds.Height) / 2f
+            InventoryAndHUDGraphics.HudHeight + Math.Max(0f, (playHeight - bounds.Height) / 2f)
         );
     }
 

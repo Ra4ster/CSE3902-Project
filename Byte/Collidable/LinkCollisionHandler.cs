@@ -10,6 +10,8 @@ public static class LinkCollisionHandler
     // Link's hitbox is exactly one tile, so door gaps need some help lining up.
     public const int CornerAssist = 24;
 
+    public static event Action<IItem> PickUpItemEvent;
+
     public static void Register(CollisionDispatcher dispatcher)
     {
         dispatcher.Register(CollidableTypes.Player, CollidableTypes.Enemy, DamagePlayer);
@@ -31,7 +33,7 @@ public static class LinkCollisionHandler
             link.TakeDamage();
     }
 
-    private static void PickUpItem(ICollidable player, ICollidable pickup, CollisionSide side)
+    public static void PickUpItem(ICollidable player, ICollidable pickup, CollisionSide side)
     {
         if (player is Link && pickup is IItem item)
         {
