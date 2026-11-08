@@ -11,6 +11,8 @@ namespace Byte.Sounds
 {
     public class SoundManager
     {
+        public SoundEffectInstance LowhealthSound; 
+
         public Song currentSong { get; private set; }
         private Song dungeonTheme;
         private List<SoundEffectInstance> soundEffects = new List<SoundEffectInstance>();
@@ -81,6 +83,9 @@ namespace Byte.Sounds
             Text_Slow = Content.Load<SoundEffect>("Sounds/LOZ_Text_Slow");
 
             dungeonTheme = Content.Load<Song>("Sounds/Dungeon_Theme");
+
+            LowhealthSound = LowHealth.CreateInstance();
+            LowhealthSound.IsLooped = true;
 
         }
         public void PlayMusic()
@@ -264,6 +269,10 @@ namespace Byte.Sounds
                 if (sound == null || sound.State == SoundState.Stopped)
                 {
                     soundEffects.RemoveAt(i);
+                    if(sound != null)
+                    {
+                        sound.Dispose();
+                    }
                 }
             }
         }
@@ -289,6 +298,35 @@ namespace Byte.Sounds
 
                 soundEffects.Remove(instance);
                 boomerangSounds.Remove(boomerang);
+            }
+        }
+        public void PlayLowHealthSound()
+        {
+            LowhealthSound.Play();
+        }
+        public void StopLowHealthSound()
+        {
+            LowhealthSound.Stop();
+        }
+        public void PauseAllSounds()
+        {
+            foreach (var sound in soundEffects)
+            {
+                if (sound.State == SoundState.Playing)
+                {
+                    sound.Pause();
+                }
+            }
+            if(LowhealthSound.State == SoundState.Playing)
+            {
+                LowhealthSound.Pause();
+            }
+            foreach (var boomerangSound in boomerangSounds.Values)
+            {
+                if (boomerangSound.State == SoundState.Playing)
+                {
+                    boomerangSound.Pause();
+                }
             }
         }
     }

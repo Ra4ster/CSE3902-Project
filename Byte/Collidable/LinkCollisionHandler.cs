@@ -34,7 +34,23 @@ public static class LinkCollisionHandler
     private static void PickUpItem(ICollidable player, ICollidable pickup, CollisionSide side)
     {
         if (player is Link && pickup is IItem item)
+        {
             item.Collect();
+            if(item is Rupee)
+            {
+                Program.soundManager.PlaySound("Get_Rupee");
+
+            }
+            else if (item is Heart)
+            {
+                Program.soundManager.PlaySound("Get_Heart");
+                Program.link.Health = Math.Min(Program.link.MaximumHealth, Program.link.Health + 1);
+            }
+            else
+            {
+                Program.soundManager.PlaySound("Get_Item");
+            }
+        }
     }
 
     private static void ResolveBlock(ICollidable player, ICollidable block, CollisionSide side)

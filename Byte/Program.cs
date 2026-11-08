@@ -24,7 +24,7 @@ public class Program : Game
     private const int LINK_SOURCE_RECT_COUNT = 10;
 
     public static bool DrawBoundingBoxes { get; set; } = true;
-    public Link link = null!;
+    public static Link link = null!;
     public ISprite? linkSprite;
     private ProjectileManager projectileManager = new ProjectileManager();
     private RoomManager roomManager = null!;
@@ -84,12 +84,12 @@ public class Program : Game
 
     protected override void LoadContent()
     {
+        soundManager.LoadSound(Content);
         GameAssets.Load(Content);
         statusFont = Content.Load<SpriteFont>("Roboto");
         SpritePainter = new SpriteBatch(GraphicsDevice);
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         BuildLevel();
-        soundManager.LoadSound(Content);
 
         soundManager.PlayMusic();
 

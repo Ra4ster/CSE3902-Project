@@ -25,6 +25,7 @@ namespace Byte.Sprite.Enemy
             waitDuration ?? EnemyConstants.Aquamentus.WAIT_DURATION)
         {
             this.spawnFireball = spawnFireball;
+           
             mouthOffset = EnemyConstants.Aquamentus.MOUTH_OFFSET * (scale ?? GameConstants.SCALE);
         }
 
@@ -37,6 +38,7 @@ namespace Byte.Sprite.Enemy
             {
                 fireTimer = 0f;
                 Fire();
+                PlayRandomRoar();
             }
         }
 
@@ -50,5 +52,25 @@ namespace Byte.Sprite.Enemy
             foreach (Vector2 direction in EnemyConstants.Aquamentus.FIREBALL_DIRECTIONS)
                 spawnFireball(position + mouthOffset, direction);
         }
+        private void PlayRandomRoar()
+        {
+            int randomNumber = Random.Shared.Next(1, 4);
+
+            switch (randomNumber)
+            {
+                case 1:
+                    Program.soundManager.PlaySound("Boss_Scream1");
+                    break;
+
+                case 2:
+                    Program.soundManager.PlaySound("Boss_Scream2");
+                    break;
+
+                case 3:
+                    Program.soundManager.PlaySound("Boss_Scream3");
+                    break;
+            }
+        }
     }
+
 }
