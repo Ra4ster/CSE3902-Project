@@ -9,7 +9,15 @@ public static class ProjectileCollisionHandler
     {
         dispatcher.Register(CollidableTypes.Projectile, CollidableTypes.Enemy, (a, b, side) =>
         {
-            if (a is IProjectile proj) proj.Collided();
+            if (a is IProjectile proj)
+            {
+                if(proj is Boomerang)
+                {
+                    Program.soundManager.StopBoomerangSound(proj);
+                }
+                proj.Collided();
+
+            }
             if (b is AbstractEnemy enemy)
             {
                 enemy.TakeDamage();

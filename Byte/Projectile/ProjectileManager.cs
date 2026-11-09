@@ -16,12 +16,22 @@ public class ProjectileManager
 
     public void Update(GameTime gameTime)
     {
-        foreach (IProjectile projectile in projectiles)
+        for (int i = projectiles.Count - 1; i >= 0; i--)
         {
-            projectile.Update(gameTime);
-        }
+            IProjectile projectile = projectiles[i];
 
-        projectiles.RemoveAll(projectile => projectile.IsExpired || projectile.HasCollided);
+            projectile.Update(gameTime);
+
+            if (projectile.IsExpired || projectile.HasCollided)
+            {
+                if (projectile is Boomerang)
+                {
+                    Program.soundManager.StopBoomerangSound(projectile);
+                }
+
+                projectiles.RemoveAt(i);
+            }
+        }
     }
 
     public void Draw(SpriteBatch spriteBatch)

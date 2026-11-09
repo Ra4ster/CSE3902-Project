@@ -40,9 +40,22 @@ public static class LinkCollisionHandler
         if (player is Link && pickup is IItem item)
         {
             item.Collect();
-            PickUpItemEvent?.Invoke(item);
-        }
+            //PickUpItemEvent? Invoke(Item);
+            if(item is Rupee)
+            {
+                Program.soundManager.PlaySound("Get_Rupee");
 
+            }
+            else if (item is Heart)
+            {
+                Program.soundManager.PlaySound("Get_Heart");
+
+            }
+            else
+            {
+                Program.soundManager.PlaySound("Get_Item");
+            }
+        }
     }
 
     private static void ResolveBlock(ICollidable player, ICollidable block, CollisionSide side)

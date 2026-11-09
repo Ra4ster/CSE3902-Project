@@ -41,6 +41,12 @@ public sealed class SwordHitbox : ICollidable
     public void Hit(AbstractEnemy enemy)
     {
         if (!BoundingBox.IsEmpty && BoundingBox.Intersects(enemy.BoundingBox) && hitEnemies.Add(enemy))
+        {
             enemy.TakeDamage();
+            if(enemy is not Aquamentus)
+                Program.soundManager.PlaySound("Enemy_Hit");
+            else
+                Program.soundManager.PlaySound("Boss_Hit");
+        }
     }
 }

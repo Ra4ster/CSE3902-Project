@@ -5,6 +5,7 @@ using Byte.Sprite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Byte.Player
 {
@@ -84,6 +85,10 @@ namespace Byte.Player
 
         public void Update(GameTime gameTime)
         {
+            if (Program.soundManager.LowhealthSound.State == SoundState.Playing && Health > 1)
+            {
+                Program.soundManager.StopLowHealthSound();
+            }
             // Check which keys are pressed - if they affect idle state update if not set to idle
             keys = kbControls.currentState.GetPressedKeys();
             if (shouldBeIdle(keys) && !IsAttacking)
@@ -134,12 +139,17 @@ namespace Byte.Player
         {
             if (isDamaged)
                 return;
-
+            Program.soundManager.PlaySound("Link_Hurt");
             isDamaged = true;
             damageTimer = DamageDuration;
             // This framework scene has no death state yet; keep collisions testable at zero HP.
             Health = Math.Max(0, Health - 1);
             HitsTaken++;
+            if(Health == 1 && (Program.soundManager.LowhealthSound.State == SoundState.Stopped))
+            {
+                Program.soundManager.PlayLowHealthSound();
+            }
+            
             if (currentSprite != null)
                 currentSprite.Color = Color.Red;
 
@@ -171,7 +181,10 @@ namespace Byte.Player
         public void Attack()
         {
             if (!IsAttacking)
+            {
                 Sword.BeginAttack();
+                Program.soundManager.PlaySound("SwordSlash");
+            }
             this.IsAttacking = true;
             Velocity = new Vector2(0, 0);
             if (this.state is not PlayerAttackState)
