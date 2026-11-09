@@ -2,7 +2,6 @@ using Byte.Factory;
 using Byte.Item;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Rooms
 {
@@ -42,11 +41,6 @@ namespace Byte.Rooms
         public void Update(GameTime gameTime)
         {
             CurrentRoom.Update(gameTime);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            CurrentRoom.Draw(spriteBatch);
         }
 
         public Vector2 GoToRoom(string name)

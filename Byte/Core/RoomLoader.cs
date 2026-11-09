@@ -1,3 +1,4 @@
+using Byte.Core.Rooms;
 using Byte.Rooms;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -45,6 +46,7 @@ namespace Byte
             {
                 JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 options.Converters.Add(new GridPositionJsonConverter());
+                options.Converters.Add(new JsonStringEnumConverter<DoorState>(allowIntegerValues: false));
 
                 RoomData? data = JsonSerializer.Deserialize<RoomData>(jsonStream, options);
                 if (data is null)

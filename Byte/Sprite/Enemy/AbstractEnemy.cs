@@ -7,7 +7,7 @@ namespace Byte.Sprite.Enemy;
 /// <summary>
 /// An abstract enemy; an instance of a moving, animated sprite with a vengeance...
 /// </summary>
-public abstract class AbstractEnemy : ICollidable
+public abstract class AbstractEnemy : ICollidable, Byte.Drawing.IDrawable
 {
     protected int health
     {

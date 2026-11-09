@@ -1,13 +1,11 @@
 ﻿using Byte.Collidable;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Item
 {
-    public interface IItem : ICollidable
+    public interface IItem : ICollidable, Byte.Drawing.IDrawable
     {
         void Update(GameTime gametime);
-        void Draw(SpriteBatch spriteBatch);
         Vector2 Position { get; set; }
         bool IsCollected { get; }
         void Collect();

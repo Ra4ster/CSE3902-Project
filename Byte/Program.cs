@@ -3,6 +3,7 @@ using Byte.Collidable;
 using Byte.Command;
 using Byte.Controller;
 using Byte.Core;
+using Byte.Drawing;
 using Byte.Factory;
 using Byte.InventoryAndHud;
 using Byte.Player;
@@ -36,10 +37,9 @@ public class Program : Game
     private Door? pendingDoor;
     public static BoundingBoxDrawer BoundingBoxDrawer = null!;
     private SpriteBatch? SpritePainter { get; set; }
+    private DrawSystem drawSystem = null!;
     private Matrix spriteTransform = Matrix.Identity;
     private SpriteFont statusFont = null!;
-
-    private static readonly RasterizerState ClipRasterizer = new() { ScissorTestEnable = true };
 
     public GameStateMachine StateMachine { get; } = new();
     private ScreenOverlay overlay = null!;
@@ -63,7 +63,7 @@ public class Program : Game
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I, Keys.P, Keys.T]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.Enter, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I, Keys.P, Keys.T]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -102,6 +102,7 @@ public class Program : Game
         float offsetY = (viewport.Height - GameConstants.WINDOW_SIZE.Height * scale) / 2.0f;
 
         spriteTransform = Matrix.CreateScale(scale) * Matrix.CreateTranslation(offsetX, offsetY, 0.0f);
+        drawSystem?.SetSpriteTransform(spriteTransform);
 
     }
 
@@ -111,6 +112,7 @@ public class Program : Game
         GameAssets.Load(Content);
         statusFont = Content.Load<SpriteFont>("Roboto");
         SpritePainter = new SpriteBatch(GraphicsDevice);
+        drawSystem = new DrawSystem(GraphicsDevice, SpritePainter);
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
         overlay = new ScreenOverlay(GraphicsDevice, statusFont);
         BuildLevel();
@@ -141,7 +143,11 @@ public class Program : Game
 
         foreach (IRoom room in roomManager.Rooms)
             foreach (Door door in room.Doors)
-                door.Properties.OnCollide = _ => pendingDoor = door;
+                door.Properties.OnCollide = _ =>
+                {
+                    if (door.CanEnter)
+                        pendingDoor = door;
+                };
     }
 
     // Link's position is his origin, not the top-left of his hitbox.
@@ -208,6 +214,7 @@ public class Program : Game
         ICommand previousRoomCommand = new PreviousRoomCommand(this);
         ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
         ICommand pauseMusic  = new PauseMusicCommand();
+        ICommand interactWithDoorCommand = new InteractWithDoorCommand(this);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -224,6 +231,7 @@ public class Program : Game
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
+        keybindings.Add(Keys.Enter, interactWithDoorCommand);
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
@@ -279,6 +287,15 @@ public class Program : Game
         mouseControls.Update(gameTime);
     }
 
+    internal void InteractWithDoor()
+    {
+        IRoom room = roomManager.CurrentRoom;
+        Door? door = room.Doors.FirstOrDefault(candidate =>
+            !candidate.CanEnter &&
+            candidate.InteractionBounds(room.Bounds).Intersects(link.BoundingBox));
+        door?.TryOpen();
+    }
+
     internal void UpdateWorld(GameTime gameTime)
     {
         projectileManager.Update(gameTime);
@@ -306,8 +323,8 @@ public class Program : Game
     {
         BeginWorld(RoomOffset(roomManager.CurrentRoom) + cameraOffset);
 
-        roomManager.Draw(SpritePainter!);
-        link.state.Draw(link);
+        drawSystem.DrawRoom(roomManager.CurrentRoom);
+        drawSystem.DrawLink(link);
         projectileManager.Draw(SpritePainter!);
         if (DrawBoundingBoxes)
         {
@@ -333,8 +350,16 @@ public class Program : Game
 
     internal void DrawLink(Vector2 cameraOffset)
     {
-        BeginWorld(RoomOffset(roomManager.CurrentRoom) + cameraOffset);
-        link.state.Draw(link);
+        drawSystem.DrawLink(link, link.Position + RoomOffset(roomManager.CurrentRoom) + cameraOffset);
+    }
+
+    internal void DrawLinkAt(Vector2 worldPosition, Rectangle clip) =>
+        drawSystem.DrawLink(link, worldPosition, clip);
+
+    internal void DrawRoom(IRoom room, Vector2 shift, Rectangle clip)
+    {
+        BeginWorld(RoomOffset(room) + shift, clip);
+        drawSystem.DrawRoom(room);
         EndBatch();
     }
 
@@ -346,35 +371,21 @@ public class Program : Game
     }
 
     internal void BeginWorld(Vector2 translation, Rectangle? clip = null)
-    {
-        GraphicsDevice.ScissorRectangle = ToBackBuffer(clip ?? GameConstants.WINDOW_SIZE);
-
-        SpritePainter!.Begin(
-            sortMode: SpriteSortMode.Deferred,
-            blendState: BlendState.NonPremultiplied,
-            samplerState: SamplerState.PointClamp, // Disables sampling outside pixel bounds
-            rasterizerState: ClipRasterizer,
-            transformMatrix: Matrix.CreateTranslation(translation.X, translation.Y, 0f) * spriteTransform // Transforms drawing to a space separate from window bounds for resizing.
-        );
-    }
+        => drawSystem.Begin(translation, clip);
 
     internal void BeginScreen() => BeginWorld(Vector2.Zero);
 
-    internal void EndBatch() => SpritePainter!.End();
+    internal void EndBatch() => drawSystem.EndBatch();
 
     internal Rectangle RoomViewport(IRoom room)
     {
         Vector2 offset = RoomOffset(room);
-        return new Rectangle((int)offset.X, (int)offset.Y, room.Bounds.Width, room.Bounds.Height);
-    }
-
-    private Rectangle ToBackBuffer(Rectangle area)
-    {
-        Vector2 topLeft = Vector2.Transform(new Vector2(area.Left, area.Top), spriteTransform);
-        Vector2 bottomRight = Vector2.Transform(new Vector2(area.Right, area.Bottom), spriteTransform);
-        Rectangle pixels = new Rectangle((int)topLeft.X, (int)topLeft.Y,
-            (int)Math.Ceiling(bottomRight.X - topLeft.X), (int)Math.Ceiling(bottomRight.Y - topLeft.Y));
-        return Rectangle.Intersect(pixels, GraphicsDevice.Viewport.Bounds);
+        int frameMargin = 2 * (int)RoomGrid.TILE_WORLD_SIZE;
+        return new Rectangle(
+            (int)offset.X - frameMargin,
+            (int)offset.Y - frameMargin,
+            room.Bounds.Width + 2 * frameMargin,
+            room.Bounds.Height + 2 * frameMargin);
     }
 
     private void ProcessCollisions()
@@ -384,26 +395,27 @@ public class Program : Game
         // Resolve barriers first, so body and sword contacts use the corrected position.
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
             DispatchCollisions(new List<ICollidable> { link, block });
-        LinkCollisionHandler.ClampToRoom(link, GameConstants.WINDOW_SIZE);
-        LinkCollisionHandler.ClampToRoom(link, room.Bounds);
+        Vector2 roomOffset = RoomOffset(room);
+        Rectangle visibleWorldBounds = new(
+            (int)-roomOffset.X,
+            (int)-roomOffset.Y,
+            GameConstants.WINDOW_SIZE.Width,
+            GameConstants.WINDOW_SIZE.Height);
+        LinkCollisionHandler.ClampToRoom(link, visibleWorldBounds);
+        LinkCollisionHandler.ClampToRoom(link, room.Bounds, room.Doors);
 
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
         {
             foreach (IProjectile projectile in projectileManager.Projectiles)
-            {
                 DispatchCollisions(new List<ICollidable> { projectile, block });
-            }
             foreach (ICollidable enemy in room.Enemies)
-            {
                 DispatchCollisions(new List<ICollidable> { enemy, block });
-            }
         }
 
         var collidables = new List<ICollidable> { link };
         collidables.AddRange(room.Enemies);
         collidables.AddRange(room.Items);
         collidables.AddRange(room.Doors);
-
         collidables.AddRange(projectileManager.Projectiles);
 
         link.Sword.Update(link);
