@@ -350,7 +350,12 @@ public class Program : Game
     internal Rectangle RoomViewport(IRoom room)
     {
         Vector2 offset = RoomOffset(room);
-        return new Rectangle((int)offset.X, (int)offset.Y, room.Bounds.Width, room.Bounds.Height);
+        int frameMargin = 2 * (int)RoomGrid.TILE_WORLD_SIZE;
+        return new Rectangle(
+            (int)offset.X - frameMargin,
+            (int)offset.Y - frameMargin,
+            room.Bounds.Width + 2 * frameMargin,
+            room.Bounds.Height + 2 * frameMargin);
     }
 
     private void ProcessCollisions()
