@@ -84,19 +84,22 @@ public static class LinkCollisionHandler
 
         foreach (Door door in doors)
         {
+            if (!door.CanEnter)
+                continue;
+
             int tileSize = (int)RoomGrid.TILE_WORLD_SIZE;
             Vector2 doorPosition = RoomGrid.ToWorld(door.Data.Position);
             switch (door.doorDirection)
             {
                 case DoorDirection.West when
-                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize)) <= tileSize / 2 ||
+                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize / 2f)) <= tileSize / 2f ||
                     body.Right <= roomBounds.Left:
                     min.X = Math.Min(
                         min.X,
                         door.BoundingBox.Left + offset.X - body.Width + 1);
                     break;
                 case DoorDirection.East when
-                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize)) <= tileSize / 2 ||
+                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize / 2f)) <= tileSize / 2f ||
                     body.Left >= roomBounds.Right:
                     max.X = Math.Max(
                         max.X,

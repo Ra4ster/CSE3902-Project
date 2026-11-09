@@ -15,6 +15,7 @@ namespace Byte.Rooms
         IReadOnlyList<IBlock> Blocks { get; }
         IReadOnlyList<IItem> Items { get; }
         IReadOnlyList<Door> Doors { get; }
+        IReadOnlyList<DoorWall> DoorWalls { get; }
         string Name { get; }
         string Background { get; }
 

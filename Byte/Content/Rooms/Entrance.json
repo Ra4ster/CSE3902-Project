@@ -17,12 +17,14 @@
         },
         {
             "position": [6, 0],
+            "type": "Locked",
             "direction": "North",
             "targetRoom": "Vault",
             "arrivalPosition": [3, 3]
         },
         {
             "position": [6, 6],
+            "type": "Sealed",
             "direction": "South",
             "targetRoom": "Vault",
             "arrivalPosition": [3, 3]

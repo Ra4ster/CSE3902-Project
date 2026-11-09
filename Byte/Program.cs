@@ -60,7 +60,7 @@ public class Program : Game
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I, Keys.P, Keys.T]);
+        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.Enter, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I, Keys.P, Keys.T]);
         mouseControls = new MouseController(leftClickBindings, rightClickBindings);
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -137,7 +137,11 @@ public class Program : Game
 
         foreach (IRoom room in roomManager.Rooms)
             foreach (Door door in room.Doors)
-                door.Properties.OnCollide = _ => pendingDoor = door;
+                door.Properties.OnCollide = _ =>
+                {
+                    if (door.CanEnter)
+                        pendingDoor = door;
+                };
     }
 
     // Link's position is his origin, not the top-left of his hitbox.
@@ -203,6 +207,7 @@ public class Program : Game
         ICommand nextRoomCommand = new NextRoomCommand(this);
         ICommand previousRoomCommand = new PreviousRoomCommand(this);
         ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
+        ICommand interactWithDoorCommand = new InteractWithDoorCommand(this);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
         keybindings.Add(Keys.W, moveUpCommand);
@@ -219,6 +224,7 @@ public class Program : Game
         keybindings.Add(Keys.N, attackCommand);
         keybindings.Add(Keys.R, resetCommand);
         keybindings.Add(Keys.E, PlayerTakeDamageCommand);
+        keybindings.Add(Keys.Enter, interactWithDoorCommand);
         keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
         keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
         keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
@@ -266,6 +272,15 @@ public class Program : Game
     {
         kbControls.Update(gameTime);
         mouseControls.Update(gameTime);
+    }
+
+    internal void InteractWithDoor()
+    {
+        IRoom room = roomManager.CurrentRoom;
+        Door? door = room.Doors.FirstOrDefault(candidate =>
+            !candidate.CanEnter &&
+            candidate.InteractionBounds(room.Bounds).Intersects(link.BoundingBox));
+        door?.TryOpen();
     }
 
     internal void UpdateWorld(GameTime gameTime)
@@ -350,7 +365,12 @@ public class Program : Game
     internal Rectangle RoomViewport(IRoom room)
     {
         Vector2 offset = RoomOffset(room);
-        return new Rectangle((int)offset.X, (int)offset.Y, room.Bounds.Width, room.Bounds.Height);
+        int frameMargin = 2 * (int)RoomGrid.TILE_WORLD_SIZE;
+        return new Rectangle(
+            (int)offset.X - frameMargin,
+            (int)offset.Y - frameMargin,
+            room.Bounds.Width + 2 * frameMargin,
+            room.Bounds.Height + 2 * frameMargin);
     }
 
     private void ProcessCollisions()

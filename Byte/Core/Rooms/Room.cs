@@ -15,6 +15,7 @@ namespace Byte.Rooms
         private readonly List<IBlock> blocks = [];
         private readonly List<IItem> items = [];
         private readonly List<Door> doors = [];
+        private readonly List<DoorWall> doorWalls = [];
 
         public Rectangle Bounds { get; }
 
@@ -22,6 +23,7 @@ namespace Byte.Rooms
         public IReadOnlyList<IBlock> Blocks => blocks;
         public IReadOnlyList<IItem> Items => items;
         public IReadOnlyList<Door> Doors => doors;
+        public IReadOnlyList<DoorWall> DoorWalls => doorWalls;
         public string Name { get; }
         public string Background { get; }
         public Vector2 PlayerSpawnPosition { get; }
@@ -83,11 +85,36 @@ namespace Byte.Rooms
                 items.Add(item);
             }
             DoorFactory doorFactory = new DoorFactory(GameAssets.Instance.BlockSheet);
+            HashSet<DoorDirection> doorDirections = [];
             foreach (DoorData doorData in data.Doors)
             {
+                if (!Enum.TryParse(doorData.Direction, true, out DoorDirection direction))
+                    throw new InvalidDataException(
+                        $"Room '{data.Name}' contains invalid door direction '{doorData.Direction}'.");
+
+                doorDirections.Add(direction);
+                if (doorData.Type == DoorState.Wall)
+                {
+                    doorWalls.Add(doorFactory.CreateDoorWall(direction, doorData.Position));
+                    continue;
+                }
+
                 Door door = doorFactory.CreateDoor(doorData);
                 doors.Add(door);
             }
+            foreach (DoorDirection direction in Enum.GetValues<DoorDirection>())
+                if (direction != DoorDirection.Default && !doorDirections.Contains(direction))
+                {
+                    GridPosition position = direction switch
+                    {
+                        DoorDirection.North => new GridPosition(data.Width / 2, 0),
+                        DoorDirection.South => new GridPosition(data.Width / 2, data.Height - 1),
+                        DoorDirection.West => new GridPosition(0, data.Height / 2),
+                        DoorDirection.East => new GridPosition(data.Width - 1, data.Height / 2),
+                        _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+                    };
+                    doorWalls.Add(doorFactory.CreateDoorWall(direction, position));
+                }
         }
 
         public void Update(GameTime gametime)
@@ -134,6 +161,9 @@ namespace Byte.Rooms
         {
             foreach (DoorData door in doors)
             {
+                if (door.Type == DoorState.Wall)
+                    continue;
+
                 if (!Enum.TryParse(door.Direction, true, out DoorDirection doorDirection) ||
                     doorDirection != direction)
                     continue;
