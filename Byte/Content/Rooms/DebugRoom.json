@@ -48,6 +48,10 @@
     {
       "type": "Bomb",
       "position": [2, 3]
+    },
+    {
+      "type": "Key",
+      "position": [3, 3]
     }
   ],
   "doors": [
