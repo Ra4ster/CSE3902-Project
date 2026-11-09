@@ -47,7 +47,7 @@ public static class LinkCollisionHandler
             else if (item is Heart)
             {
                 Program.soundManager.PlaySound("Get_Heart");
-               
+
             }
             else
             {
