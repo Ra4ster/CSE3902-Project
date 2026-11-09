@@ -51,7 +51,7 @@ namespace Byte.Rooms
         /// <summary>
         /// Type (i.e. locked, sealed, blown, wall, etc.)
         /// </summary>
-        public required DoorState Type { get; set; }
+        public DoorState Type { get; set; } = DoorState.Open;
         /// <summary>
         /// Position on the room grid (must be within room size)
         /// </summary>

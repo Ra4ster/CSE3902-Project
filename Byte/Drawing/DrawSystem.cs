@@ -56,6 +56,7 @@ namespace Byte.Drawing
             foreach (var block in room.Blocks) block.Draw(painter);
             foreach (var item in room.Items) item.Draw(painter);
             foreach (var enemy in room.Enemies) enemy.Draw(painter);
+            foreach (var doorWall in room.DoorWalls) doorWall.Draw(painter);
             foreach (var door in room.Doors) door.Draw(painter);
         }
 

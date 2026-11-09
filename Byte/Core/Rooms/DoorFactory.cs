@@ -15,46 +15,40 @@ namespace Byte.Core.Rooms
 
         public Door CreateDoor(DoorData data)
         {
-            Vector2 position = RoomGrid.ToWorld(data.Position);
-
             DoorDirection direction = Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir)
                 ? parsedDir
                 : DoorDirection.Default;
-            float tileSize = RoomGrid.TILE_WORLD_SIZE;
-            position += direction switch
-            {
-                DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -2 * tileSize),
-                DoorDirection.South => new Vector2(-tileSize + GameConstants.SCALE, tileSize),
-                DoorDirection.East => new Vector2(tileSize, -tileSize / 2f),
-                DoorDirection.West => new Vector2(-2 * tileSize + GameConstants.SCALE, -tileSize / 2f),
-                _ => Vector2.Zero
-            };
 
             Door door = new Door(data);
-            StaticSprite sprite = CreateDoorSprite(direction, door.doorState);
-            sprite.SetPos(position);
+            StaticSprite sprite = CreateDoorSprite(direction, door.doorState, data.Position);
 
             door.sprite = sprite;
             return door;
         }
 
-        private static Rectangle WallDoorNFrame = new Rectangle(815, 11, 32, 32);
-        private static Rectangle OpenDoorNFrame = new Rectangle(848, 11, 32, 32);
-        private static Rectangle LockedDoorNFrame = new Rectangle(881, 11, 32, 32);
-        private static Rectangle SealedDoorNFrame = new Rectangle(914, 11, 32, 32);
-        private static Rectangle BlownDoorNFrame = new Rectangle(947, 11, 32, 32);
-
-        private StaticSprite CreateDoorSprite(DoorDirection direction, DoorState state)
+        public DoorWall CreateDoorWall(DoorDirection direction, GridPosition position)
         {
-            const int stride = 34;
+            return new DoorWall(CreateDoorSprite(direction, DoorState.Wall, position));
+        }
+
+        private static readonly Rectangle WallDoorNFrame = new(815, 11, 32, 32);
+        private static readonly Rectangle OpenDoorNFrame = new(848, 11, 32, 32);
+        private static readonly Rectangle LockedDoorNFrame = new(881, 11, 32, 32);
+        private static readonly Rectangle SealedDoorNFrame = new(914, 11, 32, 32);
+        private static readonly Rectangle BlownDoorNFrame = new(947, 11, 32, 32);
+
+        private StaticSprite CreateDoorSprite(DoorDirection direction, DoorState state, GridPosition gridPosition)
+        {
+            const int stride = 33;
 
             Rectangle relFrame = (state) switch
             {
+                DoorState.Wall => WallDoorNFrame,
                 DoorState.Open => OpenDoorNFrame,
                 DoorState.Locked => LockedDoorNFrame,
                 DoorState.Sealed => SealedDoorNFrame,
                 DoorState.Blown => BlownDoorNFrame,
-                _ => WallDoorNFrame
+                _ => throw new ArgumentOutOfRangeException(nameof(state), state, "Unsupported door state.")
             };
             Rectangle absFrame = (direction) switch
             {
@@ -66,81 +60,26 @@ namespace Byte.Core.Rooms
 
             return new StaticSprite(
                 blockSheet,
-                Vector2.Zero,
+                GetDoorSpritePosition(direction, gridPosition),
                 Color.White,
                 absFrame,
                 GameConstants.SCALE
             );
         }
 
-        private (StaticSprite open, StaticSprite closed) CreateDoorSprites(DoorDirection direction, Vector2 position)
+        private static Vector2 GetDoorSpritePosition(DoorDirection direction, GridPosition gridPosition)
         {
-            switch (direction)
+            Vector2 position = RoomGrid.ToWorld(gridPosition);
+            float tileSize = RoomGrid.TILE_WORLD_SIZE;
+            return position + (direction switch
             {
-                case DoorDirection.North:
-                    return CreateNorthDoor(position);
-                case DoorDirection.East:
-                    return CreateEastDoor(position);
-                case DoorDirection.South:
-                    return CreateSouthDoor(position);
-                case DoorDirection.West:
-                    return CreateWestDoor(position);
-                default:
-                    return CreateNorthDoor(position);
-            }
-        }
-        private (StaticSprite open, StaticSprite closed) CreateNorthDoor(Vector2 position)
-        {
-            Rectangle openFrame = new Rectangle(848, 11, 32, 32);
-            Rectangle closedFrame = new Rectangle(881, 11, 32, 32);
-
-            return CreateOpenClosedSprites(position, openFrame, closedFrame);
+                DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -2 * tileSize),
+                DoorDirection.South => new Vector2(-tileSize + GameConstants.SCALE, tileSize),
+                DoorDirection.East => new Vector2(tileSize + 1, -tileSize / 2f),
+                DoorDirection.West => new Vector2(-2 * tileSize + GameConstants.SCALE - 1, -tileSize / 2f),
+                _ => Vector2.Zero
+            });
         }
 
-        private (StaticSprite open, StaticSprite closed) CreateSouthDoor(Vector2 position)
-        {
-            Rectangle openFrame = new Rectangle(848, 110, 32, 32);
-            Rectangle closedFrame = new Rectangle(881, 110, 32, 32);
-
-            return CreateOpenClosedSprites(position, openFrame, closedFrame);
-        }
-
-        private (StaticSprite open, StaticSprite closed) CreateEastDoor(Vector2 position)
-        {
-            Rectangle openFrame = new Rectangle(848, 77, 32, 32);
-            Rectangle closedFrame = new Rectangle(881, 77, 32, 32);
-
-
-            return CreateOpenClosedSprites(position, openFrame, closedFrame);
-        }
-
-        private (StaticSprite open, StaticSprite closed) CreateWestDoor(Vector2 position)
-        {
-            Rectangle openFrame = new Rectangle(848, 44, 32, 32);
-            Rectangle closedFrame = new Rectangle(881, 44, 32, 32);
-
-            return CreateOpenClosedSprites(position, openFrame, closedFrame);
-        }
-
-        private (StaticSprite open, StaticSprite closed) CreateOpenClosedSprites(Vector2 position, Rectangle openFrame, Rectangle closedFrame)
-        {
-            StaticSprite openSprite = new StaticSprite(
-                blockSheet,
-                position,
-                Color.White,
-                openFrame,
-                GameConstants.SCALE
-            );
-
-            StaticSprite closedSprite = new StaticSprite(
-                blockSheet,
-                position,
-                Color.White,
-                closedFrame,
-                GameConstants.SCALE
-            );
-
-            return (openSprite, closedSprite);
-        }
     }
 }
