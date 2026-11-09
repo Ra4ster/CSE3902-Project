@@ -21,9 +21,15 @@ namespace Byte.Core.Rooms
             DoorDirection direction = Enum.TryParse<DoorDirection>(data.Direction, true, out var parsedDir)
                 ? parsedDir
                 : DoorDirection.Default;
-            // East/west doors are centered in cells
-            if (direction is DoorDirection.East or DoorDirection.West)
-                position.Y -= RoomGrid.TILE_WORLD_SIZE / 2f;
+            float tileSize = RoomGrid.TILE_WORLD_SIZE;
+            position += direction switch
+            {
+                DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -2 * tileSize),
+                DoorDirection.South => new Vector2(-tileSize + GameConstants.SCALE, tileSize),
+                DoorDirection.East => new Vector2(tileSize, -tileSize / 2f),
+                DoorDirection.West => new Vector2(-2 * tileSize + GameConstants.SCALE, -tileSize / 2f),
+                _ => Vector2.Zero
+            };
 
             Door door = new Door(data);
             (StaticSprite openSprite, StaticSprite closedSprite) = CreateDoorSprites(direction, position);
@@ -31,6 +37,18 @@ namespace Byte.Core.Rooms
             door.SetSprites(openSprite, closedSprite);
 
             return door;
+        }
+
+        public Door? CreateDoorWall(DoorDirection dir)
+        {
+            return (dir) switch
+            {
+                DoorDirection.North => null,
+                DoorDirection.South => null,
+                DoorDirection.East => null,
+                DoorDirection.West => null,
+                _ => null
+            };
         }
 
         private (StaticSprite open, StaticSprite closed) CreateDoorSprites(DoorDirection direction, Vector2 position)

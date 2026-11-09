@@ -1,0 +1,37 @@
+{
+    "name": "Entrance",
+    "isStartingRoom": true,
+    "background": "room1",
+    "playerSpawn": [5, 6],
+    "width": 12,
+    "height": 7,
+    "tiles": {},
+    "enemies": [],
+    "items": [],
+    "doors": [
+        {
+            "position": [0, 3],
+            "direction": "West",
+            "targetRoom": "BatRoom",
+            "arrivalPosition": [10, 3]
+        },
+        {
+            "position": [6, 0],
+            "direction": "North",
+            "targetRoom": "Vault",
+            "arrivalPosition": [3, 3]
+        },
+        {
+            "position": [6, 6],
+            "direction": "South",
+            "targetRoom": "Vault",
+            "arrivalPosition": [3, 3]
+        },
+        {
+            "position": [11, 3],
+            "direction": "East",
+            "targetRoom": "Chamber",
+            "arrvalPosition": [1, 3]
+        }
+    ]
+}

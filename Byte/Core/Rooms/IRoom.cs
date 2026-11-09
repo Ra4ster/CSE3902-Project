@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Byte.Sprite.Enemy;
 using Byte.Block;
 using Byte.Collidable;
@@ -17,6 +16,7 @@ namespace Byte.Rooms
         IReadOnlyList<IItem> Items { get; }
         IReadOnlyList<Door> Doors { get; }
         string Name { get; }
+        string Background { get; }
 
         Rectangle Bounds { get; }
         Vector2 PlayerSpawnPosition { get; }
@@ -29,10 +29,5 @@ namespace Byte.Rooms
         /// <param name="gametime">Current time</param>
         void Update(GameTime gametime);
 
-        /// <summary>
-        /// Draws everyting inside a room
-        /// </summary>
-        /// <param name="spriteBatch">Painter for sprites</param>
-        void Draw(SpriteBatch spriteBatch);
     }
 }

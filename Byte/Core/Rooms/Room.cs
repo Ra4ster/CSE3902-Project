@@ -6,7 +6,6 @@ using Byte.Factory;
 using Byte.Item;
 using Byte.Sprite.Enemy;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Rooms
 {
@@ -24,6 +23,7 @@ namespace Byte.Rooms
         public IReadOnlyList<IItem> Items => items;
         public IReadOnlyList<Door> Doors => doors;
         public string Name { get; }
+        public string Background { get; }
         public Vector2 PlayerSpawnPosition { get; }
         public bool IsStartingRoom { get; }
 
@@ -39,6 +39,7 @@ namespace Byte.Rooms
         IFactory<ItemFactoryData, IItem> itemFactory)
         {
             Name = data.Name;
+            Background = data.Background;
             PlayerSpawnPosition = RoomGrid.ToWorld(data.PlayerSpawn);
             IsStartingRoom = data.IsStartingRoom;
             Bounds = new Rectangle(0, 0,
@@ -47,7 +48,10 @@ namespace Byte.Rooms
 
             foreach ((string tileType, List<GridPosition> positions) in data.Tiles)
                 foreach (GridPosition position in positions)
-                    blocks.Add(blockFactory.Create(tileType, RoomGrid.ToWorld(position)));
+                {
+                    IBlock block = blockFactory.Create(tileType, RoomGrid.ToWorld(position));
+                    blocks.Add(block);
+                }
 
             AddBoundary(data, blockFactory);
 
@@ -75,23 +79,15 @@ namespace Byte.Rooms
                     Type = itemData.Type,
                     Position = RoomGrid.ToWorld(itemData.Position)
                 };
-                items.Add(itemFactory.Create(worldData));
+                IItem item = itemFactory.Create(worldData);
+                items.Add(item);
             }
             DoorFactory doorFactory = new DoorFactory(GameAssets.Instance.BlockSheet);
             foreach (DoorData doorData in data.Doors)
-                doors.Add(doorFactory.CreateDoor(doorData));
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            foreach (IBlock block in blocks)
-                block.Draw(spriteBatch);
-            foreach (IItem item in items)
-                item.Draw(spriteBatch);
-            foreach (AbstractEnemy enemy in enemies)
-                enemy.Draw(spriteBatch);
-            foreach (Door door in doors)
-                door.Draw(spriteBatch);
+            {
+                Door door = doorFactory.CreateDoor(doorData);
+                doors.Add(door);
+            }
         }
 
         public void Update(GameTime gametime)
@@ -108,19 +104,53 @@ namespace Byte.Rooms
 
         private void AddBoundary(RoomData data, BlockFactory blockFactory)
         {
-            void Add(int x, int y) =>
-                blocks.Add(blockFactory.CreateBoundaryBlock(RoomGrid.ToWorld(new GridPosition(x, y))));
+            void Add(float x, float y) =>
+                blocks.Add(blockFactory.CreateBoundaryBlock(new Vector2(
+                    x * RoomGrid.TILE_WORLD_SIZE,
+                    y * RoomGrid.TILE_WORLD_SIZE)));
 
-            for (int x = -1; x <= data.Width; ++x)
+            for (int x = 0; x < data.Width; ++x)
             {
-                Add(x, -1);
-                Add(x, data.Height);
+                if (!IsDoorOpening(data.Doors, x, -1, DoorDirection.North))
+                    Add(x, -1);
+                if (!IsDoorOpening(data.Doors, x, data.Height, DoorDirection.South))
+                    Add(x, data.Height);
             }
             for (int y = 0; y < data.Height; ++y)
             {
-                Add(-1, y);
-                Add(data.Width, y);
+                float shiftedY = y - 0.5f;
+                if (!IsDoorOpening(data.Doors, -1, shiftedY, DoorDirection.West))
+                    Add(-1, shiftedY);
+                if (!IsDoorOpening(data.Doors, data.Width, shiftedY, DoorDirection.East))
+                    Add(data.Width, shiftedY);
             }
+        }
+
+        private static bool IsDoorOpening(
+            IEnumerable<DoorData> doors,
+            float boundaryX,
+            float boundaryY,
+            DoorDirection direction)
+        {
+            foreach (DoorData door in doors)
+            {
+                if (!Enum.TryParse(door.Direction, true, out DoorDirection doorDirection) ||
+                    doorDirection != direction)
+                    continue;
+
+                if (direction is DoorDirection.North or DoorDirection.South)
+                {
+                    if (boundaryX >= door.Position.X - 1 && boundaryX < door.Position.X + 1)
+                        return true;
+                }
+                else if (boundaryY >= door.Position.Y - 0.5f &&
+                    boundaryY < door.Position.Y + 1.5f)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
