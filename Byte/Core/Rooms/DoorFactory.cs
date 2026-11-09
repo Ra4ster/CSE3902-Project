@@ -19,11 +19,7 @@ namespace Byte.Core.Rooms
                 ? parsedDir
                 : DoorDirection.Default;
 
-            Door door = new Door(data);
-            StaticSprite sprite = CreateDoorSprite(direction, door.doorState, data.Position);
-
-            door.sprite = sprite;
-            return door;
+            return new Door(data, state => CreateDoorSprite(direction, state, data.Position));
         }
 
         public DoorWall CreateDoorWall(DoorDirection direction, GridPosition position)
