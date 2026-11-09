@@ -5,7 +5,12 @@
     "width": 12,
     "height": 7,
     "tiles": {},
-    "items": [],
+    "items": [
+        {
+            "type": "Map",
+            "position": [5, 3]
+        }
+    ],
     "enemies": [
         {
             "type": "Keese",

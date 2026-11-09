@@ -7,7 +7,12 @@
     "height": 7,
     "tiles": {},
     "enemies": [],
-    "items": [],
+    "items": [
+        {
+            "type": "Key",
+            "position": [5, 3]
+        }
+    ],
     "doors": [
         {
             "position": [0, 3],
