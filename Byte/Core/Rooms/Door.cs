@@ -72,6 +72,24 @@ namespace Byte.Rooms
             return true;
         }
 
+        public bool TryUnlock()
+        {
+            if (State != DoorState.Locked)
+                return false;
+
+            SetState(DoorState.Open);
+            return true;
+        }
+
+        public bool TryBlowOpen()
+        {
+            if (State != DoorState.Wall)
+                return false;
+
+            SetState(DoorState.Blown);
+            return true;
+        }
+
         public Rectangle InteractionBounds(Rectangle roomBounds)
         {
             int tileSize = (int)RoomGrid.TILE_WORLD_SIZE;

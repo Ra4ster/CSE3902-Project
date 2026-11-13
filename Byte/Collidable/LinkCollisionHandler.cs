@@ -3,6 +3,7 @@ using Byte.Player;
 using Byte.Core.Rooms;
 using Byte.Rooms;
 using Byte.Sprite.Enemy;
+using Byte.States;
 using Microsoft.Xna.Framework;
 
 namespace Byte.Collidable;
@@ -40,16 +41,19 @@ public static class LinkCollisionHandler
         if (player is Link && pickup is IItem item)
         {
             item.Collect();
-            //PickUpItemEvent? Invoke(Item);
-            if(item is Rupee)
+            PickUpItemEvent?.Invoke(item);
+            if (item is Rupee)
             {
                 Program.soundManager.PlaySound("Get_Rupee");
-
             }
             else if (item is Heart)
             {
                 Program.soundManager.PlaySound("Get_Heart");
-
+            }
+            else if (item is Triforce)
+            {
+                Program.soundManager.PlaySound("Fanfare");
+                GameEvents.RaiseTriforcePickedUp();
             }
             else
             {

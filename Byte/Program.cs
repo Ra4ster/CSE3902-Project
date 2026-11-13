@@ -293,7 +293,19 @@ public class Program : Game
         Door? door = room.Doors.FirstOrDefault(candidate =>
             !candidate.CanEnter &&
             candidate.InteractionBounds(room.Bounds).Intersects(link.BoundingBox));
-        door?.TryOpen();
+
+        if (door == null) return;
+
+        if (door.State == Byte.Core.Rooms.DoorState.Locked && inventoryData.Keys > 0)
+        {
+            inventoryData.Keys--;
+            door.TryUnlock();
+            soundManager.PlaySound("Door_Unlock");
+        }
+        else
+        {
+            door.TryOpen();
+        }
     }
 
     internal void UpdateWorld(GameTime gameTime)

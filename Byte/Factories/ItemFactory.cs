@@ -21,6 +21,10 @@ namespace Byte.Factory
             "Bomb" => CreateBomb(data.Position),
             "Bow" => CreateBow(data.Position),
             "Boomerang" => CreateBoomerang(data.Position),
+            "Key" => CreateKey(data.Position),
+            "Map" => CreateMap(data.Position),
+            "Compass" => CreateCompass(data.Position),
+            "Triforce" => CreateTriforce(data.Position),
             _ => throw new InvalidDataException($"Could not find item data with type: {data.Type}")
         };
 
@@ -112,6 +116,65 @@ namespace Byte.Factory
             );
 
             return new Boomerang(boomerangSprite, position, ScaledSize(boomerangFrames[0], 5f));
+        }
+
+        public IItem CreateKey(Vector2 position)
+        {
+            Rectangle keyFrame = new Rectangle(88, 0, 8, 16);
+            StaticSprite keySprite = new StaticSprite(
+                tileSheet,
+                position,
+                Color.White,
+                keyFrame,
+                5f
+            );
+            return new Key(keySprite, position, ScaledSize(keyFrame, 5f));
+        }
+
+        public IItem CreateMap(Vector2 position)
+        {
+            Rectangle mapFrame = new Rectangle(80, 0, 8, 16);
+            StaticSprite mapSprite = new StaticSprite(
+                tileSheet,
+                position,
+                Color.White,
+                mapFrame,
+                5f
+            );
+            return new Map(mapSprite, position, ScaledSize(mapFrame, 5f));
+        }
+
+        public IItem CreateCompass(Vector2 position)
+        {
+            Rectangle compassFrame = new Rectangle(96, 0, 8, 16);
+            StaticSprite compassSprite = new StaticSprite(
+                tileSheet,
+                position,
+                Color.White,
+                compassFrame,
+                5f
+            );
+            return new Compass(compassSprite, position, ScaledSize(compassFrame, 5f));
+        }
+
+        public IItem CreateTriforce(Vector2 position)
+        {
+            Rectangle[] triforceFrames =
+            {
+                new Rectangle(275, 3, 10, 10),
+                new Rectangle(275, 19, 10, 10)
+            };
+
+            AnimatedSprite triforceSprite = new AnimatedSprite(
+                tileSheet,
+                ref position,
+                Color.White,
+                triforceFrames,
+                0.5f,
+                5f
+            );
+
+            return new Triforce(triforceSprite, position, ScaledSize(triforceFrames[0], 5f));
         }
 
     }

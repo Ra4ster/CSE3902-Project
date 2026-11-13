@@ -45,13 +45,22 @@ namespace Byte.InventoryAndHud
                     break;
                 case Item.Bomb:
                     inventoryData.Bombs++;
-                    inventoryData.HasBomb = true; 
+                    inventoryData.HasBomb = true;
                     break;
                 case Item.Boomerang:
                     inventoryData.HasBoomerang = true;
                     break;
                 case Bow:
                     inventoryData.HasBow = true;
+                    break;
+                case Key:
+                    inventoryData.Keys++;
+                    break;
+                case Item.Map:
+                    inventoryData.HasMap = true;
+                    break;
+                case Item.Compass:
+                    inventoryData.HasCompass = true;
                     break;
             }
         }
