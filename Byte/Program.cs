@@ -267,8 +267,7 @@ public class Program : Game
     protected override void Update(GameTime gameTime)
     {
         
-        kbControls.Update(gameTime);
-        mouseControls.Update(gameTime);
+
         StateMachine.Update(gameTime);
 
         if (resetRequested)

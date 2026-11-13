@@ -40,8 +40,8 @@ public static class LinkCollisionHandler
         if (player is Link && pickup is IItem item)
         {
             item.Collect();
-            //PickUpItemEvent? Invoke(Item);
-            if(item is Rupee)
+            PickUpItemEvent?.Invoke(item);
+            if (item is Rupee)
             {
                 Program.soundManager.PlaySound("Get_Rupee");
 
