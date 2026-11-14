@@ -247,21 +247,31 @@ public class Program : Game
     private void AddProjectileCommands()
     {
         ProjectileFactory projectileFactory = new ProjectileFactory(
-                GameAssets.Instance.LinkSheet,
-                GameAssets.Instance.BossSheet
-            );
+            GameAssets.Instance.LinkSheet,
+            GameAssets.Instance.BossSheet
+        );
 
         Func<IProjectile, bool> canUse = projectile => inventoryManager!.CanUseItem(projectile);
 
-        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow, canUse);
-        ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
-            (position, _) => projectileFactory.CreateBomb(position), canUse);
-        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang, canUse);
+        Func<Vector2, Vector2, IProjectile> dynamicCreateProjectile = (position, direction) =>
+        {
+            return selectionController.EquippedItem switch
+            {
+                ItemType.Bow => projectileFactory.CreateArrow(position, direction),
+                ItemType.Bomb => projectileFactory.CreateBomb(position),
+                ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
+                _ => null!
+            };
+        };
 
-        keybindings.Add(Keys.D1, useArrowCommand);
-        keybindings.Add(Keys.D2, useBombCommand);
-        keybindings.Add(Keys.D3, useBoomerangCommand);
-        
+        ICommand useEquippedItemCommand = new UseProjectileCommand(
+            link,
+            projectileManager,
+            dynamicCreateProjectile,
+            canUse
+        );
+
+        keybindings.Add(Keys.B, useEquippedItemCommand);
     }
 
     protected override void Update(GameTime gameTime)

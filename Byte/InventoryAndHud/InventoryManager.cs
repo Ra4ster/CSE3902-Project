@@ -76,8 +76,7 @@ namespace Byte.InventoryAndHud
                     inventoryData.HasBomb = false;
                 }
             }
-
-            if (item is Projectile.Arrow)
+            else if (item is Projectile.Arrow)
             {
                 inventoryData.Rupees--;
                 if (inventoryData.Rupees <= 0)
