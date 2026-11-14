@@ -15,8 +15,8 @@ public class InventoryData
     public int MaxHalfHearts { get; set; } = 6;
     public int CurrentHalfHearts { get; set; } = 6;
 
-    public bool HasMap { get; set; } = true;
-    public bool HasCompass { get; set; } = true;
+    public bool HasMap { get; set; } = false;
+    public bool HasCompass { get; set; } = false;
 
     public bool HasBoomerang { get; set; } = false;
     public bool HasBomb { get; set; } = false;

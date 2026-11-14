@@ -37,6 +37,10 @@
     {
       "type": "Heart",
       "position": [10, 5]
+    },
+    {
+      "type": "Compass",
+      "position": [5, 3]
     }
   ],
   "doors": [
