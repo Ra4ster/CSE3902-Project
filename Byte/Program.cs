@@ -2,7 +2,6 @@
 using Byte.Collidable;
 using Byte.Command;
 using Byte.Controller;
-using Byte.Core;
 using Byte.Drawing;
 using Byte.Factory;
 using Byte.InventoryAndHud;
@@ -213,7 +212,7 @@ public class Program : Game
         ICommand nextRoomCommand = new NextRoomCommand(this);
         ICommand previousRoomCommand = new PreviousRoomCommand(this);
         ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
-        ICommand pauseMusic  = new PauseMusicCommand();
+        ICommand pauseMusic = new PauseMusicCommand();
         ICommand interactWithDoorCommand = new InteractWithDoorCommand(this);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
@@ -241,7 +240,7 @@ public class Program : Game
         keybindings.Add(Keys.T, triggerWinCommand);
 
         AddProjectileCommands();
-        
+
     }
 
     private void AddProjectileCommands()
@@ -261,12 +260,12 @@ public class Program : Game
         keybindings.Add(Keys.D1, useArrowCommand);
         keybindings.Add(Keys.D2, useBombCommand);
         keybindings.Add(Keys.D3, useBoomerangCommand);
-        
+
     }
 
     protected override void Update(GameTime gameTime)
     {
-        
+
 
         StateMachine.Update(gameTime);
 
