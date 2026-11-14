@@ -52,7 +52,7 @@ public sealed class InventoryState : IGameState
 
     public void Close()
     {
-        if (phase == Phase.Open)
+        if (phase == Phase.Open || phase == Phase.Opening)
             phase = Phase.Closing;
     }
 
@@ -60,6 +60,7 @@ public sealed class InventoryState : IGameState
     {
         ArgumentNullException.ThrowIfNull(gameTime);
         float step = SlideSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         switch (phase)
         {
             case Phase.Opening:
@@ -67,13 +68,19 @@ public sealed class InventoryState : IGameState
                 if (slideOffset >= InventoryAndHUDGraphics.MaxSlideOffset)
                     phase = Phase.Open;
                 break;
+
             case Phase.Open:
                 controls.Update(gameTime);
                 break;
+
             case Phase.Closing:
-                slideOffset = Math.Max(slideOffset - step, 0f);
+                slideOffset -= step;
+
                 if (slideOffset <= 0f)
+                {
+                    slideOffset = 0f;
                     game.StateMachine.ChangeState(new GameplayState(game));
+                }
                 break;
         }
     }
