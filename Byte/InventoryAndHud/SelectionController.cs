@@ -57,4 +57,8 @@ public class SelectionController
             EquipSelectedAtCursor();
         }
     }
+    public void UnequipItem()
+    {
+        EquippedItem = ItemType.None;
+    }
 }

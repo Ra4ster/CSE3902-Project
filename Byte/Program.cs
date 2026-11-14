@@ -255,6 +255,17 @@ public class Program : Game
 
         Func<Vector2, Vector2, IProjectile?> dynamicCreateProjectile = (position, direction) =>
         {
+            if (selectionController.EquippedItem == ItemType.Bomb && !inventoryData.HasBomb)
+            {
+                selectionController.UnequipItem();
+                return null;
+            }
+            if (selectionController.EquippedItem == ItemType.Bow && !inventoryData.HasBow)
+            {
+                selectionController.UnequipItem();
+                return null;
+            }
+
             if (selectionController.EquippedItem == ItemType.None)
             {
                 return null;
@@ -263,7 +274,7 @@ public class Program : Game
             return selectionController.EquippedItem switch
             {
                 ItemType.Bow => projectileFactory.CreateArrow(position, direction),
-                ItemType.Bomb => projectileFactory.CreateBomb(position),
+                ItemType.Bomb => projectileFactory.CreateBomb(position), 
                 ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
                 _ => null
             };
