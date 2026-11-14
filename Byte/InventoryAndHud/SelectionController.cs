@@ -61,4 +61,16 @@ public class SelectionController
     {
         EquippedItem = ItemType.None;
     }
+
+    public void Update()
+    {
+        if (EquippedItem == ItemType.Bomb && inventory.Bombs <= 0)
+        {
+            UnequipItem();
+        }
+        if (EquippedItem == ItemType.Bow && inventory.Rupees <= 0)
+        {
+            UnequipItem();
+        }
+    }
 }

@@ -178,7 +178,7 @@ public class Program : Game
 
         inventoryManager?.Dispose();
         inventoryData = new InventoryData();
-        inventoryManager = new InventoryManager(inventoryData);
+        inventoryManager = new InventoryManager(inventoryData, selectionController);
 
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
@@ -339,6 +339,7 @@ public class Program : Game
         roomManager.Update(gameTime);
         link.Update(gameTime);
         ProcessCollisions();
+        selectionController.Update(); 
         soundManager.Update();
         base.Update(gameTime);
         inventoryData.CurrentHalfHearts = (int)(link.Health * HALF_HEARTS_PER_HEART);
