@@ -253,14 +253,19 @@ public class Program : Game
 
         Func<IProjectile, bool> canUse = projectile => inventoryManager!.CanUseItem(projectile);
 
-        Func<Vector2, Vector2, IProjectile> dynamicCreateProjectile = (position, direction) =>
+        Func<Vector2, Vector2, IProjectile?> dynamicCreateProjectile = (position, direction) =>
         {
+            if (selectionController.EquippedItem == ItemType.None)
+            {
+                return null;
+            }
+
             return selectionController.EquippedItem switch
             {
                 ItemType.Bow => projectileFactory.CreateArrow(position, direction),
                 ItemType.Bomb => projectileFactory.CreateBomb(position),
                 ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
-                _ => null!
+                _ => null
             };
         };
 
