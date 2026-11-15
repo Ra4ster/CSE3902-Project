@@ -8,7 +8,9 @@ namespace Byte.Map
         private readonly Rectangle rect;
         private readonly Texture2D pixel;
 
-        public static Color color = Color.AliceBlue;
+        public static Color color = Color.Blue;
+
+        internal Rectangle Bounds => rect;
 
         public LowerMapRoom(Rectangle placement, Texture2D pixel)
         {
@@ -19,6 +21,16 @@ namespace Byte.Map
         public void Draw(SpriteBatch painter)
         {
             painter.Draw(pixel, rect, color);
+        }
+
+        public void Draw(SpriteBatch painter, Vector2 offset)
+        {
+            Rectangle shiftedRect = new(
+                rect.X + (int)offset.X,
+                rect.Y + (int)offset.Y,
+                rect.Width,
+                rect.Height);
+            painter.Draw(pixel, shiftedRect, color);
         }
     }
 }

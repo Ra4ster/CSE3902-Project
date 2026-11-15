@@ -1,32 +1,57 @@
-
+using Byte.Core.Rooms;
 using Byte.Rooms;
 
 namespace Byte.Map
 {
+    public readonly record struct RoomConnection(string TargetRoom, DoorDirection Direction);
+
     public sealed class LevelRepresentation
     {
-        /// <summary>
-        /// Adjacency list: stores a room name and a list of connected room names.
-        /// </summary>
-        private Dictionary<string, string[]> adj;
+        private readonly Dictionary<string, RoomConnection[]> adj;
+
+        public string StartingRoomName { get; }
+
         public LevelRepresentation(RoomManager manager)
         {
-            adj = new Dictionary<string, string[]>(manager.Rooms.Count);
-            foreach (IRoom room in manager.Rooms)
-            {
-                string[] edges = new string[room.Doors.Count];
-                for (int i = 0; i < room.Doors.Count; i++)
-                    edges[i] = room.Doors[i].TargetRoom;
+            ArgumentNullException.ThrowIfNull(manager);
 
-                adj.Add(room.Name, edges);
+            StartingRoomName = manager.CurrentRoom.Name;
+            Dictionary<string, List<RoomConnection>> connections = manager.Rooms.ToDictionary(
+                room => room.Name,
+                room => room.Doors
+                    .Select(door => new RoomConnection(door.TargetRoom, door.doorDirection))
+                    .ToList(),
+                StringComparer.Ordinal);
+
+            foreach ((string roomName, List<RoomConnection> roomConnections) in connections.ToArray())
+            {
+                foreach (RoomConnection connection in roomConnections.ToArray())
+                {
+                    RoomConnection reverse = new(roomName, Opposite(connection.Direction));
+                    List<RoomConnection> targetConnections = connections[connection.TargetRoom];
+                    if (!targetConnections.Contains(reverse))
+                        targetConnections.Add(reverse);
+                }
             }
+
+            adj = connections.ToDictionary(
+                pair => pair.Key,
+                pair => pair.Value.ToArray(),
+                StringComparer.Ordinal);
         }
 
-        /// <summary>
-        /// Returns the conections of a room based on its name, if connections exist.
-        /// </summary>
-        /// <param name="roomName">Name of the room whose edges you want</param>
-        /// <returns>Either a list of adjacent room names, or null if none are found</returns>
-        public string[]? ConnectionsOf(string roomName) => (adj.ContainsKey(roomName)) ? adj[roomName] : null;
+        public RoomConnection[] ConnectionsOf(string roomName) =>
+            adj.TryGetValue(roomName, out RoomConnection[]? connections) ? connections : [];
+
+        public string[] RoomNames() => adj.Keys.ToArray();
+
+        private static DoorDirection Opposite(DoorDirection direction) => direction switch
+        {
+            DoorDirection.North => DoorDirection.South,
+            DoorDirection.South => DoorDirection.North,
+            DoorDirection.East => DoorDirection.West,
+            DoorDirection.West => DoorDirection.East,
+            _ => DoorDirection.Default
+        };
     }
 }

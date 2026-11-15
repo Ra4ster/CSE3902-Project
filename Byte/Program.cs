@@ -196,7 +196,8 @@ public class Program : Game
             GameAssets.Instance.InventorySheet,
             statusFont,
             inventoryData,
-            selectionController
+            selectionController,
+            new Byte.Map.LevelRepresentation(roomManager)
         );
         ICommand openInventoryCommand = new ChangeStateCommand(StateMachine, () => new InventoryState(this));
         ICommand pauseCommand = new ChangeStateCommand(StateMachine, () => new PausedState(this));

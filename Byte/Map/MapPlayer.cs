@@ -19,7 +19,17 @@ namespace Byte.Map
 
         public void Draw(SpriteBatch painter)
         {
-            painter.Draw(pixel, rect, color);
+            Draw(painter, Vector2.Zero);
+        }
+
+        public void Draw(SpriteBatch painter, Vector2 offset)
+        {
+            Rectangle shiftedRect = new(
+                rect.X + (int)offset.X,
+                rect.Y + (int)offset.Y,
+                rect.Width,
+                rect.Height);
+            painter.Draw(pixel, shiftedRect, color);
         }
     }
 }
