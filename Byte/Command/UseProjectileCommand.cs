@@ -42,10 +42,16 @@ namespace Byte.Command
             {
                 return;
             }
-            // CardinalDirections.North is +Y, but on screen up is -Y
+
             Vector2 direction = new Vector2(player.Direction.X, -player.Direction.Y);
             Vector2 spawnPosition = player.Position + LINK_CENTER_OFFSET + direction * SPAWN_DISTANCE;
+
             IProjectile createdProjectile = createProjectile(spawnPosition, direction);
+
+            if (createdProjectile == null)
+            {
+                return;
+            }
 
             if (canUseItemCallback != null && !canUseItemCallback(createdProjectile))
             {

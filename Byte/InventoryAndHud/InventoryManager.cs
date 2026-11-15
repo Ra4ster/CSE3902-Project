@@ -10,10 +10,12 @@ namespace Byte.InventoryAndHud
 {
     public sealed class InventoryManager : IDisposable
     {
+        private readonly SelectionController selectionController; 
         private readonly InventoryData inventoryData;
 
-        public InventoryManager(InventoryData invData)
+        public InventoryManager(InventoryData invData, SelectionController selectionController)
         {
+            this.selectionController = selectionController; 
             this.inventoryData = invData;
             LinkCollisionHandler.PickUpItemEvent += HandleItemPickUp;
             UseProjectileCommand.OnProjectileFired += HandleProjectileFired;
@@ -74,15 +76,22 @@ namespace Byte.InventoryAndHud
                 {
                     inventoryData.Bombs = 0;
                     inventoryData.HasBomb = false;
+                    if (selectionController.EquippedItem == ItemType.Bomb)
+                    {
+                        selectionController.UnequipItem();
+                    }
                 }
             }
-
-            if (item is Projectile.Arrow)
+            else if (item is Projectile.Arrow)
             {
                 inventoryData.Rupees--;
                 if (inventoryData.Rupees <= 0)
                 {
                     inventoryData.Rupees = 0;
+                }
+                if (selectionController.EquippedItem == ItemType.Bow && inventoryData.Rupees <= 0)
+                {
+                    selectionController.UnequipItem();
                 }
             }
         }
