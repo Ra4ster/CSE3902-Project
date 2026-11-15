@@ -1,4 +1,3 @@
-using Byte.Item;
 using Byte.Player;
 using Byte.Projectile;
 using Microsoft.Xna.Framework;
@@ -20,7 +19,7 @@ namespace Byte.Command
         private readonly Func<IProjectile, bool> canUseItemCallback;
         private readonly Func<Vector2, Vector2, IProjectile> createProjectile;
 
-        public static event Action<IProjectile> OnProjectileFired;
+        public static event Action<IProjectile>? OnProjectileFired;
         private TimeSpan? lastUsed;
 
         // createProjectile takes a spawn position and a screen-space direction
@@ -56,7 +55,7 @@ namespace Byte.Command
             player.UseItem();
             projectileManager.Add(createdProjectile);
 
-            OnProjectileFired?.Invoke(createdProjectile);
+            OnProjectileFired!.Invoke(createdProjectile);
         }
     }
 }

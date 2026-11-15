@@ -25,7 +25,6 @@ namespace Byte.Sprite.Enemy
             waitDuration ?? EnemyConstants.Aquamentus.WAIT_DURATION)
         {
             this.spawnFireball = spawnFireball;
-           
             mouthOffset = EnemyConstants.Aquamentus.MOUTH_OFFSET * (scale ?? GameConstants.SCALE);
         }
 
@@ -54,6 +53,7 @@ namespace Byte.Sprite.Enemy
         }
         private void PlayRandomRoar()
         {
+#pragma warning disable S109 // Magic numbers should not be used
             int randomNumber = Random.Shared.Next(1, 4);
 
             switch (randomNumber)
@@ -61,15 +61,14 @@ namespace Byte.Sprite.Enemy
                 case 1:
                     Program.soundManager.PlaySound("Boss_Scream1");
                     break;
-
                 case 2:
                     Program.soundManager.PlaySound("Boss_Scream2");
                     break;
-
                 case 3:
                     Program.soundManager.PlaySound("Boss_Scream3");
                     break;
             }
+#pragma warning restore S109 // Magic numbers should not be used
         }
     }
 

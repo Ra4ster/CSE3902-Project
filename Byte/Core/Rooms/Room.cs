@@ -92,7 +92,7 @@ namespace Byte.Rooms
                     throw new InvalidDataException(
                         $"Room '{data.Name}' contains invalid door direction '{doorData.Direction}'.");
 
-                doorDirections.Add(direction);
+                _ = doorDirections.Add(direction);
                 if (doorData.Type == DoorState.Wall)
                 {
                     doorWalls.Add(doorFactory.CreateDoorWall(direction, doorData.Position));
@@ -168,13 +168,16 @@ namespace Byte.Rooms
                     doorDirection != direction)
                     continue;
 
+                const float insetBottom = 0.5f;
+                const float insetTop = 1.5f;
+
                 if (direction is DoorDirection.North or DoorDirection.South)
                 {
                     if (boundaryX >= door.Position.X - 1 && boundaryX < door.Position.X + 1)
                         return true;
                 }
-                else if (boundaryY >= door.Position.Y - 0.5f &&
-                    boundaryY < door.Position.Y + 1.5f)
+                else if (boundaryY >= door.Position.Y - insetBottom &&
+                    boundaryY < door.Position.Y + insetTop)
                 {
                     return true;
                 }

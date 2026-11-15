@@ -17,9 +17,13 @@ namespace Byte.Player
             Type = CollidableTypes.Player
         };
         public const int SpriteScale = 6;
+        const int startPosX = 8;
+        const int startPosY = 13;
+        const int squareSize = 16;
+
         public Rectangle BoundingBox => new Rectangle(
-            (int)Position.X - 8 * SpriteScale, (int)Position.Y - 13 * SpriteScale,
-            16 * SpriteScale, 16 * SpriteScale);
+            (int)Position.X - startPosX * SpriteScale, (int)Position.Y - startPosY * SpriteScale,
+            squareSize * SpriteScale, squareSize * SpriteScale);
         public SwordHitbox Sword { get; } = new SwordHitbox();
         public bool isDamaged = false; // Checks if link has taken damage
         private float damageTimer = 0f;
@@ -32,8 +36,6 @@ namespace Byte.Player
 
         // The starting reference point for most animations and sprite drawing
         public static readonly Vector2 LinkOrigin = new Vector2(8, 13);
-
-
 
         // current health
         public float Health { get; set; } = 3;
@@ -86,9 +88,8 @@ namespace Byte.Player
         public void Update(GameTime gameTime)
         {
             if (Program.soundManager.LowhealthSound.State == SoundState.Playing && Health > 1)
-            {
                 Program.soundManager.StopLowHealthSound();
-            }
+
             // Check which keys are pressed - if they affect idle state update if not set to idle
             keys = kbControls.currentState.GetPressedKeys();
             if (shouldBeIdle(keys) && !IsAttacking)
@@ -98,10 +99,9 @@ namespace Byte.Player
             }
 
             if (IsAttacking)
-            {
                 Velocity = Vector2.Zero;
-            }
             _ = state.Update(this, gameTime);
+
             float seconds =
                 (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -116,9 +116,11 @@ namespace Byte.Player
             {
                 damageTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+                const float scaleUp = 0.1f;
+                const int isEven = 2;
                 if (currentSprite != null)
                 {
-                    currentSprite.Color = (int)(damageTimer / 0.1f) % 2 == 0
+                    currentSprite.Color = (int)(damageTimer / scaleUp) % isEven == 0
                         ? Color.Red : Color.White;
                 }
 
@@ -127,9 +129,7 @@ namespace Byte.Player
                     isDamaged = false;
 
                     if (currentSprite != null)
-                    {
                         currentSprite.Color = Color.White;
-                    }
                 }
             }
         }
@@ -145,15 +145,11 @@ namespace Byte.Player
             // This framework scene has no death state yet; keep collisions testable at zero HP.
             Health = Math.Max(0, Health - 1);
             HitsTaken++;
-            if(Health == 1 && (Program.soundManager.LowhealthSound.State == SoundState.Stopped))
-            {
+            if (Health == 1 && (Program.soundManager.LowhealthSound.State == SoundState.Stopped))
                 Program.soundManager.PlayLowHealthSound();
-            }
-            
+
             if (currentSprite != null)
                 currentSprite.Color = Color.Red;
-
-
         }
 
         // Collision correction happens after animation updates. Keep drawing in sync.
@@ -173,7 +169,6 @@ namespace Byte.Player
         // update player position
         public void Move(Vector2 direction)
         {
-
             Velocity = MovementSpeed * direction;
         }
 
@@ -187,10 +182,9 @@ namespace Byte.Player
             }
             this.IsAttacking = true;
             Velocity = new Vector2(0, 0);
+
             if (this.state is not PlayerAttackState)
-            {
                 this.GetNewState(new PlayerAttackState());
-            }
         }
 
         // display the item currently being used
@@ -198,20 +192,16 @@ namespace Byte.Player
         {
             this.IsAttacking = true;
             Velocity = new Vector2(0, 0);
+
             if (this.state is not PlayerUseItemState)
-            {
                 this.GetNewState(new PlayerUseItemState());
-            }
         }
 
         // update state to the new type that is being passed
         public void GetNewState(IPlayerState state)
         {
-            // if the state passed is the same as current state dont do anything
             if (this.state.GetType() != state.GetType())
-            {
-                this.state = state;
-            }
+                this.state = state; // if the state passed is the same as current state dont do anything
         }
 
         // check if a key that is pressed has a different state attached to it
@@ -229,15 +219,8 @@ namespace Byte.Player
             Array.Exists(keys, key => key == Keys.Z) ||
             Array.Exists(keys, key => key == Keys.N);
 
-
             return !state;
         }
-
-
-
-
-
-
 
         public void ApplyVelocityDecay(GameTime gameTime)
         {
@@ -252,16 +235,13 @@ namespace Byte.Player
 
             // Stop tiny residual movement
             if (Velocity.Length() < StopThreshold)
-            {
                 Velocity = Vector2.Zero;
-            }
         }
 
         private float MoveTowardsZero(float value, float amount)
         {
             if (value > 0)
                 return Math.Max(0, value - amount);
-
             if (value < 0)
                 return Math.Min(0, value + amount);
 

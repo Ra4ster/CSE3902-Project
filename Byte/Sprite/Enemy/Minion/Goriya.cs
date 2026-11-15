@@ -34,7 +34,8 @@ namespace Byte.Sprite.Enemy.Minion
             waitDuration ?? EnemyConstants.Goriya.WAIT_DURATION)
         {
             this.throwBoomerang = throwBoomerang;
-            centerOffset = new Vector2(EnemyConstants.Goriya.DOWN_FRAME.Width, EnemyConstants.Goriya.DOWN_FRAME.Height) * (scale ?? GameConstants.SCALE) / 2.0f;
+            const float half = 2f;
+            centerOffset = new Vector2(EnemyConstants.Goriya.DOWN_FRAME.Width, EnemyConstants.Goriya.DOWN_FRAME.Height) * (scale ?? GameConstants.SCALE) / half;
             Vector2 v = Vector2.Zero;
 
             downSprite = new MovingAnimatedSprite(texture, ref this.position, ref v, color, [EnemyConstants.Goriya.DOWN_FRAME], frameDuration ?? EnemyConstants.DEFAULT_FRAME_DURATION, scale ?? GameConstants.SCALE);
@@ -96,7 +97,7 @@ namespace Byte.Sprite.Enemy.Minion
             if (velocity == Vector2.Zero)
                 return;
 
-            Facing newFacing = facing;
+            Facing newFacing;
             if (Math.Abs(velocity.X) > Math.Abs(velocity.Y))
                 newFacing = velocity.X > 0 ? Facing.Right : Facing.Left;
             else

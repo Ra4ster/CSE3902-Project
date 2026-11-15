@@ -40,7 +40,8 @@ namespace Byte.Sprite.Enemy
 
             Vector2 direction = targetPosition - position;
 
-            if (direction.LengthSquared() < 25f)
+            const float maxLenSquared = 25f;
+            if (direction.LengthSquared() < maxLenSquared)
             {
                 PickNewTarget();
                 return;
@@ -58,9 +59,11 @@ namespace Byte.Sprite.Enemy
 
         private void PickNewTarget()
         {
+            const int bound1 = -150;
+            const int bound2 = 151;
             targetPosition = ClampToWindow(position + new Vector2(
-                random.Next(-150, 151),
-                random.Next(-150, 151)
+                random.Next(bound1, bound2),
+                random.Next(bound1, bound2)
             ));
         }
     }

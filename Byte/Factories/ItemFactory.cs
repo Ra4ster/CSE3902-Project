@@ -9,6 +9,7 @@ namespace Byte.Factory
     {
 
         private readonly Texture2D tileSheet = GameAssets.Instance.ItemSheet;
+        const float itemSize = 5f;
 
         public ItemFactory()
         {
@@ -49,7 +50,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Rupee(rupeeSprite, position, ScaledSize(rupeeFrames[0], 5f));
+            return new Rupee(rupeeSprite, position, ScaledSize(rupeeFrames[0], itemSize));
         }
 
         public IItem CreateHeart(Vector2 position)
@@ -70,7 +71,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Heart(HeartSprite, position, ScaledSize(heartFrames[0], 5f));
+            return new Heart(HeartSprite, position, ScaledSize(heartFrames[0], itemSize));
         }
         public IItem CreateBomb(Vector2 position)
         {
@@ -83,7 +84,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Bomb(BombSprite, position, ScaledSize(bombFrame, 5f));
+            return new Bomb(BombSprite, position, ScaledSize(bombFrame, itemSize));
         }
         public IItem CreateBow(Vector2 position)
         {
@@ -95,7 +96,7 @@ namespace Byte.Factory
                 bowFrame,
                 5f
             );
-            return new Bow(BowSprite, position, ScaledSize(bowFrame, 5f));
+            return new Bow(BowSprite, position, ScaledSize(bowFrame, itemSize));
         }
 
         public IItem CreateBoomerang(Vector2 position)
@@ -115,7 +116,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Boomerang(boomerangSprite, position, ScaledSize(boomerangFrames[0], 5f));
+            return new Boomerang(boomerangSprite, position, ScaledSize(boomerangFrames[0], itemSize));
         }
 
         public IItem CreateKey(Vector2 position)
@@ -128,7 +129,7 @@ namespace Byte.Factory
                 keyFrame,
                 5f
             );
-            return new Key(keySprite, position, ScaledSize(keyFrame, 5f));
+            return new Key(keySprite, position, ScaledSize(keyFrame, itemSize));
         }
 
         public IItem CreateMap(Vector2 position)
@@ -141,7 +142,7 @@ namespace Byte.Factory
                 mapFrame,
                 5f
             );
-            return new Byte.Item.Map(mapSprite, position, ScaledSize(mapFrame, 5f));
+            return new Byte.Item.Map(mapSprite, position, ScaledSize(mapFrame, itemSize));
         }
 
         public IItem CreateCompass(Vector2 position)
@@ -154,7 +155,7 @@ namespace Byte.Factory
                 compassFrame,
                 5f
             );
-            return new Compass(compassSprite, position, ScaledSize(compassFrame, 5f));
+            return new Compass(compassSprite, position, ScaledSize(compassFrame, itemSize));
         }
 
         public IItem CreateTriforce(Vector2 position)
@@ -174,7 +175,7 @@ namespace Byte.Factory
                 5f
             );
 
-            return new Triforce(triforceSprite, position, ScaledSize(triforceFrames[0], 5f));
+            return new Triforce(triforceSprite, position, ScaledSize(triforceFrames[0], itemSize));
         }
 
     }

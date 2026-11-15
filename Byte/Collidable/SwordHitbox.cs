@@ -20,6 +20,7 @@ public sealed class SwordHitbox : ICollidable
     public void Update(Link link)
     {
         BoundingBox = Rectangle.Empty;
+#pragma warning disable S109 // Magic numbers should not be used
         if (link.state is not PlayerAttackState || !link.IsAttacking ||
             link.currentSprite is not MovingAnimatedSprite sprite ||
             sprite.currentFrame is not (1 or 2))
@@ -36,6 +37,7 @@ public sealed class SwordHitbox : ICollidable
             BoundingBox = new Rectangle(body.Left - reach, body.Center.Y - width / 2, reach, width);
         else
             BoundingBox = new Rectangle(body.Right, body.Center.Y - width / 2, reach, width);
+#pragma warning restore S109 // Magic numbers should not be used
     }
 
     public void Hit(AbstractEnemy enemy)
@@ -43,7 +45,7 @@ public sealed class SwordHitbox : ICollidable
         if (!BoundingBox.IsEmpty && BoundingBox.Intersects(enemy.BoundingBox) && hitEnemies.Add(enemy))
         {
             enemy.TakeDamage();
-            if(enemy is not Aquamentus)
+            if (enemy is not Aquamentus)
                 Program.soundManager.PlaySound("Enemy_Hit");
             else
                 Program.soundManager.PlaySound("Boss_Hit");

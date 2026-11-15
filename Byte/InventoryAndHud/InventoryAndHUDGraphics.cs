@@ -33,6 +33,10 @@ namespace Byte.InventoryAndHud
             this.selectionController = selectionController;
             this.itemSheet = itemSheet;
 
+            const int lowerMapPos = 4;
+            const int lowerMapW = 87;
+            const int lowerMapH = 47;
+
             blackPixel = new Texture2D(spriteSheet.GraphicsDevice, 1, 1);
             blackPixel.SetData(new[] { Color.Black });
             mapPixel = new Texture2D(spriteSheet.GraphicsDevice, 1, 1);
@@ -41,10 +45,10 @@ namespace Byte.InventoryAndHud
                 level,
                 mapPixel,
                 new Rectangle(
-                    (int)(4 * GameConstants.SCALE),
-                    (int)(4 * GameConstants.SCALE),
-                    (int)(87 * GameConstants.SCALE),
-                    (int)(47 * GameConstants.SCALE)));
+                    (int)(lowerMapPos * GameConstants.SCALE),
+                    (int)(lowerMapPos * GameConstants.SCALE),
+                    (int)(lowerMapW * GameConstants.SCALE),
+                    (int)(lowerMapH * GameConstants.SCALE)));
         }
 
         public void Draw(SpriteBatch spriteBatch, float slideOffset)
@@ -117,7 +121,8 @@ namespace Byte.InventoryAndHud
                 int currentHeartValue = inventory.CurrentHalfHearts - (i * 2);
 
                 Rectangle heartRect;
-                if (currentHeartValue >= 2)
+                const int maxHeartValue = 2;
+                if (currentHeartValue >= maxHeartValue)
                     heartRect = fullHeartRect;
                 else if (currentHeartValue == 1)
                     heartRect = halfHeartRect;

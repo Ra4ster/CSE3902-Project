@@ -14,7 +14,6 @@ namespace Byte.Player
 
         private bool hasStarted = false;
 
-
         // contains frames for attacking south
         public Rectangle[] attackSouthFrames =
         {
@@ -22,7 +21,6 @@ namespace Byte.Player
             new Rectangle(19,47,14,26),
             new Rectangle(35,47,15,22),
             new Rectangle(52,47,15,18)
-
         };
 
         // contains frames for attacking east or west(east flipped)
@@ -33,7 +31,6 @@ namespace Byte.Player
             new Rectangle(18,77,26,16),
             new Rectangle(46,77,22,16),
             new Rectangle(70,77,18,16)
-
         };
         // contains frames for attacking north
 
@@ -43,16 +40,10 @@ namespace Byte.Player
             new Rectangle(18,97,14,27),
             new Rectangle(36,98,14,26),
             new Rectangle(52,106,14,18)
-
-        }; 
+        };
 
         // attackDuration * number of frames * 1000 milliseconds per second 
         private readonly double maxAttackDuration = 400.0;
-
-
-
-
-
 
         public IPlayerState Update(Link link, GameTime gametime)
         {
@@ -132,7 +123,6 @@ namespace Byte.Player
             {
                 MovingAnimatedSprite sprite = (MovingAnimatedSprite)link.currentSprite;
 
-
                 // update current sprite
                 sprite.SetPos(link.Position);
                 sprite.Update(gametime);
@@ -153,11 +143,7 @@ namespace Byte.Player
                     _ = link.state.Update(link, gametime);
                     timer = 0;
                 }
-
-
             }
-
-
 
             return this;
         }

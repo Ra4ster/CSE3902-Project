@@ -31,7 +31,9 @@ public abstract class AbstractEnemy : ICollidable, Byte.Drawing.IDrawable
     {
         if (IsDefeated) return;
         health = Math.Max(0, health - 1);
-        damageTimer = 0.3f;
+
+        const float timerReset = 0.3f;
+        damageTimer = timerReset;
     }
 
     public void UpdateDamage(GameTime gameTime)

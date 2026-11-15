@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Projectile
 {
@@ -7,15 +6,18 @@ namespace Byte.Projectile
     {
         private const float SPEED = 800f;
         private const float MAX_DISTANCE = 700f;
-        private const float SCALE = 6.0f; 
+        private const float SCALE = 6.0f;
 
         private readonly MovingAnimatedSprite movingSprite;
         private float distanceTraveled;
 
+        const int startPosX = 16;
+        const int startPosY = 8;
+
         public Arrow(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
-                direction.X != 0 ? new Point((int)(16 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                direction.X != 0 ? new Point((int)(startPosX * SCALE), (int)(startPosY * SCALE)) : new Point((int)(startPosX * SCALE), (int)(startPosY * SCALE)),
                 position,
                 direction * SPEED,
                 PlayerProjectileProperties
@@ -32,9 +34,7 @@ namespace Byte.Projectile
             distanceTraveled += SPEED * seconds;
 
             if (distanceTraveled >= MAX_DISTANCE || !GameConstants.WINDOW_SIZE.Contains(Position.ToPoint()))
-            {
-                IsExpired = true; 
-            }
+                IsExpired = true;
 
             movingSprite.SetPos(Position);
         }

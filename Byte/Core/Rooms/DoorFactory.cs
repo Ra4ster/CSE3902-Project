@@ -66,13 +66,14 @@ namespace Byte.Core.Rooms
         private static Vector2 GetDoorSpritePosition(DoorDirection direction, GridPosition gridPosition)
         {
             Vector2 position = RoomGrid.ToWorld(gridPosition);
+            const float half = 2f;
             float tileSize = RoomGrid.TILE_WORLD_SIZE;
             return position + (direction switch
             {
-                DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -2 * tileSize),
+                DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -half * tileSize),
                 DoorDirection.South => new Vector2(-tileSize + GameConstants.SCALE, tileSize),
-                DoorDirection.East => new Vector2(tileSize + 1, -tileSize / 2f),
-                DoorDirection.West => new Vector2(-2 * tileSize + GameConstants.SCALE - 1, -tileSize / 2f),
+                DoorDirection.East => new Vector2(tileSize + 1, -tileSize / half),
+                DoorDirection.West => new Vector2(-half * tileSize + GameConstants.SCALE - 1, -tileSize / half),
                 _ => Vector2.Zero
             });
         }

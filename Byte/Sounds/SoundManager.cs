@@ -1,57 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Byte.Projectile;
+using System.Collections.ObjectModel;
 
 namespace Byte.Sounds
 {
     public class SoundManager
     {
-        public SoundEffectInstance LowhealthSound; 
+        public SoundEffectInstance LowhealthSound { get; private set; } = null!;
 
-        public Song currentSong { get; private set; }
-        private Song dungeonTheme;
-        private List<SoundEffectInstance> soundEffects = new List<SoundEffectInstance>();
-        private SoundEffect SwordSlash;
-        private SoundEffect Arrow_Boomerang;
-        private SoundEffect Bomb_Blow;
-        private SoundEffect Bomb_Drop;
-        private SoundEffect Boss_Hit;
-        private SoundEffect Boss_Scream1;
-        private SoundEffect Boss_Scream2;
-        private SoundEffect Boss_Scream3;
-        private SoundEffect Candle;
-        private SoundEffect Door_Unlock;
-        private SoundEffect Enemy_Die;
-        private SoundEffect Enemy_Hit;
-        private SoundEffect Fanfare;
-        private SoundEffect Get_Heart;
-        private SoundEffect Get_Item;
-        private SoundEffect Get_Rupee;
-        private SoundEffect Key_Appear;
-        private SoundEffect Link_Die;
-        private SoundEffect Link_Hurt;
-        private SoundEffect LowHealth;
-        private SoundEffect MagicalRod;
-        private SoundEffect Refill_Loop;
-        private SoundEffect Secret;
-        private SoundEffect Shield;
-        private SoundEffect Shore;
-        private SoundEffect Stairs;
-        private SoundEffect Sword_Combined;
-        private SoundEffect Sword_Shoot;
-        private SoundEffect Text;
-        private SoundEffect Text_Slow;
-        private Dictionary<IProjectile, SoundEffectInstance> boomerangSounds
+        public Song? currentSong { get; private set; }
+        public Song dungeonTheme { get; private set; } = null!;
+        public Collection<SoundEffectInstance> soundEffects = new Collection<SoundEffectInstance>();
+        public SoundEffect SwordSlash { get; private set; } = null!;
+        public SoundEffect Arrow_Boomerang { get; private set; } = null!;
+        public SoundEffect Bomb_Blow { get; private set; } = null!;
+        public SoundEffect Bomb_Drop { get; private set; } = null!;
+        public SoundEffect Boss_Hit { get; private set; } = null!;
+        public SoundEffect Boss_Scream1 { get; private set; } = null!;
+        public SoundEffect Boss_Scream2 { get; private set; } = null!;
+        public SoundEffect Boss_Scream3 { get; private set; } = null!;
+        public SoundEffect Candle { get; private set; } = null!;
+        public SoundEffect Door_Unlock { get; private set; } = null!;
+        public SoundEffect Enemy_Die { get; private set; } = null!;
+        public SoundEffect Enemy_Hit { get; private set; } = null!;
+        public SoundEffect Fanfare { get; private set; } = null!;
+        public SoundEffect Get_Heart { get; private set; } = null!;
+        public SoundEffect Get_Item { get; private set; } = null!;
+        public SoundEffect Get_Rupee { get; private set; } = null!;
+        public SoundEffect Key_Appear { get; private set; } = null!;
+        public SoundEffect Link_Die { get; private set; } = null!;
+        public SoundEffect Link_Hurt { get; private set; } = null!;
+        public SoundEffect LowHealth { get; private set; } = null!;
+        public SoundEffect MagicalRod { get; private set; } = null!;
+        public SoundEffect Refill_Loop { get; private set; } = null!;
+        public SoundEffect Secret { get; private set; } = null!;
+        public SoundEffect Shield { get; private set; } = null!;
+        public SoundEffect Shore { get; private set; } = null!;
+        public SoundEffect Stairs { get; private set; } = null!;
+        public SoundEffect Sword_Combined { get; private set; } = null!;
+        public SoundEffect Sword_Shoot { get; private set; } = null!;
+        public SoundEffect Text { get; private set; } = null!;
+        public SoundEffect Text_Slow { get; private set; } = null!;
+        public Dictionary<IProjectile, SoundEffectInstance> boomerangSounds
     = new Dictionary<IProjectile, SoundEffectInstance>();
 
         public void LoadSound(ContentManager Content)
         {
-            SwordSlash  = Content.Load<SoundEffect>("Sounds/LOZ_Sword_Slash");
+            SwordSlash = Content.Load<SoundEffect>("Sounds/LOZ_Sword_Slash");
             Arrow_Boomerang = Content.Load<SoundEffect>("Sounds/LOZ_Arrow_Boomerang");
             Bomb_Blow = Content.Load<SoundEffect>("Sounds/LOZ_Bomb_Blow");
             Bomb_Drop = Content.Load<SoundEffect>("Sounds/LOZ_Bomb_Drop");
@@ -73,7 +70,7 @@ namespace Byte.Sounds
             LowHealth = Content.Load<SoundEffect>("Sounds/LOZ_LowHealth");
             MagicalRod = Content.Load<SoundEffect>("Sounds/LOZ_MagicalRod");
             Refill_Loop = Content.Load<SoundEffect>("Sounds/LOZ_Refill_Loop");
-            Secret = Content.Load < SoundEffect>("Sounds/LOZ_Secret");
+            Secret = Content.Load<SoundEffect>("Sounds/LOZ_Secret");
             Shield = Content.Load<SoundEffect>("Sounds/LOZ_Shield");
             Shore = Content.Load<SoundEffect>("Sounds/LOZ_Shore");
             Stairs = Content.Load<SoundEffect>("Sounds/LOZ_Stairs");
@@ -269,7 +266,7 @@ namespace Byte.Sounds
                 if (sound == null || sound.State == SoundState.Stopped)
                 {
                     soundEffects.RemoveAt(i);
-                    if(sound != null)
+                    if (sound != null)
                     {
                         sound.Dispose();
                     }
@@ -291,13 +288,13 @@ namespace Byte.Sounds
 
         public void StopBoomerangSound(IProjectile boomerang)
         {
-            if (boomerangSounds.TryGetValue(boomerang, out SoundEffectInstance instance))
+            if (boomerangSounds.TryGetValue(boomerang, out SoundEffectInstance? instance))
             {
                 instance.Stop();
                 instance.Dispose();
 
-                soundEffects.Remove(instance);
-                boomerangSounds.Remove(boomerang);
+                _ = soundEffects.Remove(instance);
+                _ = boomerangSounds.Remove(boomerang);
             }
         }
         public void PlayLowHealthSound()
@@ -317,7 +314,7 @@ namespace Byte.Sounds
                     sound.Pause();
                 }
             }
-            if(LowhealthSound.State == SoundState.Playing)
+            if (LowhealthSound.State == SoundState.Playing)
             {
                 LowhealthSound.Pause();
             }

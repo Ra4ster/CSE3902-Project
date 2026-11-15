@@ -12,17 +12,13 @@ public static class ProjectileCollisionHandler
         {
             if (a is IProjectile proj)
             {
-                if(proj is Boomerang)
-                {
+                if (proj is Boomerang)
                     Program.soundManager.StopBoomerangSound(proj);
-                }
-                proj.Collided();
 
+                proj.Collided();
             }
             if (b is AbstractEnemy enemy)
-            {
                 enemy.TakeDamage();
-            }
         });
 
         dispatcher.Register(CollidableTypes.Projectile, CollidableTypes.Block, (a, b, side) =>
@@ -32,22 +28,14 @@ public static class ProjectileCollisionHandler
 
         dispatcher.Register(CollidableTypes.Projectile, CollidableTypes.Door, (a, b, side) =>
         {
-            if (a is Bomb bomb && b is Door door)
-            {
-                if (door.TryBlowOpen())
-                {
-                    Program.soundManager.PlaySound("Secret");
-                }
-            }
+            if (a is Bomb bomb && b is Door door && door.TryBlowOpen())
+                Program.soundManager.PlaySound("Secret");
         });
 
         dispatcher.Register(CollidableTypes.EnemyProjectile, CollidableTypes.Player, (a, b, side) =>
         {
             if (a is IProjectile proj) proj.Collided();
-            if (b is Link link)
-            {
-                link.TakeDamage();
-            }
+            if (b is Link link) link.TakeDamage();
         });
     }
 }

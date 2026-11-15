@@ -13,7 +13,7 @@ public static class LinkCollisionHandler
     // Link's hitbox is exactly one tile, so door gaps need some help lining up.
     public const int CornerAssist = 24;
 
-    public static event Action<IItem> PickUpItemEvent;
+    public static event Action<IItem>? PickUpItemEvent;
 
     public static void Register(CollisionDispatcher dispatcher)
     {
@@ -43,22 +43,16 @@ public static class LinkCollisionHandler
             item.Collect();
             PickUpItemEvent?.Invoke(item);
             if (item is Rupee)
-            {
                 Program.soundManager.PlaySound("Get_Rupee");
-            }
             else if (item is Heart)
-            {
                 Program.soundManager.PlaySound("Get_Heart");
-            }
             else if (item is Triforce)
             {
                 Program.soundManager.PlaySound("Fanfare");
                 GameEvents.RaiseTriforcePickedUp();
             }
             else
-            {
                 Program.soundManager.PlaySound("Get_Item");
-            }
         }
     }
 
@@ -106,31 +100,32 @@ public static class LinkCollisionHandler
 
             int tileSize = (int)RoomGrid.TILE_WORLD_SIZE;
             Vector2 doorPosition = RoomGrid.ToWorld(door.Data.Position);
+            const float half = 2f;
             switch (door.doorDirection)
             {
                 case DoorDirection.West when
-                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize / 2f)) <= tileSize / 2f ||
+                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize / half)) <= tileSize / half ||
                     body.Right <= roomBounds.Left:
                     min.X = Math.Min(
                         min.X,
                         door.BoundingBox.Left + offset.X - body.Width + 1);
                     break;
                 case DoorDirection.East when
-                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize / 2f)) <= tileSize / 2f ||
+                    Math.Abs(body.Center.Y - (doorPosition.Y + tileSize / half)) <= tileSize / half ||
                     body.Left >= roomBounds.Right:
                     max.X = Math.Max(
                         max.X,
                         door.BoundingBox.Right + offset.X - 1);
                     break;
                 case DoorDirection.North when
-                    Math.Abs(body.Center.X - doorPosition.X) <= tileSize / 2 ||
+                    Math.Abs(body.Center.X - doorPosition.X) <= tileSize / half ||
                     body.Bottom <= roomBounds.Top:
                     min.Y = Math.Min(
                         min.Y,
                         door.BoundingBox.Top + offset.Y - body.Height + 1);
                     break;
                 case DoorDirection.South when
-                    Math.Abs(body.Center.X - doorPosition.X) <= tileSize / 2 ||
+                    Math.Abs(body.Center.X - doorPosition.X) <= tileSize / half ||
                     body.Top >= roomBounds.Bottom:
                     max.Y = Math.Max(
                         max.Y,

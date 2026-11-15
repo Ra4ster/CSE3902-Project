@@ -14,12 +14,13 @@ namespace Byte.Projectile
         private float distanceTraveled;
         private bool isReturning = false;
 
-        //Player boomerang
-
+        const int startPosX = 8;
+        const int startPosY = 16;
+        // Player boomerang
         public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
-                new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                new Point((int)(startPosX * SCALE), (int)(startPosY * SCALE)),
                 position,
                 direction * SPEED,
                 PlayerProjectileProperties
@@ -33,7 +34,7 @@ namespace Byte.Projectile
         public Boomerang(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction, CollisionProperties properties)
             : base(
                 sprite,
-                new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                new Point((int)(startPosX * SCALE), (int)(startPosY * SCALE)),
                 position,
                 direction * SPEED,
                 properties
@@ -59,8 +60,10 @@ namespace Byte.Projectile
             else if (isReturning)
             {
                 float distanceToStart = Vector2.Distance(Position, startPosition);
+                const float maxDist = 5f;
+                const float dbl = 2f;
 
-                if (distanceToStart <= 5f || distanceTraveled >= RANGE * 2f)
+                if (distanceToStart <= maxDist || distanceTraveled >= RANGE * dbl)
                 {
                     IsExpired = true;
                     Program.soundManager.StopBoomerangSound(this);
