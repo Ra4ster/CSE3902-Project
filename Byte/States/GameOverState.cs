@@ -30,6 +30,8 @@ public sealed class GameOverState : IGameState, IMenu
     public void Enter()
     {
         phase = Phase.Dying;
+        Program.soundManager.PauseAllSounds();
+        Program.soundManager.PlaySound("Link_Die");
         elapsed = 0f;
         selectedIndex = RetryIndex;
 
@@ -67,6 +69,7 @@ public sealed class GameOverState : IGameState, IMenu
         switch (phase)
         {
             case Phase.Dying:
+                
                 SpinLink(gameTime);
                 if (elapsed >= GameStateConstants.DeathSpinDuration)
                     NextPhase(Phase.Fading);

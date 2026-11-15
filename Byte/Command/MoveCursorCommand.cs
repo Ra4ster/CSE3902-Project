@@ -18,6 +18,8 @@ public class MoveCursorCommand : ICommand
 
     public void Execute(GameTime gameTime)
     {
+
         selectionController.MoveCursor(moveX, moveY);
+        Program.soundManager.PlaySound("Get_Rupee");
     }
 }

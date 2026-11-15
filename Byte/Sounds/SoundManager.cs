@@ -307,6 +307,7 @@ namespace Byte.Sounds
         }
         public void PauseAllSounds()
         {
+            MediaPlayer.Pause();
             foreach (var sound in soundEffects)
             {
                 if (sound.State == SoundState.Playing)
@@ -323,6 +324,28 @@ namespace Byte.Sounds
                 if (boomerangSound.State == SoundState.Playing)
                 {
                     boomerangSound.Pause();
+                }
+            }
+        }
+        public void UnPauseAllSounds()
+        {
+            MediaPlayer.Resume();
+            foreach (var sound in soundEffects)
+            {
+                if (sound.State == SoundState.Playing)
+                {
+                    sound.Resume();
+                }
+            }
+            if (LowhealthSound.State == SoundState.Playing)
+            {
+                LowhealthSound.Resume();
+            }
+            foreach (var boomerangSound in boomerangSounds.Values)
+            {
+                if (boomerangSound.State == SoundState.Playing)
+                {
+                    boomerangSound.Resume();
                 }
             }
         }
