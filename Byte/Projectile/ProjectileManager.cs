@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,9 +7,9 @@ namespace Byte.Projectile;
 // holds every projectile currently in the world and removes them once they expire
 public class ProjectileManager
 {
-    private readonly List<IProjectile> projectiles = new List<IProjectile>();
+    private readonly Collection<IProjectile> projectiles = new Collection<IProjectile>();
 
-    public List<IProjectile> Projectiles => projectiles;
+    public Collection<IProjectile> Projectiles => projectiles;
 
     public void Add(IProjectile projectile) => projectiles.Add(projectile);
 
@@ -25,9 +26,7 @@ public class ProjectileManager
             if (projectile.IsExpired || projectile.HasCollided)
             {
                 if (projectile is Boomerang)
-                {
                     Program.soundManager.StopBoomerangSound(projectile);
-                }
 
                 projectiles.RemoveAt(i);
             }
@@ -37,8 +36,6 @@ public class ProjectileManager
     public void Draw(SpriteBatch spriteBatch)
     {
         foreach (IProjectile projectile in projectiles)
-        {
             projectile.Draw(spriteBatch);
-        }
     }
 }

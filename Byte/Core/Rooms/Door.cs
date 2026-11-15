@@ -16,6 +16,7 @@ namespace Byte.Rooms
 
         private readonly Func<DoorState, StaticSprite> spriteFactory;
         private StaticSprite sprite;
+        const int dbl = 2;
         public CollisionProperties Properties { get; private set; } = new CollisionProperties
         {
             Type = CollidableTypes.Door,
@@ -39,18 +40,18 @@ namespace Byte.Rooms
             switch (doorDirection)
             {
                 case DoorDirection.North:
-                    x -= side / 2;
-                    y -= 2 * side;
+                    x -= side / dbl;
+                    y -= dbl * side;
                     break;
                 case DoorDirection.South:
-                    x -= side / 2;
-                    y += 2 * side;
+                    x -= side / dbl;
+                    y += dbl * side;
                     break;
                 case DoorDirection.East:
-                    x += 2 * side;
+                    x += dbl * side;
                     break;
                 case DoorDirection.West:
-                    x -= 2 * side;
+                    x -= dbl * side;
                     break;
             }
 
@@ -99,23 +100,23 @@ namespace Byte.Rooms
                 DoorDirection.North => new Rectangle(
                     (int)doorPosition.X - tileSize,
                     roomBounds.Top,
-                    2 * tileSize,
+                    dbl * tileSize,
                     tileSize),
                 DoorDirection.South => new Rectangle(
                     (int)doorPosition.X - tileSize,
                     roomBounds.Bottom - tileSize,
-                    2 * tileSize,
+                    dbl * tileSize,
                     tileSize),
                 DoorDirection.West => new Rectangle(
                     roomBounds.Left,
-                    (int)doorPosition.Y - tileSize / 2,
+                    (int)doorPosition.Y - tileSize / dbl,
                     tileSize,
-                    2 * tileSize),
+                    dbl * tileSize),
                 DoorDirection.East => new Rectangle(
                     roomBounds.Right - tileSize,
-                    (int)doorPosition.Y - tileSize / 2,
+                    (int)doorPosition.Y - tileSize / dbl,
                     tileSize,
-                    2 * tileSize),
+                    dbl * tileSize),
                 _ => Rectangle.Empty
             };
         }

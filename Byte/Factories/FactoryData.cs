@@ -6,7 +6,7 @@ namespace Byte.Factory
     {
         public required string Type { get; init; }
         public required Vector2 Position { get; init; }
-        public Vector2[]? Path { get; init; }
+        public Vector2[]? Path;
         public float? Speed { get; init; }
         public float? FrameDuration { get; init; }
         public float? WaitDuration { get; init; }

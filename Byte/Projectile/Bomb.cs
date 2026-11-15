@@ -7,7 +7,7 @@ namespace Byte.Projectile
     {
         private const float SCALE = 6.0f;
         private const float EXPLOSION_DURATION = 0.3f;
-        private const float FUSE_DURATION = 2.0f; 
+        private const float FUSE_DURATION = 2.0f;
 
         private readonly MovingAnimatedSprite bombSprite;
         private readonly MovingAnimatedSprite explosionSprite;
@@ -16,12 +16,15 @@ namespace Byte.Projectile
         private float explosionTimer = 0f;
         private float fuseTimer = 0f;
 
+        const int startPosX = 8;
+        const int startPosY = 16;
+
         public Bomb(MovingAnimatedSprite bombSprite, MovingAnimatedSprite explosionSprite, Vector2 position, Vector2 velocity)
             : base(
                 bombSprite,
-                new Point((int)(8 * SCALE), (int)(16 * SCALE)),
+                new Point((int)(startPosX * SCALE), (int)(startPosY * SCALE)),
                 position,
-                velocity, 
+                velocity,
                 PlayerProjectileProperties
             )
         {
@@ -44,10 +47,8 @@ namespace Byte.Projectile
 
                 if (HasCollided || fuseTimer >= FUSE_DURATION)
                 {
-                    
                     StartExplosion();
                     Program.soundManager.PlaySound("Bomb_Blow");
-
                 }
             }
             else
@@ -83,13 +84,9 @@ namespace Byte.Projectile
             if (IsExpired) return;
 
             if (!isExploding)
-            {
                 bombSprite.Draw(spriteBatch);
-            }
             else
-            {
                 explosionSprite.Draw(spriteBatch);
-            }
         }
     }
 }

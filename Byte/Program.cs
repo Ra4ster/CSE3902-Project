@@ -58,7 +58,7 @@ public class Program : Game
     public InventoryManager? inventoryManager;
 
     public SelectionController selectionController = new(new InventoryData());
-    private InventoryAndHUDGraphics inventoryGraphics;
+    private InventoryAndHUDGraphics? inventoryGraphics;
 
     public Program()
     {
@@ -324,13 +324,11 @@ public class Program : Game
         if (door.State == Byte.Core.Rooms.DoorState.Locked && inventoryData.Keys > 0)
         {
             inventoryData.Keys--;
-            door.TryUnlock();
+            _ = door.TryUnlock();
             soundManager.PlaySound("Door_Unlock");
         }
         else
-        {
-            door.TryOpen();
-        }
+            _ = door.TryOpen();
     }
 
     internal void UpdateWorld(GameTime gameTime)
@@ -379,9 +377,11 @@ public class Program : Game
             }
         }
 
+        const float stringScale = 1.5f;
+        const int startY = 60;
         SpritePainter!.DrawString(statusFont,
             $"{roomManager.CurrentRoom.Name}   HP: {link.Health:0}   Hits taken: {link.HitsTaken}",
-            new Vector2(20, GameConstants.WINDOW_SIZE.Height - 60), Color.Black, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+            new Vector2(20, GameConstants.WINDOW_SIZE.Height - startY), Color.Black, 0f, Vector2.Zero, stringScale, SpriteEffects.None, 0f);
 
         EndBatch();
     }
@@ -404,7 +404,7 @@ public class Program : Game
     internal void DrawHud(float slideOffset)
     {
         BeginScreen();
-        inventoryGraphics.Draw(SpritePainter!, slideOffset);
+        inventoryGraphics!.Draw(SpritePainter!, slideOffset);
         EndBatch();
     }
 
@@ -417,6 +417,7 @@ public class Program : Game
 
     internal Rectangle RoomViewport(IRoom room)
     {
+#pragma warning disable S109 // Magic numbers should not be used
         Vector2 offset = RoomOffset(room);
         int frameMargin = 2 * (int)RoomGrid.TILE_WORLD_SIZE;
         return new Rectangle(
@@ -424,6 +425,7 @@ public class Program : Game
             (int)offset.Y - frameMargin,
             room.Bounds.Width + 2 * frameMargin,
             room.Bounds.Height + 2 * frameMargin);
+#pragma warning restore S109 // Magic numbers should not be used
     }
 
     private void ProcessCollisions()
@@ -432,7 +434,7 @@ public class Program : Game
 
         // Resolve barriers first, so body and sword contacts use the corrected position.
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
-            DispatchCollisions(new List<ICollidable> { link, block });
+            DispatchCollisions(new Collection<ICollidable> { link, block });
         Vector2 roomOffset = RoomOffset(room);
         Rectangle visibleWorldBounds = new(
             (int)-roomOffset.X,
@@ -445,9 +447,9 @@ public class Program : Game
         foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
         {
             foreach (IProjectile projectile in projectileManager.Projectiles)
-                DispatchCollisions(new List<ICollidable> { projectile, block });
+                DispatchCollisions(new Collection<ICollidable> { projectile, block });
             foreach (ICollidable enemy in room.Enemies)
-                DispatchCollisions(new List<ICollidable> { enemy, block });
+                DispatchCollisions(new Collection<ICollidable> { enemy, block });
         }
 
         var collidables = new List<ICollidable> { link };
@@ -469,7 +471,7 @@ public class Program : Game
         }
     }
 
-    private void DispatchCollisions(IList<ICollidable> collidables)
+    private void DispatchCollisions(IReadOnlyList<ICollidable> collidables)
     {
         var detector = new CollisionDetector();
         foreach (var collision in detector.DetectCollisions(collidables))
@@ -479,10 +481,11 @@ public class Program : Game
     internal static Vector2 RoomOffset(IRoom room)
     {
         Rectangle bounds = room.Bounds;
+        const float dbl = 2f;
         float playHeight = GameConstants.WINDOW_SIZE.Height - InventoryAndHUDGraphics.HudHeight;
         return new Vector2(
-            (GameConstants.WINDOW_SIZE.Width - bounds.Width) / 2f,
-            InventoryAndHUDGraphics.HudHeight + Math.Max(0f, (playHeight - bounds.Height) / 2f)
+            (GameConstants.WINDOW_SIZE.Width - bounds.Width) / dbl,
+            InventoryAndHUDGraphics.HudHeight + Math.Max(0f, (playHeight - bounds.Height) / dbl)
         );
     }
 
@@ -500,5 +503,9 @@ public class Program : Game
         return Color.Green;
     }
 
-    public static void Main() => new Program().Run();
+    public static void Main()
+    {
+        using var game = new Program();
+        game.Run();
+    }
 }

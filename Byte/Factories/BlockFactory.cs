@@ -46,6 +46,7 @@ public class BlockFactory
         return new StaticSprite(blockSheet, position, Color.White, source, RoomGrid.BLOCK_SCALE);
     }
 
+#pragma warning disable S109 // Magic numbers should not be used
     public IBlock CreateBoundaryBlock(Vector2 position) => new BoundaryBlock(CreateSprite(0, 0, position), position);
 
     public IBlock CreateSquareBlock(Vector2 position) => new SquareBlock(CreateSprite(0, 0, position), position);
@@ -69,4 +70,5 @@ public class BlockFactory
     public IBlock CreateLadderBlock(Vector2 position) => new LadderBlock(CreateSprite(1, 2, position), position);
 
     public IBlock CreateSandBlock(Vector2 position) => new SandBlock(CreateSprite(2, 2, position), position);
+#pragma warning restore S109 // Magic numbers should not be used
 }

@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.ObjectModel;
+using Microsoft.Xna.Framework;
 
 namespace Byte.Collidable
 {
     public class CollisionDetector
     {
-        public List<(ICollidable A, ICollidable B, Rectangle Intersection, CollisionSide Side)>
-            DetectCollisions(IList<ICollidable> objects)
+        public Collection<(ICollidable A, ICollidable B, Rectangle Intersection, CollisionSide Side)>
+            DetectCollisions(IReadOnlyList<ICollidable> objects)
         {
-            var collisions = new List<(ICollidable A, ICollidable B, Rectangle Intersection, CollisionSide Side)>();
+            var collisions = new Collection<(ICollidable A, ICollidable B, Rectangle Intersection, CollisionSide Side)>();
             for (int i = 0; i < objects.Count; i++)
             {
                 for (int j = i + 1; j < objects.Count; j++)

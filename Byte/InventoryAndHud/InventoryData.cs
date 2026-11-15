@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Byte.InventoryAndHud;
@@ -25,7 +26,7 @@ public class InventoryData
 
     public bool HasSword { get; set; } = true;
 
-    public List<Point> VisitedRooms { get; private set; } = new List<Point>();
+    public Collection<Point> VisitedRooms { get; private set; } = new Collection<Point>();
     public Point CurrentRoomCoords { get; set; } = new Point(0, 0);
 
 }

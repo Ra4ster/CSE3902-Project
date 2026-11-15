@@ -14,7 +14,6 @@ namespace Byte.Collidable
             dispatcher.Register(CollidableTypes.Enemy, CollidableTypes.Door, ResolveDoor);
             dispatcher.Register(CollidableTypes.Enemy, CollidableTypes.Enemy, ResolveEnemy);
         }
-        
 
         private static void ResolveBlock(ICollidable enemy, ICollidable block, CollisionSide side)
         {

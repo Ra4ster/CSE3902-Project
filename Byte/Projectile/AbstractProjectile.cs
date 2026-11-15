@@ -11,16 +11,17 @@ namespace Byte.Projectile
         protected readonly Point size;
 
         public Vector2 Position { get; set; }
-        public Vector2 Velocity { get; set; } 
+        public Vector2 Velocity { get; set; }
 
         public bool HasCollided { get; protected set; }
         bool IProjectile.HasCollided => HasCollided;
 
         public bool IsExpired { get; protected set; }
         bool IProjectile.IsExpired => IsExpired;
+        const float half = 2f;
         Rectangle ICollidable.BoundingBox => new Rectangle(
-            (int)(Position.X - size.X / 2f),
-            (int)(Position.Y - size.Y / 2f),
+            (int)(Position.X - size.X / half),
+            (int)(Position.Y - size.Y / half),
             size.X,
             size.Y
         );
@@ -69,9 +70,7 @@ namespace Byte.Projectile
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (!HasCollided && !IsExpired)
-            {
                 sprite.Draw(spriteBatch);
-            }
         }
     }
 }

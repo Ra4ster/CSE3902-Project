@@ -11,10 +11,12 @@ namespace Byte.Projectile
         private readonly MovingAnimatedSprite movingSprite;
         private float distanceTraveled;
 
+        const int posX = 10;
+        const int posY = 8;
         public Fireball(MovingAnimatedSprite sprite, Vector2 position, Vector2 direction)
             : base(
                 sprite,
-               direction.X != 0 ? new Point((int)(10 * SCALE), (int)(8 * SCALE)) : new Point((int)(8 * SCALE), (int)(10 * SCALE)),
+               direction.X != 0 ? new Point((int)(posX * SCALE), (int)(posY * SCALE)) : new Point((int)(posX * SCALE), (int)(posY * SCALE)),
                 position,
                 Vector2.Normalize(direction) * SPEED,
                 EnemyProjectileProperties

@@ -1,4 +1,3 @@
-using Byte.Collidable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -85,7 +84,6 @@ public class ProjectileFactory
     public IProjectile CreateBomb(Vector2 position)
     {
         Program.soundManager.PlaySound("Bomb_Drop");
-        const float THROW_SPEED = 300f;
         MovingAnimatedSprite bombSprite = CreateSprite(new[] { BOMB }, 1f, position);
         MovingAnimatedSprite explosionSprite = CreateSprite(EXPLOSION_FRAMES, EXPLOSION_FRAME_DURATION, position);
         explosionSprite.loopAnimation = false;
@@ -104,13 +102,14 @@ public class ProjectileFactory
     private MovingAnimatedSprite CreateSprite(Rectangle[] frames, float frameDuration, Vector2 position, Texture2D texture)
     {
         MovingAnimatedSprite sprite = new MovingAnimatedSprite(texture, position, Vector2.Zero, Color.White, frames, frameDuration, SCALE);
-        sprite.MoveOrigin(new Vector2(frames[0].Width / 2f, frames[0].Height / 2f));
+        const float half = 2f;
+        sprite.MoveOrigin(new Vector2(frames[0].Width / half, frames[0].Height / half));
         return sprite;
     }
 
     public IProjectile CreateEnemyBoomerang(Vector2 position, Vector2 direction)
     {
-        
+
         MovingAnimatedSprite sprite = CreateSprite(BOOMERANG_FRAMES, BOOMERANG_FRAME_DURATION, position);
         return new Boomerang(sprite, position, direction, AbstractProjectile.EnemyProjectileProperties);
     }
