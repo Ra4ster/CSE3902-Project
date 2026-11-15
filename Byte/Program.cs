@@ -177,7 +177,7 @@ public class Program : Game
 
         inventoryManager?.Dispose();
         inventoryData = new InventoryData();
-        inventoryManager = new InventoryManager(inventoryData);
+        inventoryManager = new InventoryManager(inventoryData, selectionController);
 
         pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
@@ -247,21 +247,47 @@ public class Program : Game
     private void AddProjectileCommands()
     {
         ProjectileFactory projectileFactory = new ProjectileFactory(
-                GameAssets.Instance.LinkSheet,
-                GameAssets.Instance.BossSheet
-            );
+            GameAssets.Instance.LinkSheet,
+            GameAssets.Instance.BossSheet
+        );
 
         Func<IProjectile, bool> canUse = projectile => inventoryManager!.CanUseItem(projectile);
 
-        ICommand useArrowCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateArrow, canUse);
-        ICommand useBombCommand = new UseProjectileCommand(link, projectileManager,
-            (position, _) => projectileFactory.CreateBomb(position), canUse);
-        ICommand useBoomerangCommand = new UseProjectileCommand(link, projectileManager, projectileFactory.CreateBoomerang, canUse);
+        Func<Vector2, Vector2, IProjectile?> dynamicCreateProjectile = (position, direction) =>
+        {
+            if (selectionController.EquippedItem == ItemType.Bomb && !inventoryData.HasBomb)
+            {
+                selectionController.UnequipItem();
+                return null;
+            }
+            if (selectionController.EquippedItem == ItemType.Bow && !inventoryData.HasBow)
+            {
+                selectionController.UnequipItem();
+                return null;
+            }
 
-        keybindings.Add(Keys.D1, useArrowCommand);
-        keybindings.Add(Keys.D2, useBombCommand);
-        keybindings.Add(Keys.D3, useBoomerangCommand);
+            if (selectionController.EquippedItem == ItemType.None)
+            {
+                return null;
+            }
 
+            return selectionController.EquippedItem switch
+            {
+                ItemType.Bow => projectileFactory.CreateArrow(position, direction),
+                ItemType.Bomb => projectileFactory.CreateBomb(position), 
+                ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
+                _ => null
+            };
+        };
+
+        ICommand useEquippedItemCommand = new UseProjectileCommand(
+            link,
+            projectileManager,
+            dynamicCreateProjectile,
+            canUse
+        );
+
+        keybindings.Add(Keys.B, useEquippedItemCommand);
     }
 
     protected override void Update(GameTime gameTime)
@@ -313,6 +339,7 @@ public class Program : Game
         roomManager.Update(gameTime);
         link.Update(gameTime);
         ProcessCollisions();
+        selectionController.Update(); 
         soundManager.Update();
         base.Update(gameTime);
         inventoryData.CurrentHalfHearts = (int)(link.Health * HALF_HEARTS_PER_HEART);
