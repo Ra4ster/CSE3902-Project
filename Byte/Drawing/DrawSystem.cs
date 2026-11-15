@@ -10,8 +10,8 @@ namespace Byte.Drawing
         private static readonly Rectangle RoomFrame = new(520, 11, 256, 176);
 
         private static readonly RasterizerState ClipRasterizer = new() { ScissorTestEnable = true };
-        private readonly GraphicsDevice device;
-        private readonly SpriteBatch painter;
+        public readonly GraphicsDevice device;
+        public readonly SpriteBatch painter;
         private Matrix spriteTransform = Matrix.Identity;
 
         public DrawSystem(GraphicsDevice device, SpriteBatch painter)

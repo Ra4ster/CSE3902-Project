@@ -2,7 +2,6 @@
 using Byte.Collidable;
 using Byte.Command;
 using Byte.Controller;
-using Byte.Core;
 using Byte.Drawing;
 using Byte.Factory;
 using Byte.InventoryAndHud;
@@ -197,7 +196,8 @@ public class Program : Game
             GameAssets.Instance.InventorySheet,
             statusFont,
             inventoryData,
-            selectionController
+            selectionController,
+            new Byte.Map.LevelRepresentation(roomManager)
         );
         ICommand openInventoryCommand = new ChangeStateCommand(StateMachine, () => new InventoryState(this));
         ICommand pauseCommand = new ChangeStateCommand(StateMachine, () => new PausedState(this));
@@ -213,7 +213,7 @@ public class Program : Game
         ICommand nextRoomCommand = new NextRoomCommand(this);
         ICommand previousRoomCommand = new PreviousRoomCommand(this);
         ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
-        ICommand pauseMusic  = new PauseMusicCommand();
+        ICommand pauseMusic = new PauseMusicCommand();
         ICommand interactWithDoorCommand = new InteractWithDoorCommand(this);
         keybindings.Add(Keys.D0, quitCommand);
         keybindings.Add(Keys.Q, quitCommand);
@@ -241,7 +241,7 @@ public class Program : Game
         keybindings.Add(Keys.T, triggerWinCommand);
 
         AddProjectileCommands();
-        
+
     }
 
     private void AddProjectileCommands()
@@ -292,7 +292,7 @@ public class Program : Game
 
     protected override void Update(GameTime gameTime)
     {
-        
+
 
         StateMachine.Update(gameTime);
 

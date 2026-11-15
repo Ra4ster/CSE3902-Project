@@ -1,4 +1,5 @@
 ﻿using Byte.Core;
+using Byte.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,10 +9,12 @@ namespace Byte.InventoryAndHud
     {
         private readonly Texture2D spriteSheet;
         private readonly Texture2D blackPixel;
+        private readonly Texture2D mapPixel;
         private readonly Texture2D itemSheet;
         private readonly SpriteFont font;
         private readonly InventoryData inventory;
         private readonly SelectionController selectionController;
+        private readonly LowerMap lowerMap;
 
         private static readonly Rectangle BoomerangSourceRect = new Rectangle(129, 3, 5, 8);
         private static readonly Rectangle BombSourceRect = new Rectangle(136, 0, 8, 16);
@@ -22,7 +25,7 @@ namespace Byte.InventoryAndHud
         public const float MaxSlideOffset = 174f * GameConstants.SCALE;
         public const float HudHeight = 55f * GameConstants.SCALE;
 
-        public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController)
+        public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController, LevelRepresentation level)
         {
             this.spriteSheet = spriteSheet;
             this.font = font;
@@ -32,6 +35,16 @@ namespace Byte.InventoryAndHud
 
             blackPixel = new Texture2D(spriteSheet.GraphicsDevice, 1, 1);
             blackPixel.SetData(new[] { Color.Black });
+            mapPixel = new Texture2D(spriteSheet.GraphicsDevice, 1, 1);
+            mapPixel.SetData(new[] { Color.White });
+            lowerMap = new LowerMap(
+                level,
+                mapPixel,
+                new Rectangle(
+                    (int)(4 * GameConstants.SCALE),
+                    (int)(4 * GameConstants.SCALE),
+                    (int)(87 * GameConstants.SCALE),
+                    (int)(47 * GameConstants.SCALE)));
         }
 
         public void Draw(SpriteBatch spriteBatch, float slideOffset)
@@ -70,6 +83,7 @@ namespace Byte.InventoryAndHud
         {
             Rectangle hudBgRect = new Rectangle(258, 11, 256, 55);
             spriteBatch.Draw(spriteSheet, hudPosition, hudBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+            lowerMap.Draw(spriteBatch, hudPosition);
 
             Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
 

@@ -141,7 +141,7 @@ namespace Byte.Factory
                 mapFrame,
                 5f
             );
-            return new Map(mapSprite, position, ScaledSize(mapFrame, 5f));
+            return new Byte.Item.Map(mapSprite, position, ScaledSize(mapFrame, 5f));
         }
 
         public IItem CreateCompass(Vector2 position)
