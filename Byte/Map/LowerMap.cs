@@ -20,11 +20,8 @@ namespace Byte.Map
 
         public LowerMap(LevelRepresentation rep, Texture2D pixel, Rectangle canvas)
         {
-            RoomConnection[] connections = rep.ConnectionsOf(rep.StartingRoomName);
-
             Dictionary<string, Point> positions = BuildRoomPositions(
-                rep.StartingRoomName,
-                connections,
+                rep,
                 out Point minBounds,
                 out Point maxBounds
             );
@@ -51,52 +48,58 @@ namespace Byte.Map
                 mapRooms.Add(pair.Key, new LowerMapRoom(placement, pixel));
             }
 
-            Rectangle startingRoom = mapRooms[rep.StartingRoomName].Bounds;
-            int playerSize = RoomHeight;
-            const int center = 2;
-
-            mapPlayer = new MapPlayer(
-                new Rectangle(
-                    startingRoom.Center.X - playerSize / center,
-                    startingRoom.Center.Y - playerSize / center,
-                    playerSize,
-                    playerSize
-                ),
-                pixel);
+            mapPlayer = new MapPlayer(pixel);
         }
 
-        private static Dictionary<string, Point> BuildRoomPositions(string startingRoom, RoomConnection[] connections, out Point min, out Point max)
+        private static Dictionary<string, Point> BuildRoomPositions(LevelRepresentation representation, out Point min, out Point max)
         {
-            Dictionary<string, Point> positions = new(connections.Length + 1, StringComparer.Ordinal)
+            Dictionary<string, Point> positions = new(StringComparer.Ordinal)
             {
-                [startingRoom] = Point.Zero
+                [representation.StartingRoomName] = Point.Zero
             };
 
             HashSet<Point> occupied = [Point.Zero];
-            min = Point.Zero;
-            max = Point.Zero;
+            Queue<string> pending = new();
+            pending.Enqueue(representation.StartingRoomName);
 
-            foreach (RoomConnection connection in connections)
+            while (pending.TryDequeue(out string? roomName))
             {
-                if (positions.ContainsKey(connection.TargetRoom))
+                Point roomPosition = positions[roomName];
+                foreach (RoomConnection connection in representation.ConnectionsOf(roomName))
+                {
+                    if (positions.ContainsKey(connection.TargetRoom))
+                        continue;
+
+                    Point desiredPosition = roomPosition + DirectionOffset(connection.Direction);
+                    Point targetPosition = FindFreePosition(desiredPosition, occupied);
+
+                    positions.Add(connection.TargetRoom, targetPosition);
+                    _ = occupied.Add(targetPosition);
+                    pending.Enqueue(connection.TargetRoom);
+                }
+            }
+
+            foreach (string roomName in representation.RoomNames())
+            {
+                if (positions.ContainsKey(roomName))
                     continue;
 
-                Point desiredPosition = DirectionOffset(connection.Direction);
-                Point targetPosition = FindFreePosition(desiredPosition, occupied);
-
-                positions.Add(connection.TargetRoom, targetPosition);
-                _ = occupied.Add(targetPosition);
-
-                if (targetPosition.X < min.X) min.X = targetPosition.X;
-                if (targetPosition.Y < min.Y) min.Y = targetPosition.Y;
-                if (targetPosition.X > max.X) max.X = targetPosition.X;
-                if (targetPosition.Y > max.Y) max.Y = targetPosition.Y;
+                Point position = FindFreePosition(Point.Zero, occupied);
+                positions.Add(roomName, position);
+                _ = occupied.Add(position);
             }
+
+            min = new Point(
+                positions.Values.Min(position => position.X),
+                positions.Values.Min(position => position.Y));
+            max = new Point(
+                positions.Values.Max(position => position.X),
+                positions.Values.Max(position => position.Y));
 
             return positions;
         }
 
-        public void Draw(SpriteBatch painter, Vector2 offset = default, bool showRooms = true)
+        public void Draw(SpriteBatch painter, string currentRoomName, Vector2 offset = default, bool showRooms = true)
         {
             if (showRooms)
             {
@@ -104,7 +107,8 @@ namespace Byte.Map
                     room.Draw(painter, offset);
             }
 
-            mapPlayer.Draw(painter, offset);
+            if (mapRooms.TryGetValue(currentRoomName, out LowerMapRoom? currentRoom))
+                mapPlayer.Draw(painter, currentRoom.Bounds, offset);
         }
 
         private static Point FindFreePosition(Point desired, HashSet<Point> occupied)
