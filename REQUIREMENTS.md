@@ -113,6 +113,18 @@
 - [x] Central sound manager that other packages call (one simple API: play effect, play music, stop, mute)
 - [x] Lead the magic-numbers/strings cleanup: move values into constants or config classes across the codebase
  - [] Set up the chosen code analysis tool (see Shared Team Tasks) and share its findings with the team
+- Items:
+  - [x] Use 'B' to use the item equipped in the B slot.
+  - [x] Items can be equipped by selecting them with the cursor in the inventory.
+  - [x] You must have a bomb in your inventory in order to place a bomb.
+  - [x] You must have at least one rupee in order to fire an arrow.
+- Inventory/HUD:
+  - [x] Press 'I' for the inventory to drop down.
+  - [x] Can select an item for the B Slot by navigating the cursor with the arrow keys and then selecting the desired item.
+  - [x] Upper map shows which rooms you have currently visited.
+  - [x] Lower map gives you a layout of the dungeon.
+  - [x] Number of lives are displayed as well as B slot item (used by pressing B) and sword (used by pressing Z).
+  - [x] Number of rupees, bombs, keys, and whether you have the map and compass is also displayed. 
 
 
 > Other sprints are `TODO`...
