@@ -16,6 +16,8 @@ namespace Byte.InventoryAndHud
         private readonly SelectionController selectionController;
         private readonly LowerMap lowerMap;
 
+        private readonly UpperMap upperMap;
+
         private static readonly Rectangle BoomerangSourceRect = new Rectangle(129, 3, 5, 8);
         private static readonly Rectangle BombSourceRect = new Rectangle(136, 0, 8, 16);
         private static readonly Rectangle BowSourceRect = new Rectangle(144, 0, 8, 16);
@@ -49,6 +51,18 @@ namespace Byte.InventoryAndHud
                     (int)(lowerMapPos * GameConstants.SCALE),
                     (int)(lowerMapW * GameConstants.SCALE),
                     (int)(lowerMapH * GameConstants.SCALE)));
+
+            const int upperMapPos = 4;
+            const int upperMapW = 32;
+            const int upperMapH = 32;
+            upperMap = new UpperMap(
+                level,
+                spriteSheet,
+                new Rectangle(
+                    (int)(upperMapPos * GameConstants.SCALE),
+                    (int)(upperMapPos * GameConstants.SCALE),
+                    (int)(upperMapW * GameConstants.SCALE),
+                    (int)(upperMapH * GameConstants.SCALE)));
         }
 
         public void Draw(SpriteBatch spriteBatch, float slideOffset)
@@ -147,7 +161,7 @@ namespace Byte.InventoryAndHud
 
             spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
             spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
-
+            upperMap.Draw(spriteBatch, (inventoryPosition + new Vector2(125f, 80f)) * GameConstants.SCALE);
 
             Rectangle bSlotItem = GetItemSourceRect(selectionController.EquippedItem);
             if (bSlotItem != Rectangle.Empty)

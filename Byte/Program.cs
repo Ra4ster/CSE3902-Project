@@ -5,16 +5,17 @@ using Byte.Controller;
 using Byte.Drawing;
 using Byte.Factory;
 using Byte.InventoryAndHud;
+using Byte.Map;
 using Byte.Player;
 using Byte.Projectile;
 using Byte.Rooms;
+using Byte.Sounds;
 using Byte.Sprite;
 using Byte.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.ObjectModel;
-using Byte.Sounds;
 
 
 /// <summary>
@@ -59,6 +60,8 @@ public class Program : Game
 
     public SelectionController selectionController = new(new InventoryData());
     private InventoryAndHUDGraphics? inventoryGraphics;
+
+    public UpperMap? upperMap;
 
     public Program()
     {
@@ -174,6 +177,19 @@ public class Program : Game
 
         projectileManager = new ProjectileManager();
         LoadRooms();
+
+        LevelRepresentation levelRep = new LevelRepresentation(roomManager);
+
+        upperMap = new UpperMap(
+        levelRep,
+        GameAssets.Instance.ItemSheet,               
+        new Rectangle(
+        (int)(4f * GameConstants.SCALE),
+        (int)(4f * GameConstants.SCALE),
+        (int)(32f * GameConstants.SCALE),
+        (int)(32f * GameConstants.SCALE)
+        )
+        );
 
         inventoryManager?.Dispose();
         inventoryData = new InventoryData();
