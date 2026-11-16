@@ -452,6 +452,19 @@ public class Program : Game
                 DispatchCollisions(new Collection<ICollidable> { enemy, block });
         }
 
+        foreach (Bomb bomb in projectileManager.Projectiles.OfType<Bomb>())
+        {
+            if (!bomb.IsExploding)
+                continue;
+
+            foreach (Door bombableDoor in room.Doors)
+            {
+                if (bomb.BoundingBox.Intersects(bombableDoor.InteractionBounds(room.Bounds)) &&
+                    bombableDoor.TryBlowOpen())
+                    soundManager.PlaySound("Secret");
+            }
+        }
+
         var collidables = new List<ICollidable> { link };
         collidables.AddRange(room.Enemies);
         collidables.AddRange(room.Items);
