@@ -98,4 +98,39 @@
 
 ## Sprint 4
 
+- Package A (Dungeon Design & Layout)
+- [x] Level file format is now defined with doors, items, blocks, and enemies.
+  - [x] In particular, doors are given types such as "bombable" and "locked", for interactivity.
+- [] Level one is fully implemented, matching each room background and room connection as the original Zelda 1 game. See: [video](https://www.youtube.com/watch?v=ZZmz-7tF8GI). **WIP**
+- [] Added basement room with a bow inside and a ladder block to get down to it. There should also be stairs entering/exiting from it. Note: Possibly requires a new asset, as ladder is not in blockSheet. **WIP: Sprint 5**.
+- [x] Bombable walls open when a bomb is exploded next to it, which converts the door type to "blown". The door should stay blown after leaving the room and returning.
+- [x] Room state persistence: Defeated enemies and collected items stay gone when Link returns. There should be data structures inside of the managers which hold everything.
+- [x] Expose a room connectivity API which can be used in map building, so that you know which room connects to which. This includes a player tracker for where the player is.
+  - Note: This has been implemented in `LevelRepresentation`!
+-Package E (Audio & Code Qualtiy)
+- [x] Sound effects based on the original: sword swing, enemy hit, enemy death, Link hurt, item pickup, key/door unlock, bomb blow-up, boss roar, low-health beep, Triforce fanfare
+- [x] Press M to mute and unmute the background music
+- [x] Central sound manager that other packages call (one simple API: play effect, play music, stop, mute)
+- [x] Lead the magic-numbers/strings cleanup: move values into constants or config classes across the codebase
+ - [] Set up the chosen code analysis tool (see Shared Team Tasks) and share its findings with the team
+- Items:
+  - [x] Use 'B' to use the item equipped in the B slot.
+  - [x] Items can be equipped by selecting them with the cursor in the inventory.
+  - [x] You must have a bomb in your inventory in order to place a bomb.
+  - [x] You must have at least one rupee in order to fire an arrow.
+- Inventory/HUD:
+  - [x] Press 'I' for the inventory to drop down.
+  - [x] Can select an item for the B Slot by navigating the cursor with the arrow keys and then selecting the desired item.
+  - [x] Upper map shows which rooms you have currently visited.
+  - [x] Lower map gives you a layout of the dungeon.
+  - [x] Number of lives are displayed as well as B slot item (used by pressing B) and sword (used by pressing Z).
+  - [x] Number of rupees, bombs, keys, and whether you have the map and compass is also displayed. 
+
+
 > Other sprints are `TODO`...
+
+---
+
+# Ideas:
+
+> These are ideas to be implemented for Sprint 5. Brainstorm!
