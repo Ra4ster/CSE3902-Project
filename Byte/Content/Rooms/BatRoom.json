@@ -31,6 +31,13 @@
             "direction": "East",
             "targetRoom": "Entrance",
             "arrivalPosition": [1, 3]
+        },
+        {
+            "position": [0, 3],
+            "direction": "West",
+            "type": "Bombable",
+            "targetRoom": "Hidden",
+            "arrivalPosition": [10, 3]
         }
     ]
 }

@@ -7,5 +7,13 @@
   "tiles": {},
   "enemies": [],
   "items": [],
-  "doors": []
+  "doors": [
+    {
+      "position": [11, 3],
+      "direction": "East",
+      "type": "Blown",
+      "targetRoom": "BatRoom",
+      "arrivalPosition": [0, 3]
+    }
+  ]
 }
