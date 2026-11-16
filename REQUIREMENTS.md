@@ -107,6 +107,13 @@
 - [x] Room state persistence: Defeated enemies and collected items stay gone when Link returns. There should be data structures inside of the managers which hold everything.
 - [x] Expose a room connectivity API which can be used in map building, so that you know which room connects to which. This includes a player tracker for where the player is.
   - Note: This has been implemented in `LevelRepresentation`!
+-Package E (Audio & Code Qualtiy)
+-[x] Sound effects based on the original: sword swing, enemy hit, enemy death, Link hurt, item pickup, key/door unlock, bomb blow-up, boss roar, low-health beep, Triforce fanfare
+-[x] Press M to mute and unmute the background music
+-[x] Central sound manager that other packages call (one simple API: play effect, play music, stop, mute)
+-[x] Lead the magic-numbers/strings cleanup: move values into constants or config classes across the codebase
+ -[] Set up the chosen code analysis tool (see Shared Team Tasks) and share its findings with the team
+
 
 > Other sprints are `TODO`...
 
