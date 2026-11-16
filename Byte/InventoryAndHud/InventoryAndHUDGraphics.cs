@@ -87,7 +87,7 @@ namespace Byte.InventoryAndHud
         {
             Rectangle hudBgRect = new Rectangle(258, 11, 256, 55);
             spriteBatch.Draw(spriteSheet, hudPosition, hudBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
-            lowerMap.Draw(spriteBatch, hudPosition);
+            lowerMap.Draw(spriteBatch, hudPosition, inventory.HasMap);
 
             Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
 

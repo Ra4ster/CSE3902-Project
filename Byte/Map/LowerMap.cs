@@ -96,10 +96,13 @@ namespace Byte.Map
             return positions;
         }
 
-        public void Draw(SpriteBatch painter, Vector2 offset = default)
+        public void Draw(SpriteBatch painter, Vector2 offset = default, bool showRooms = true)
         {
-            foreach (LowerMapRoom room in mapRooms.Values)
-                room.Draw(painter, offset);
+            if (showRooms)
+            {
+                foreach (LowerMapRoom room in mapRooms.Values)
+                    room.Draw(painter, offset);
+            }
 
             mapPlayer.Draw(painter, offset);
         }
