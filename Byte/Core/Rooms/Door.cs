@@ -84,7 +84,7 @@ namespace Byte.Rooms
 
         public bool TryBlowOpen()
         {
-            if (State != DoorState.Wall)
+            if (State is not (DoorState.Wall or DoorState.Bombable))
                 return false;
 
             SetState(DoorState.Blown);

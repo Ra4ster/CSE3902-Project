@@ -30,6 +30,8 @@ public sealed class GameOverState : IGameState, IMenu
     public void Enter()
     {
         phase = Phase.Dying;
+        Program.soundManager.PauseAllSounds();
+        Program.soundManager.PlaySound("Link_Die");
         elapsed = 0f;
         selectedIndex = RetryIndex;
 

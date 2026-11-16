@@ -8,6 +8,7 @@ namespace Byte.Projectile
         private const float SCALE = 6.0f;
         private const float EXPLOSION_DURATION = 0.3f;
         private const float FUSE_DURATION = 2.0f;
+        private const int EXPLOSION_SIZE = 16;
 
         private readonly MovingAnimatedSprite bombSprite;
         private readonly MovingAnimatedSprite explosionSprite;
@@ -15,6 +16,25 @@ namespace Byte.Projectile
         private bool isExploding = false;
         private float explosionTimer = 0f;
         private float fuseTimer = 0f;
+
+        public bool IsExploding => isExploding;
+
+        public override Rectangle BoundingBox
+        {
+            get
+            {
+                if (!isExploding)
+                    return base.BoundingBox;
+
+                int explosionSize = (int)(EXPLOSION_SIZE * SCALE);
+                int halfSize = explosionSize / 2;
+                return new Rectangle(
+                    (int)Position.X - halfSize,
+                    (int)Position.Y - halfSize,
+                    explosionSize,
+                    explosionSize);
+            }
+        }
 
         const int startPosX = 8;
         const int startPosY = 16;

@@ -4,31 +4,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Byte.Map
 {
-    internal sealed class MapPlayer : Drawing.IDrawable
+    internal sealed class MapPlayer
     {
-        private readonly Rectangle rect;
         private readonly Texture2D pixel;
 
         public static Color color = Color.LimeGreen;
 
-        public MapPlayer(Rectangle placement, Texture2D pixel)
-        {
-            rect = placement;
-            this.pixel = pixel;
-        }
+        public MapPlayer(Texture2D pixel) => this.pixel = pixel;
 
-        public void Draw(SpriteBatch painter)
+        public void Draw(SpriteBatch painter, Rectangle roomBounds, Vector2 offset)
         {
-            Draw(painter, Vector2.Zero);
-        }
-
-        public void Draw(SpriteBatch painter, Vector2 offset)
-        {
+            int size = roomBounds.Height;
             Rectangle shiftedRect = new(
-                rect.X + (int)offset.X,
-                rect.Y + (int)offset.Y,
-                rect.Width,
-                rect.Height);
+                roomBounds.Center.X - size / 2 + (int)offset.X,
+                roomBounds.Center.Y - size / 2 + (int)offset.Y,
+                size,
+                size);
             painter.Draw(pixel, shiftedRect, color);
         }
     }
