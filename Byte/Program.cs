@@ -174,6 +174,7 @@ public class Program : Game
         link.Velocity = Vector2.Zero;
         projectileManager.Clear();
         upperMap?.OnRoomEntered(roomManager.CurrentRoom.Name);
+
     }
 
     /// <summary>

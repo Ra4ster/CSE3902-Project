@@ -98,7 +98,7 @@ namespace Byte.Map
                 DoorMask mask = ComputeDoorMask(rep.ConnectionsOf(roomName));
                 int tileIndex = MaskToTileIndex[(int)mask];
 
-                // Fixed typo: added '*' for TileStride multiplication
+                // Fixed syntax/multiplication bug here:
                 Rectangle sourceRect = new(
                     RoomTilesStart.X + (tileIndex * TileStride),
                     RoomTilesStart.Y,
@@ -129,15 +129,26 @@ namespace Byte.Map
 
             painter.Draw(spriteSheet, shiftedBg, MapBackgroundSource, Color.White);
 
-            // Dynamically draw only the rooms that have been visited
+
             foreach (string roomName in visitedRooms)
             {
                 if (mapRooms.TryGetValue(roomName, out UpperMapRoom? room))
                     room.Draw(painter, offset);
             }
 
-            // Draw player on top of the current room bounds using the new signature
-            if (mapRooms.TryGetValue(currentRoomName, out UpperMapRoom? currentRoom))
+
+            UpperMapRoom? currentRoom = null;
+            if (!string.IsNullOrEmpty(currentRoomName) && mapRooms.TryGetValue(currentRoomName, out currentRoom))
+            {
+                // Found exact match
+            }
+            else if (mapRooms.Count > 0)
+            {
+
+                currentRoom = mapRooms.Values.First();
+            }
+
+            if (currentRoom != null)
             {
                 mapPlayer.Draw(painter, currentRoom.Bounds, offset);
             }
@@ -174,13 +185,7 @@ namespace Byte.Map
             min = Point.Zero;
             max = Point.Zero;
 
-            foreach (string roomName in rep.RoomNames())
-            {
-                if (!positions.ContainsKey(roomName))
-                {
-                    frontier.Enqueue(roomName);
-                }
-            }
+
 
             while (frontier.TryDequeue(out string? currentRoom))
             {

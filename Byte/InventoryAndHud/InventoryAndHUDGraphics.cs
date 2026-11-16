@@ -26,13 +26,14 @@ namespace Byte.InventoryAndHud
         public const float MaxSlideOffset = 174f * GameConstants.SCALE;
         public const float HudHeight = 55f * GameConstants.SCALE;
 
-        public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController, LevelRepresentation level, UpperMap  upperMap)
+        public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController, LevelRepresentation level, UpperMap upperMap)
         {
             this.spriteSheet = spriteSheet;
             this.font = font;
             this.inventory = inventory;
             this.selectionController = selectionController;
             this.itemSheet = itemSheet;
+            this.upperMap = upperMap;
 
             const int lowerMapPos = 4;
             const int lowerMapW = 87;
@@ -51,29 +52,6 @@ namespace Byte.InventoryAndHud
                     (int)(lowerMapPos * GameConstants.SCALE),
                     (int)(lowerMapW * GameConstants.SCALE),
                     (int)(lowerMapH * GameConstants.SCALE)));
-
-            const int upperMapX = 128;
-            const int upperMapY = 8;
-            const int upperMapW = 64;
-            const int upperMapH = 64;
-
-            upperMap = new UpperMap(
-                level,
-                spriteSheet,
-                new Rectangle(
-                    (int)(upperMapX * GameConstants.SCALE),
-                    (int)(upperMapY * GameConstants.SCALE),
-                    (int)(upperMapW * GameConstants.SCALE),
-                    (int)(upperMapH * GameConstants.SCALE)));
-            upperMap = new UpperMap(
-                level,
-                spriteSheet,
-                new Rectangle(
-                    (int)(upperMapX * GameConstants.SCALE),
-                    (int)(upperMapY * GameConstants.SCALE),
-                    (int)(upperMapW * GameConstants.SCALE),
-                    (int)(upperMapH * GameConstants.SCALE)));
-            this.upperMap = upperMap;
         }
 
         public void Draw(SpriteBatch spriteBatch, float slideOffset, string currentRoomName)
@@ -172,7 +150,7 @@ namespace Byte.InventoryAndHud
             spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
 
 
-            upperMap.Draw(spriteBatch, inventoryPosition + new Vector2(0,516));
+            upperMap.Draw(spriteBatch, inventoryPosition + new Vector2(864, 516));
 
             Rectangle bSlotItem = GetItemSourceRect(selectionController.EquippedItem);
             if (bSlotItem != Rectangle.Empty)
