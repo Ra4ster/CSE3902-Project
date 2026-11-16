@@ -38,7 +38,8 @@ dotnet run --project Tests/CollisionChecks
 
 - **Movement:** `W`, `A`, `S`, `D` (or Arrow Keys)
 - **Attack (Sword):** `Z` or `N`
-- **Use Item/Projectile:** `1` (Arrow), `2` (Bomb), `3` (Boomerang)
+- **Use Item:** `b`
+- **Open Inventory:** `i`
 - **Take Damage (Debug):** `E`
 
 **Rooms**
