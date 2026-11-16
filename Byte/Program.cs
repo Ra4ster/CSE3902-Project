@@ -274,7 +274,7 @@ public class Program : Game
             return selectionController.EquippedItem switch
             {
                 ItemType.Bow => projectileFactory.CreateArrow(position, direction),
-                ItemType.Bomb => projectileFactory.CreateBomb(position), 
+                ItemType.Bomb => projectileFactory.CreateBomb(position),
                 ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
                 _ => null
             };
@@ -337,7 +337,7 @@ public class Program : Game
         roomManager.Update(gameTime);
         link.Update(gameTime);
         ProcessCollisions();
-        selectionController.Update(); 
+        selectionController.Update();
         soundManager.Update();
         base.Update(gameTime);
         inventoryData.CurrentHalfHearts = (int)(link.Health * HALF_HEARTS_PER_HEART);

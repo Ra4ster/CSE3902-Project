@@ -55,9 +55,7 @@ public class SelectionController
 
         if (currentKey.IsKeyDown(Keys.Enter) && previousKey.IsKeyUp(Keys.Enter))
         {
-
             EquipSelectedAtCursor();
-            
         }
     }
     public void UnequipItem()

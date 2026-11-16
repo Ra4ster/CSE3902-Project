@@ -10,12 +10,12 @@ namespace Byte.InventoryAndHud
 {
     public sealed class InventoryManager : IDisposable
     {
-        private readonly SelectionController selectionController; 
+        private readonly SelectionController selectionController;
         private readonly InventoryData inventoryData;
 
         public InventoryManager(InventoryData invData, SelectionController selectionController)
         {
-            this.selectionController = selectionController; 
+            this.selectionController = selectionController;
             this.inventoryData = invData;
             LinkCollisionHandler.PickUpItemEvent += HandleItemPickUp;
             UseProjectileCommand.OnProjectileFired += HandleProjectileFired;

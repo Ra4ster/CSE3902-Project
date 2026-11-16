@@ -22,7 +22,6 @@ public sealed class InventoryState : IGameState
 
     public void Enter()
     {
-        
         phase = Phase.Opening;
         slideOffset = 0f;
 
