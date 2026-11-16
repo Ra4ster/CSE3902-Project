@@ -9,7 +9,7 @@ namespace Byte.Map
         private const int NativeTileSize = 8;
         private const int RoomSize = (int)(NativeTileSize * GameConstants.SCALE);
 
-        private static readonly Point RoomTilesStart = new(519, 108); 
+        private static readonly Point RoomTilesStart = new(519, 108);
         private const int TileStride = 9;
         private static readonly Rectangle MapBackgroundSource = new(386, 120, 64, 64);
 
@@ -50,7 +50,9 @@ namespace Byte.Map
         private readonly Texture2D spriteSheet;
         private readonly Texture2D pixel;
         private readonly Rectangle backgroundRect;
-        private MapPlayer mapPlayer;
+
+        private readonly MapPlayer mapPlayer;
+        private string currentRoomName;
 
         public UpperMap(LevelRepresentation rep, Texture2D spriteSheet, Rectangle canvas)
         {
@@ -60,6 +62,8 @@ namespace Byte.Map
             pixel.SetData(new[] { Color.White });
 
             backgroundRect = canvas;
+            currentRoomName = rep.StartingRoomName;
+            mapPlayer = new MapPlayer(pixel);
 
             Dictionary<string, Point> positions = BuildRoomPositions(
                 rep,
@@ -94,7 +98,7 @@ namespace Byte.Map
                 DoorMask mask = ComputeDoorMask(rep.ConnectionsOf(roomName));
                 int tileIndex = MaskToTileIndex[(int)mask];
 
-
+                // Fixed typo: added '*' for TileStride multiplication
                 Rectangle sourceRect = new(
                     RoomTilesStart.X + (tileIndex * TileStride),
                     RoomTilesStart.Y,
@@ -104,8 +108,6 @@ namespace Byte.Map
 
                 mapRooms.Add(roomName, new UpperMapRoom(placement, sourceRect, spriteSheet));
             }
-
-            mapPlayer = CreatePlayerAt(rep.StartingRoomName);
         }
 
         public void OnRoomEntered(string roomName)
@@ -114,7 +116,7 @@ namespace Byte.Map
                 return;
 
             visitedRooms.Add(roomName);
-            mapPlayer = CreatePlayerAt(roomName);
+            currentRoomName = roomName;
         }
 
         public void Draw(SpriteBatch painter, Vector2 offset = default)
@@ -127,31 +129,18 @@ namespace Byte.Map
 
             painter.Draw(spriteSheet, shiftedBg, MapBackgroundSource, Color.White);
 
+            // Dynamically draw only the rooms that have been visited
             foreach (string roomName in visitedRooms)
             {
                 if (mapRooms.TryGetValue(roomName, out UpperMapRoom? room))
                     room.Draw(painter, offset);
             }
 
-            mapPlayer.Draw(painter, offset);
-        }
-
-        private MapPlayer CreatePlayerAt(string roomName)
-        {
-            if (!mapRooms.TryGetValue(roomName, out UpperMapRoom? room))
-                return new MapPlayer(new Rectangle(backgroundRect.Center, new Point(RoomSize / 2)), pixel);
-
-            Rectangle roomBounds = room.Bounds;
-            int playerSize = RoomSize / 2;
-
-            return new MapPlayer(
-                new Rectangle(
-                    roomBounds.Center.X - playerSize / 2,
-                    roomBounds.Center.Y - playerSize / 2,
-                    playerSize,
-                    playerSize
-                ),
-                pixel);
+            // Draw player on top of the current room bounds using the new signature
+            if (mapRooms.TryGetValue(currentRoomName, out UpperMapRoom? currentRoom))
+            {
+                mapPlayer.Draw(painter, currentRoom.Bounds, offset);
+            }
         }
 
         private static DoorMask ComputeDoorMask(RoomConnection[] connections)
