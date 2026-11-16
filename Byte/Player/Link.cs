@@ -151,7 +151,6 @@ namespace Byte.Player
             if (currentSprite != null)
                 currentSprite.Color = Color.Red;
         }
-
         // Collision correction happens after animation updates. Keep drawing in sync.
         public void CorrectPosition(Vector2 position)
         {

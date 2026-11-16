@@ -22,6 +22,7 @@ public sealed class InventoryState : IGameState
 
     public void Enter()
     {
+        
         phase = Phase.Opening;
         slideOffset = 0f;
 
@@ -64,6 +65,7 @@ public sealed class InventoryState : IGameState
         switch (phase)
         {
             case Phase.Opening:
+                Program.soundManager.PauseAllSounds();
                 slideOffset = Math.Min(slideOffset + step, InventoryAndHUDGraphics.MaxSlideOffset);
                 if (slideOffset >= InventoryAndHUDGraphics.MaxSlideOffset)
                     phase = Phase.Open;
@@ -74,6 +76,7 @@ public sealed class InventoryState : IGameState
                 break;
 
             case Phase.Closing:
+                Program.soundManager.UnPauseAllSounds();
                 slideOffset -= step;
 
                 if (slideOffset <= 0f)

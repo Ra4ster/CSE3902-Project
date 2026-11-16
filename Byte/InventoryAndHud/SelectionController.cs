@@ -37,6 +37,7 @@ public class SelectionController
 
     public void EquipSelectedAtCursor()
     {
+        Program.soundManager.PlaySound("Get_Item");
         if (CursorGridPosition == new Point(0, 0) && inventory.HasBoomerang)
             EquippedItem = ItemType.Boomerang;
         else if (CursorGridPosition == new Point(1, 0) && inventory.HasBomb)
@@ -54,7 +55,9 @@ public class SelectionController
 
         if (currentKey.IsKeyDown(Keys.Enter) && previousKey.IsKeyUp(Keys.Enter))
         {
+
             EquipSelectedAtCursor();
+            
         }
     }
     public void UnequipItem()
