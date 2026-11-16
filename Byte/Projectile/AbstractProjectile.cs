@@ -19,7 +19,7 @@ namespace Byte.Projectile
         public bool IsExpired { get; protected set; }
         bool IProjectile.IsExpired => IsExpired;
         const float half = 2f;
-        Rectangle ICollidable.BoundingBox => new Rectangle(
+        public virtual Rectangle BoundingBox => new Rectangle(
             (int)(Position.X - size.X / half),
             (int)(Position.Y - size.Y / half),
             size.X,

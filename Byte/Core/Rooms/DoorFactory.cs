@@ -42,6 +42,7 @@ namespace Byte.Core.Rooms
                 DoorState.Wall => WallDoorNFrame,
                 DoorState.Open => OpenDoorNFrame,
                 DoorState.Locked => LockedDoorNFrame,
+                DoorState.Bombable => WallDoorNFrame,
                 DoorState.Sealed => SealedDoorNFrame,
                 DoorState.Blown => BlownDoorNFrame,
                 _ => throw new ArgumentOutOfRangeException(nameof(state), state, "Unsupported door state.")

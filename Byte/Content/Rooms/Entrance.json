@@ -11,6 +11,10 @@
         {
             "type": "Key",
             "position": [5, 3]
+        },
+        {
+            "type": "Bomb",
+            "position": [4, 4]
         }
     ],
     "doors": [

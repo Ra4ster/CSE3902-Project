@@ -51,7 +51,7 @@ namespace Byte.InventoryAndHud
                     (int)(lowerMapH * GameConstants.SCALE)));
         }
 
-        public void Draw(SpriteBatch spriteBatch, float slideOffset)
+        public void Draw(SpriteBatch spriteBatch, float slideOffset, string currentRoomName)
         {
             if (slideOffset > 0f)
             {
@@ -68,7 +68,7 @@ namespace Byte.InventoryAndHud
             DrawInventoryScreen(spriteBatch, inventoryPosition);
 
             Vector2 hudPosition = new Vector2(0, slideOffset);
-            DrawHUD(spriteBatch, hudPosition);
+            DrawHUD(spriteBatch, hudPosition, currentRoomName);
         }
 
         private Rectangle GetItemSourceRect(ItemType itemType)
@@ -83,11 +83,11 @@ namespace Byte.InventoryAndHud
             };
         }
 
-        private void DrawHUD(SpriteBatch spriteBatch, Vector2 hudPosition)
+        private void DrawHUD(SpriteBatch spriteBatch, Vector2 hudPosition, string currentRoomName)
         {
             Rectangle hudBgRect = new Rectangle(258, 11, 256, 55);
             spriteBatch.Draw(spriteSheet, hudPosition, hudBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
-            lowerMap.Draw(spriteBatch, hudPosition);
+            lowerMap.Draw(spriteBatch, currentRoomName, hudPosition, inventory.HasMap);
 
             Vector2 scaleOffset = new Vector2(GameConstants.SCALE, GameConstants.SCALE);
 

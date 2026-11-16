@@ -1,0 +1,11 @@
+{
+  "name": "Basement",
+  "background": "room1",
+  "playerSpawn": [5, 3],
+  "width": 12,
+  "height": 7,
+  "tiles": {},
+  "enemies": [],
+  "items": [],
+  "doors": []
+}

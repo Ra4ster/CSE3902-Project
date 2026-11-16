@@ -274,7 +274,7 @@ public class Program : Game
             return selectionController.EquippedItem switch
             {
                 ItemType.Bow => projectileFactory.CreateArrow(position, direction),
-                ItemType.Bomb => projectileFactory.CreateBomb(position), 
+                ItemType.Bomb => projectileFactory.CreateBomb(position),
                 ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
                 _ => null
             };
@@ -337,7 +337,7 @@ public class Program : Game
         roomManager.Update(gameTime);
         link.Update(gameTime);
         ProcessCollisions();
-        selectionController.Update(); 
+        selectionController.Update();
         soundManager.Update();
         base.Update(gameTime);
         inventoryData.CurrentHalfHearts = (int)(link.Health * HALF_HEARTS_PER_HEART);
@@ -404,7 +404,7 @@ public class Program : Game
     internal void DrawHud(float slideOffset)
     {
         BeginScreen();
-        inventoryGraphics!.Draw(SpritePainter!, slideOffset);
+        inventoryGraphics!.Draw(SpritePainter!, slideOffset, roomManager.CurrentRoom.Name);
         EndBatch();
     }
 
@@ -450,6 +450,19 @@ public class Program : Game
                 DispatchCollisions(new Collection<ICollidable> { projectile, block });
             foreach (ICollidable enemy in room.Enemies)
                 DispatchCollisions(new Collection<ICollidable> { enemy, block });
+        }
+
+        foreach (Bomb bomb in projectileManager.Projectiles.OfType<Bomb>())
+        {
+            if (!bomb.IsExploding)
+                continue;
+
+            foreach (Door bombableDoor in room.Doors)
+            {
+                if (bomb.BoundingBox.Intersects(bombableDoor.InteractionBounds(room.Bounds)) &&
+                    bombableDoor.TryBlowOpen())
+                    soundManager.PlaySound("Secret");
+            }
         }
 
         var collidables = new List<ICollidable> { link };
