@@ -69,7 +69,6 @@ public sealed class GameOverState : IGameState, IMenu
         switch (phase)
         {
             case Phase.Dying:
-                
                 SpinLink(gameTime);
                 if (elapsed >= GameStateConstants.DeathSpinDuration)
                     NextPhase(Phase.Fading);
