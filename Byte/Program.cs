@@ -193,7 +193,7 @@ public class Program : Game
 
         upperMap = new UpperMap(
         levelRep,
-        GameAssets.Instance.ItemSheet,               
+        GameAssets.Instance.InventorySheet,               
         new Rectangle(
         (int)(4f * GameConstants.SCALE),
         (int)(4f * GameConstants.SCALE),

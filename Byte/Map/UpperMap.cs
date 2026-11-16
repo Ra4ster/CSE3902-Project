@@ -127,7 +127,7 @@ namespace Byte.Map
                 backgroundRect.Width,
                 backgroundRect.Height);
 
-            painter.Draw(spriteSheet, shiftedBg, MapBackgroundSource, Color.White);
+            // painter.Draw(spriteSheet, shiftedBg, MapBackgroundSource, Color.White);
 
 
             foreach (string roomName in visitedRooms)
