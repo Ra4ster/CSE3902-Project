@@ -26,7 +26,7 @@ namespace Byte.InventoryAndHud
         public const float MaxSlideOffset = 174f * GameConstants.SCALE;
         public const float HudHeight = 55f * GameConstants.SCALE;
 
-        public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController, LevelRepresentation level)
+        public InventoryAndHUDGraphics(Texture2D itemSheet, Texture2D spriteSheet, SpriteFont font, InventoryData inventory, SelectionController selectionController, LevelRepresentation level, UpperMap  upperMap)
         {
             this.spriteSheet = spriteSheet;
             this.font = font;
@@ -73,6 +73,7 @@ namespace Byte.InventoryAndHud
                     (int)(upperMapY * GameConstants.SCALE),
                     (int)(upperMapW * GameConstants.SCALE),
                     (int)(upperMapH * GameConstants.SCALE)));
+            this.upperMap = upperMap;
         }
 
         public void Draw(SpriteBatch spriteBatch, float slideOffset)
@@ -171,7 +172,7 @@ namespace Byte.InventoryAndHud
             spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
 
 
-            upperMap.Draw(spriteBatch, inventoryPosition);
+            upperMap.Draw(spriteBatch, inventoryPosition + new Vector2(0,516));
 
             Rectangle bSlotItem = GetItemSourceRect(selectionController.EquippedItem);
             if (bSlotItem != Rectangle.Empty)

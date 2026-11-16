@@ -112,6 +112,7 @@ public class Program : Game
     {
         PlaceLink(roomManager.NextRoom());
         upperMap?.OnRoomEntered(roomManager.CurrentRoom.Name);
+
     }
 
     public void PreviousRoom()
@@ -172,6 +173,7 @@ public class Program : Game
         link.CorrectPosition(LinkPositionAt(tileTopLeft));
         link.Velocity = Vector2.Zero;
         projectileManager.Clear();
+        upperMap?.OnRoomEntered(roomManager.CurrentRoom.Name);
     }
 
     /// <summary>
@@ -221,7 +223,8 @@ public class Program : Game
             statusFont,
             inventoryData,
             selectionController,
-            new Byte.Map.LevelRepresentation(roomManager)
+            new Byte.Map.LevelRepresentation(roomManager),
+            upperMap
         );
         ICommand openInventoryCommand = new ChangeStateCommand(StateMachine, () => new InventoryState(this));
         ICommand pauseCommand = new ChangeStateCommand(StateMachine, () => new PausedState(this));
