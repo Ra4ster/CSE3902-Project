@@ -98,4 +98,20 @@
 
 ## Sprint 4
 
+- Package A (Dungeon Design & Layout)
+- [x] Level file format is now defined with doors, items, blocks, and enemies.
+  - [x] In particular, doors are given types such as "bombable" and "locked", for interactivity.
+- [] Level one is fully implemented, matching each room background and room connection as the original Zelda 1 game. See: [video](https://www.youtube.com/watch?v=ZZmz-7tF8GI). **WIP**
+- [] Added basement room with a bow inside and a ladder block to get down to it. There should also be stairs entering/exiting from it. Note: Possibly requires a new asset, as ladder is not in blockSheet. **WIP: Sprint 5**.
+- [x] Bombable walls open when a bomb is exploded next to it, which converts the door type to "blown". The door should stay blown after leaving the room and returning.
+- [x] Room state persistence: Defeated enemies and collected items stay gone when Link returns. There should be data structures inside of the managers which hold everything.
+- [x] Expose a room connectivity API which can be used in map building, so that you know which room connects to which. This includes a player tracker for where the player is.
+  - Note: This has been implemented in `LevelRepresentation`!
+
 > Other sprints are `TODO`...
+
+---
+
+# Ideas:
+
+> These are ideas to be implemented for Sprint 5. Brainstorm!
