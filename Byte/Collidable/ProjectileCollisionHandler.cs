@@ -28,7 +28,7 @@ public static class ProjectileCollisionHandler
 
         dispatcher.Register(CollidableTypes.Projectile, CollidableTypes.Door, (a, b, side) =>
         {
-            if (a is Bomb bomb && b is Door door && door.TryBlowOpen())
+            if (a is Bomb bomb && bomb.IsExploding && b is Door door && door.TryBlowOpen())
                 Program.soundManager.PlaySound("Secret");
         });
 

@@ -5,6 +5,7 @@ namespace Byte.Core.Rooms
     {
         Open,
         Locked,
+        Bombable,
         Sealed,
         Blown,
         Wall
