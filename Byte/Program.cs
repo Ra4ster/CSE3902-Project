@@ -108,6 +108,18 @@ public class Program : Game
 
     }
 
+    public void NextRoom()
+    {
+        PlaceLink(roomManager.NextRoom());
+        upperMap?.OnRoomEntered(roomManager.CurrentRoom.Name);
+    }
+
+    public void PreviousRoom()
+    {
+        PlaceLink(roomManager.PreviousRoom());
+        upperMap?.OnRoomEntered(roomManager.CurrentRoom.Name);
+    }
+
     protected override void LoadContent()
     {
         soundManager.LoadSound(Content);
@@ -161,10 +173,6 @@ public class Program : Game
         link.Velocity = Vector2.Zero;
         projectileManager.Clear();
     }
-
-    public void NextRoom() => PlaceLink(roomManager.NextRoom());
-
-    public void PreviousRoom() => PlaceLink(roomManager.PreviousRoom());
 
     /// <summary>
     /// Builds every object in the level from the roomManager, along with the commands bound to them.

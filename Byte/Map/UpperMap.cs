@@ -9,20 +9,19 @@ namespace Byte.Map
         private const int NativeTileSize = 8;
         private const int RoomSize = (int)(NativeTileSize * GameConstants.SCALE);
 
-        private static readonly Point RoomTilesStart = new(19, 108);
-        private const int TileStride = 9; 
-        private static readonly Rectangle MapBackgroundSource = new(258, 112, 128, 88);
+        private static readonly Point RoomTilesStart = new(519, 108); 
+        private const int TileStride = 9;
+        private static readonly Rectangle MapBackgroundSource = new(386, 120, 64, 64);
 
         [Flags]
         private enum DoorMask
         {
             None = 0,
-            East = 1 << 0, // 1
-            West = 1 << 1, // 2
-            South = 1 << 2, // 4
-            North = 1 << 3  // 8
+            East = 1 << 0,
+            West = 1 << 1,
+            South = 1 << 2,
+            North = 1 << 3
         }
-
 
         private static readonly int[] MaskToTileIndex =
         [
@@ -77,8 +76,8 @@ namespace Byte.Map
             int left = canvas.X + (canvas.Width - layoutWidth) / 2;
             int top = canvas.Y + (canvas.Height - layoutHeight) / 2;
 
-            mapRooms = new Dictionary<string, UpperMapRoom>(positions.Count, StringComparer.Ordinal);
-            visitedRooms = new HashSet<string>(StringComparer.Ordinal) { rep.StartingRoomName };
+            mapRooms = new Dictionary<string, UpperMapRoom>(positions.Count, StringComparer.OrdinalIgnoreCase);
+            visitedRooms = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { rep.StartingRoomName };
 
             foreach (KeyValuePair<string, Point> pair in positions)
             {
@@ -95,8 +94,9 @@ namespace Byte.Map
                 DoorMask mask = ComputeDoorMask(rep.ConnectionsOf(roomName));
                 int tileIndex = MaskToTileIndex[(int)mask];
 
+
                 Rectangle sourceRect = new(
-                    RoomTilesStart.X + tileIndex * TileStride,
+                    RoomTilesStart.X + (tileIndex * TileStride),
                     RoomTilesStart.Y,
                     NativeTileSize,
                     NativeTileSize
@@ -138,7 +138,10 @@ namespace Byte.Map
 
         private MapPlayer CreatePlayerAt(string roomName)
         {
-            Rectangle roomBounds = mapRooms[roomName].Bounds;
+            if (!mapRooms.TryGetValue(roomName, out UpperMapRoom? room))
+                return new MapPlayer(new Rectangle(backgroundRect.Center, new Point(RoomSize / 2)), pixel);
+
+            Rectangle roomBounds = room.Bounds;
             int playerSize = RoomSize / 2;
 
             return new MapPlayer(
@@ -170,7 +173,7 @@ namespace Byte.Map
 
         private static Dictionary<string, Point> BuildRoomPositions(LevelRepresentation rep, out Point min, out Point max)
         {
-            Dictionary<string, Point> positions = new(StringComparer.Ordinal)
+            Dictionary<string, Point> positions = new(StringComparer.OrdinalIgnoreCase)
             {
                 [rep.StartingRoomName] = Point.Zero
             };
@@ -182,9 +185,17 @@ namespace Byte.Map
             min = Point.Zero;
             max = Point.Zero;
 
+            foreach (string roomName in rep.RoomNames())
+            {
+                if (!positions.ContainsKey(roomName))
+                {
+                    frontier.Enqueue(roomName);
+                }
+            }
+
             while (frontier.TryDequeue(out string? currentRoom))
             {
-                Point currentPos = positions[currentRoom];
+                Point currentPos = positions.TryGetValue(currentRoom, out Point p) ? p : Point.Zero;
 
                 foreach (RoomConnection connection in rep.ConnectionsOf(currentRoom))
                 {

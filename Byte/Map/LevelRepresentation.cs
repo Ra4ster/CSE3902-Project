@@ -16,28 +16,39 @@ namespace Byte.Map
             ArgumentNullException.ThrowIfNull(manager);
 
             StartingRoomName = manager.CurrentRoom.Name;
-            Dictionary<string, List<RoomConnection>> connections = manager.Rooms.ToDictionary(
-                room => room.Name,
-                room => room.Doors
+
+            Dictionary<string, List<RoomConnection>> connections = new(StringComparer.OrdinalIgnoreCase);
+
+            foreach (IRoom room in manager.Rooms)
+            {
+                connections[room.Name] = room.Doors
                     .Select(door => new RoomConnection(door.TargetRoom, door.doorDirection))
-                    .ToList(),
-                StringComparer.Ordinal);
+                    .ToList();
+            }
 
             foreach ((string roomName, List<RoomConnection> roomConnections) in connections.ToArray())
             {
                 foreach (RoomConnection connection in roomConnections.ToArray())
                 {
+                    if (string.IsNullOrEmpty(connection.TargetRoom))
+                        continue;
+
                     RoomConnection reverse = new(roomName, Opposite(connection.Direction));
-                    List<RoomConnection> targetConnections = connections[connection.TargetRoom];
-                    if (!targetConnections.Contains(reverse))
-                        targetConnections.Add(reverse);
+
+                    if (connections.TryGetValue(connection.TargetRoom, out List<RoomConnection>? targetConnections))
+                    {
+                        if (!targetConnections.Any(c => c.TargetRoom.Equals(roomName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            targetConnections.Add(reverse);
+                        }
+                    }
                 }
             }
 
             adj = connections.ToDictionary(
                 pair => pair.Key,
                 pair => pair.Value.ToArray(),
-                StringComparer.Ordinal);
+                StringComparer.OrdinalIgnoreCase);
         }
 
         public RoomConnection[] ConnectionsOf(string roomName) =>

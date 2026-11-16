@@ -15,7 +15,6 @@ namespace Byte.InventoryAndHud
         private readonly InventoryData inventory;
         private readonly SelectionController selectionController;
         private readonly LowerMap lowerMap;
-
         private readonly UpperMap upperMap;
 
         private static readonly Rectangle BoomerangSourceRect = new Rectangle(129, 3, 5, 8);
@@ -43,6 +42,7 @@ namespace Byte.InventoryAndHud
             blackPixel.SetData(new[] { Color.Black });
             mapPixel = new Texture2D(spriteSheet.GraphicsDevice, 1, 1);
             mapPixel.SetData(new[] { Color.White });
+
             lowerMap = new LowerMap(
                 level,
                 mapPixel,
@@ -52,15 +52,25 @@ namespace Byte.InventoryAndHud
                     (int)(lowerMapW * GameConstants.SCALE),
                     (int)(lowerMapH * GameConstants.SCALE)));
 
-            const int upperMapPos = 4;
-            const int upperMapW = 32;
-            const int upperMapH = 32;
+            const int upperMapX = 128;
+            const int upperMapY = 8;
+            const int upperMapW = 64;
+            const int upperMapH = 64;
+
             upperMap = new UpperMap(
                 level,
                 spriteSheet,
                 new Rectangle(
-                    (int)(upperMapPos * GameConstants.SCALE),
-                    (int)(upperMapPos * GameConstants.SCALE),
+                    (int)(upperMapX * GameConstants.SCALE),
+                    (int)(upperMapY * GameConstants.SCALE),
+                    (int)(upperMapW * GameConstants.SCALE),
+                    (int)(upperMapH * GameConstants.SCALE)));
+            upperMap = new UpperMap(
+                level,
+                spriteSheet,
+                new Rectangle(
+                    (int)(upperMapX * GameConstants.SCALE),
+                    (int)(upperMapY * GameConstants.SCALE),
                     (int)(upperMapW * GameConstants.SCALE),
                     (int)(upperMapH * GameConstants.SCALE)));
         }
@@ -131,7 +141,6 @@ namespace Byte.InventoryAndHud
             int maxContainers = inventory.MaxHalfHearts / 2;
             for (int i = 0; i < maxContainers; i++)
             {
-
                 int currentHeartValue = inventory.CurrentHalfHearts - (i * 2);
 
                 Rectangle heartRect;
@@ -158,10 +167,11 @@ namespace Byte.InventoryAndHud
             Rectangle mapBgRect = new Rectangle(258, 112, 255, 87);
             Vector2 HUDPosition = inventoryPosition + new Vector2(0, invBgRect.Height * GameConstants.SCALE);
 
-
             spriteBatch.Draw(spriteSheet, inventoryPosition, invBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
             spriteBatch.Draw(spriteSheet, HUDPosition, mapBgRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
-            upperMap.Draw(spriteBatch, (inventoryPosition + new Vector2(125f, 80f)) * GameConstants.SCALE);
+
+
+            upperMap.Draw(spriteBatch, inventoryPosition);
 
             Rectangle bSlotItem = GetItemSourceRect(selectionController.EquippedItem);
             if (bSlotItem != Rectangle.Empty)
@@ -170,9 +180,9 @@ namespace Byte.InventoryAndHud
                 spriteBatch.Draw(itemSheet, bSlotPos, bSlotItem, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
             }
 
-
             Vector2 cursorOffset = new Vector2(125f + (selectionController.CursorGridPosition.X * 24f), 45f + (selectionController.CursorGridPosition.Y * 24f));
             spriteBatch.Draw(spriteSheet, inventoryPosition + cursorOffset * GameConstants.SCALE, CursorSelectRectangle, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
+
             if (inventory.HasBoomerang)
             {
                 Vector2 drawPos = inventoryPosition + new Vector2(128f, 45f) * scaleOffset;
@@ -189,13 +199,6 @@ namespace Byte.InventoryAndHud
             {
                 Vector2 drawPos = inventoryPosition + new Vector2(176f, 45f) * scaleOffset;
                 spriteBatch.Draw(itemSheet, drawPos, BowSourceRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
-            }
-
-            Rectangle roomRect = new Rectangle(645, 117, 8, 8);
-            foreach (Point room in inventory.VisitedRooms)
-            {
-                Vector2 roomMapDrawPos = HUDPosition + new Vector2(120f + (room.X * 8f), 32f + (room.Y * 8f)) * scaleOffset;
-                spriteBatch.Draw(spriteSheet, roomMapDrawPos, roomRect, Color.White, 0f, Vector2.Zero, GameConstants.SCALE, SpriteEffects.None, 0f);
             }
         }
     }
