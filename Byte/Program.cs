@@ -404,7 +404,7 @@ public class Program : Game
     internal void DrawHud(float slideOffset)
     {
         BeginScreen();
-        inventoryGraphics!.Draw(SpritePainter!, slideOffset);
+        inventoryGraphics!.Draw(SpritePainter!, slideOffset, roomManager.CurrentRoom.Name);
         EndBatch();
     }
 
