@@ -107,6 +107,15 @@
 - [x] Room state persistence: Defeated enemies and collected items stay gone when Link returns. There should be data structures inside of the managers which hold everything.
 - [x] Expose a room connectivity API which can be used in map building, so that you know which room connects to which. This includes a player tracker for where the player is.
   - Note: This has been implemented in `LevelRepresentation`!
+- Dungeon Items & Doors
+  - [x] Added Key, Map, Compass and Triforce to `ItemFactory` so room files can spawn them.
+  - [x] Fixed item pickup. Items go into the inventory now (the pickup event was never being fired).
+  - [x] Link doesn't start with the map and compass anymore, he has to find them.
+  - [x] Locked doors need a key. Opening one uses up a key and plays the unlock sound.
+  - [x] Bombs blow open bombable walls.
+  - [x] Grabbing the Triforce plays the fanfare and wins the game.
+  - [x] Put the items in rooms: key in `Entrance`, map in `BatRoom`, compass in `Chamber`, Triforce in `Vault`. There's also a bomb in `Hall` and a key in `DebugRoom` for testing.
+  - [ ] Compass should show where the Triforce is on the map. You can pick it up but it doesn't do anything yet. **WIP: Sprint 5**
 -Package E (Audio & Code Qualtiy)
 - [x] Sound effects based on the original: sword swing, enemy hit, enemy death, Link hurt, item pickup, key/door unlock, bomb blow-up, boss roar, low-health beep, Triforce fanfare
 - [x] Press M to mute and unmute the background music
