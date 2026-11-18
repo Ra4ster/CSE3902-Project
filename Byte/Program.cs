@@ -14,7 +14,6 @@ using Byte.Sprite;
 using Byte.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.ObjectModel;
 
 
@@ -44,10 +43,7 @@ public class Program : Game
     public GameStateMachine StateMachine { get; } = new();
     private ScreenOverlay overlay = null!;
 
-    readonly Dictionary<Keys, ICommand> keybindings = new Dictionary<Keys, ICommand>();
-    readonly Dictionary<Rectangle, ICommand> leftClickBindings = new Dictionary<Rectangle, ICommand>();
-    readonly Dictionary<Rectangle, ICommand> rightClickBindings = new Dictionary<Rectangle, ICommand>();
-
+    private readonly InputControllers inputControllers;
     private readonly IController mouseControls;
     private readonly IController kbControls;
 
@@ -65,8 +61,9 @@ public class Program : Game
 
     public Program()
     {
-        kbControls = new KeyboardController(keybindings, [Keys.E, Keys.Enter, Keys.R, Keys.H, Keys.OemOpenBrackets, Keys.OemCloseBrackets, Keys.I, Keys.P, Keys.T]);
-        mouseControls = new MouseController(leftClickBindings, rightClickBindings);
+        inputControllers = new InputControllers(CommandConstants.PressOnlyKeys);
+        kbControls = inputControllers.Keyboard;
+        mouseControls = inputControllers.Mouse;
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -182,10 +179,6 @@ public class Program : Game
     /// </summary>
     private void BuildLevel()
     {
-        keybindings.Clear();
-        leftClickBindings.Clear();
-        rightClickBindings.Clear();
-
         projectileManager = new ProjectileManager();
         LoadRooms();
 
@@ -227,101 +220,19 @@ public class Program : Game
             new Byte.Map.LevelRepresentation(roomManager),
             upperMap
         );
-        ICommand openInventoryCommand = new ChangeStateCommand(StateMachine, () => new InventoryState(this));
-        ICommand pauseCommand = new ChangeStateCommand(StateMachine, () => new PausedState(this));
-        ICommand triggerWinCommand = new TriggerWinCommand();
-        ICommand attackCommand = new AttackCommand(this, link);
-        ICommand moveUpCommand = new MoveUpCommand(this, link);
-        ICommand moveDownCommand = new MoveDownCommand(this, link);
-        ICommand moveLeftCommand = new MoveLeftCommand(this, link);
-        ICommand moveRightCommand = new MoveRightCommand(this, link);
-        ICommand quitCommand = new QuitCommand(this);
-        ICommand resetCommand = new ResetCommand(this);
-        ICommand PlayerTakeDamageCommand = new PlayerTakeDamageCommand(link);
-        ICommand nextRoomCommand = new NextRoomCommand(this);
-        ICommand previousRoomCommand = new PreviousRoomCommand(this);
-        ICommand toggleBoundingBoxesCommand = new ToggleBoundingBoxesCommand();
-        ICommand pauseMusic = new PauseMusicCommand();
-        ICommand interactWithDoorCommand = new InteractWithDoorCommand(this);
-        keybindings.Add(Keys.D0, quitCommand);
-        keybindings.Add(Keys.Q, quitCommand);
-        keybindings.Add(Keys.W, moveUpCommand);
-        keybindings.Add(Keys.S, moveDownCommand);
-        keybindings.Add(Keys.A, moveLeftCommand);
-        keybindings.Add(Keys.D, moveRightCommand);
-        keybindings.Add(Keys.Up, moveUpCommand);
-        keybindings.Add(Keys.Down, moveDownCommand);
-        keybindings.Add(Keys.Left, moveLeftCommand);
-        keybindings.Add(Keys.Right, moveRightCommand);
-        leftClickBindings.Add(GameConstants.WINDOW_SIZE, previousRoomCommand);
-        rightClickBindings.Add(GameConstants.WINDOW_SIZE, nextRoomCommand);
-        keybindings.Add(Keys.Z, attackCommand);
-        keybindings.Add(Keys.N, attackCommand);
-        keybindings.Add(Keys.R, resetCommand);
-        keybindings.Add(Keys.E, PlayerTakeDamageCommand);
-        keybindings.Add(Keys.Enter, interactWithDoorCommand);
-        keybindings.Add(Keys.OemCloseBrackets, nextRoomCommand);
-        keybindings.Add(Keys.OemOpenBrackets, previousRoomCommand);
-        keybindings.Add(Keys.H, toggleBoundingBoxesCommand);
-        keybindings.Add(Keys.M, pauseMusic);
-        keybindings.Add(Keys.I, openInventoryCommand);
-        keybindings.Add(Keys.P, pauseCommand);
-        keybindings.Add(Keys.T, triggerWinCommand);
-
-        AddProjectileCommands();
-
-    }
-
-    private void AddProjectileCommands()
-    {
-        ProjectileFactory projectileFactory = new ProjectileFactory(
-            GameAssets.Instance.LinkSheet,
-            GameAssets.Instance.BossSheet
-        );
-
-        Func<IProjectile, bool> canUse = projectile => inventoryManager!.CanUseItem(projectile);
-
-        Func<Vector2, Vector2, IProjectile?> dynamicCreateProjectile = (position, direction) =>
-        {
-            if (selectionController.EquippedItem == ItemType.Bomb && !inventoryData.HasBomb)
-            {
-                selectionController.UnequipItem();
-                return null;
-            }
-            if (selectionController.EquippedItem == ItemType.Bow && !inventoryData.HasBow)
-            {
-                selectionController.UnequipItem();
-                return null;
-            }
-
-            if (selectionController.EquippedItem == ItemType.None)
-            {
-                return null;
-            }
-
-            return selectionController.EquippedItem switch
-            {
-                ItemType.Bow => projectileFactory.CreateArrow(position, direction),
-                ItemType.Bomb => projectileFactory.CreateBomb(position),
-                ItemType.Boomerang => projectileFactory.CreateBoomerang(position, direction),
-                _ => null
-            };
-        };
-
-        ICommand useEquippedItemCommand = new UseProjectileCommand(
+        CommandConstants.Configure(
+            inputControllers,
+            this,
             link,
             projectileManager,
-            dynamicCreateProjectile,
-            canUse
+            inventoryManager!,
+            inventoryData,
+            selectionController
         );
-
-        keybindings.Add(Keys.B, useEquippedItemCommand);
     }
 
     protected override void Update(GameTime gameTime)
     {
-
-
         StateMachine.Update(gameTime);
 
         if (resetRequested)
