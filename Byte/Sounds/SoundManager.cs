@@ -8,6 +8,8 @@ namespace Byte.Sounds
 {
     public class SoundManager
     {
+        private static readonly SoundManager instance = new();
+        public static SoundManager Instance => instance;
         public SoundEffectInstance LowhealthSound { get; private set; } = null!;
 
         public Song? currentSong { get; private set; }

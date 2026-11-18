@@ -32,11 +32,11 @@ public sealed class RoomTransitionState : IGameState
     public void Enter()
     {
         fromRoom = game.Rooms.CurrentRoom;
-        linkStart = game.link.Position + Program.RoomOffset(fromRoom);
+        linkStart = game.link.Position + RoomLayout.RoomOffset(fromRoom);
 
         arrivalTile = game.Rooms.EnterDoor(door);
         toRoom = game.Rooms.CurrentRoom;
-        linkEnd = Program.LinkPositionAt(arrivalTile) + Program.RoomOffset(toRoom);
+        linkEnd = Program.LinkPositionAt(arrivalTile) + RoomLayout.RoomOffset(toRoom);
 
         scrollDirection = ScrollDirection(door.doorDirection);
         duration = IsScroll ? GameStateConstants.RoomScrollDuration : GameStateConstants.RoomFadeDuration;
@@ -68,7 +68,7 @@ public sealed class RoomTransitionState : IGameState
         float t = Progress;
         Vector2 fromShift = -scrollDirection * RoomSize(fromRoom) * t;
         Vector2 toShift = scrollDirection * RoomSize(toRoom) * (GameStateConstants.FullProgress - t);
-        Rectangle camera = game.RoomViewport(toRoom);
+        Rectangle camera = RoomLayout.RoomViewport(toRoom);
 
         DrawRoom(fromRoom, fromShift, camera);
         DrawRoom(toRoom, toShift, camera);
@@ -82,7 +82,7 @@ public sealed class RoomTransitionState : IGameState
         float t = Progress;
         bool showingOldRoom = t < GameStateConstants.HalfProgress;
         IRoom room = showingOldRoom ? fromRoom : toRoom;
-        Rectangle camera = game.RoomViewport(room);
+        Rectangle camera = RoomLayout.RoomViewport(room);
 
         DrawRoom(room, Vector2.Zero, camera);
         DrawLinkAt(showingOldRoom ? linkStart : linkEnd, camera);

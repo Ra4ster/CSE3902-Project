@@ -1,4 +1,3 @@
-using Byte.Command;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -23,6 +22,12 @@ namespace Byte.Controller
             KeyBindings.Clear();
             LeftClickBindings.Clear();
             RightClickBindings.Clear();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            Keyboard.Update(gameTime);
+            Mouse.Update(gameTime);
         }
     }
 }

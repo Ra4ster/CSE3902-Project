@@ -27,19 +27,10 @@ public static class CommandConstants
         InputControllers inputControllers,
         Program game,
         Link link,
-        ProjectileManager projectileManager,
         InventoryManager inventoryManager,
         InventoryData inventoryData,
         SelectionController selectionController)
     {
-        ArgumentNullException.ThrowIfNull(inputControllers);
-        ArgumentNullException.ThrowIfNull(game);
-        ArgumentNullException.ThrowIfNull(link);
-        ArgumentNullException.ThrowIfNull(projectileManager);
-        ArgumentNullException.ThrowIfNull(inventoryManager);
-        ArgumentNullException.ThrowIfNull(inventoryData);
-        ArgumentNullException.ThrowIfNull(selectionController);
-
         inputControllers.Clear();
         Dictionary<Keys, ICommand> keys = inputControllers.KeyBindings;
 
@@ -65,7 +56,6 @@ public static class CommandConstants
         ICommand interactWithDoor = new InteractWithDoorCommand(game);
         ICommand useEquippedItem = CreateProjectileCommand(
             link,
-            projectileManager,
             inventoryManager,
             inventoryData,
             selectionController);
@@ -100,7 +90,6 @@ public static class CommandConstants
 
     private static ICommand CreateProjectileCommand(
         Link link,
-        ProjectileManager projectileManager,
         InventoryManager inventoryManager,
         InventoryData inventoryData,
         SelectionController selectionController)
@@ -137,7 +126,6 @@ public static class CommandConstants
 
         return new UseProjectileCommand(
             link,
-            projectileManager,
             createProjectile!,
             canUse);
     }

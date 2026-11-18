@@ -1,6 +1,7 @@
 using Byte.Command;
 using Byte.Controller;
 using Byte.Player;
+using Byte.Rooms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -92,13 +93,13 @@ public sealed class WinState : IGameState
     private void FillRoom(SpriteBatch spriteBatch, Color color)
     {
         game.BeginScreen();
-        game.Overlay.Fill(spriteBatch, game.RoomViewport(game.Rooms.CurrentRoom), color);
+        game.Overlay.Fill(spriteBatch, RoomLayout.RoomViewport(game.Rooms.CurrentRoom), color);
         game.EndBatch();
     }
 
     private void DrawCurtains(SpriteBatch spriteBatch, float progress)
     {
-        Rectangle room = game.RoomViewport(game.Rooms.CurrentRoom);
+        Rectangle room = RoomLayout.RoomViewport(game.Rooms.CurrentRoom);
         int panelWidth = (int)Math.Ceiling(room.Width * CurtainHalf * progress);
 
         game.BeginScreen();

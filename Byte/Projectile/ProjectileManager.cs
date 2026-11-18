@@ -7,6 +7,8 @@ namespace Byte.Projectile;
 // holds every projectile currently in the world and removes them once they expire
 public class ProjectileManager
 {
+    private static readonly ProjectileManager instance = new();
+    public static ProjectileManager Instance => instance;
     private readonly Collection<IProjectile> projectiles = new Collection<IProjectile>();
 
     public Collection<IProjectile> Projectiles => projectiles;

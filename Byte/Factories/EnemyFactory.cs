@@ -20,18 +20,13 @@ namespace Byte.Factory
 
     public class EnemyFactory : IFactory<EnemyFactoryData, AbstractEnemy>
     {
-        private readonly ProjectileManager projectileManager;
-        public EnemyFactory(ProjectileManager projectileManager)
-        {
-            this.projectileManager = projectileManager;
-        }
 
         public AbstractEnemy Create(EnemyFactoryData data)
         {
             if (!Enum.TryParse(data.Type, ignoreCase: true, out EnemyType type) || !Enum.IsDefined(type))
                 throw new InvalidDataException($"Unknown enemy type '{data.Type}'.");
 
-            return CreateEnemy(type, data.Position, projectileManager,
+            return CreateEnemy(type, data.Position,
                 data.Path, data.Speed, data.FrameDuration, data.WaitDuration, data.Scale);
         }
 
@@ -43,15 +38,12 @@ namespace Byte.Factory
         public static AbstractEnemy CreateEnemy(
             EnemyType type,
             Vector2 at,
-            ProjectileManager? projectileManager = null, // Should remove eventually; decoupling
             Vector2[]? path = null, // Should not be necessary anymore.
             float? speed = null,
             float? frameDuration = null,
             float? waitDuration = null,
             float? scale = null)
         {
-            if (type is EnemyType.Goriya or EnemyType.Aquamentus)
-                _ = RequireProjectileManager(projectileManager, type);
 
             Texture2D enemyTex = GameAssets.Instance.EnemySheet;
             Texture2D bossTex = GameAssets.Instance.BossSheet;
@@ -75,19 +67,17 @@ namespace Byte.Factory
             ProjectileFactory? projectileFactory = null;
             Action<Vector2, Vector2> spawnFireball = (fireballPosition, direction) =>
             {
-                ProjectileManager manager = RequireProjectileManager(projectileManager, type);
                 ProjectileFactory factory = projectileFactory ??=
                     new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
-                manager.Add(factory.CreateFireball(fireballPosition, direction));
+                ProjectileManager.Instance.Add(factory.CreateFireball(fireballPosition, direction));
             };
 
             Func<Vector2, Vector2, IProjectile> throwBoomerang = (boomerangPosition, direction) =>
             {
-                ProjectileManager manager = RequireProjectileManager(projectileManager, type);
                 ProjectileFactory factory = projectileFactory ??=
                     new ProjectileFactory(GameAssets.Instance.LinkSheet, bossTex);
                 IProjectile thrown = factory.CreateBoomerang(boomerangPosition, direction);
-                manager.Add(thrown);
+                ProjectileManager.Instance.Add(thrown);
                 return thrown;
             };
 
@@ -133,9 +123,5 @@ namespace Byte.Factory
 
             return Array.ConvertAll(offsets, offset => at + offset);
         }
-
-        private static ProjectileManager RequireProjectileManager(ProjectileManager? projectileManager, EnemyType type) =>
-            projectileManager ?? throw new ArgumentNullException(
-                nameof(projectileManager), $"{type} requires a projectile manager.");
     }
 }

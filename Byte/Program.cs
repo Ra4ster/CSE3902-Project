@@ -30,10 +30,9 @@ public class Program : Game
     public static bool DrawBoundingBoxes { get; set; } = false;
     public Link link = null!;
     public ISprite? linkSprite;
-    private ProjectileManager projectileManager = new ProjectileManager();
     private RoomManager roomManager = null!;
     private readonly CollisionDispatcher dispatcher = new();
-    private Door? pendingDoor;
+    private CollisionSystem collisionSystem = null!;
     public static BoundingBoxDrawer BoundingBoxDrawer = null!;
     private SpriteBatch? SpritePainter { get; set; }
     private DrawSystem drawSystem = null!;
@@ -44,10 +43,8 @@ public class Program : Game
     private ScreenOverlay overlay = null!;
 
     private readonly InputControllers inputControllers;
-    private readonly IController mouseControls;
-    private readonly IController kbControls;
 
-    public static SoundManager soundManager = new SoundManager();
+    public static SoundManager soundManager = SoundManager.Instance;
 
     private bool resetRequested = false;
 
@@ -62,8 +59,6 @@ public class Program : Game
     public Program()
     {
         inputControllers = new InputControllers(CommandConstants.PressOnlyKeys);
-        kbControls = inputControllers.Keyboard;
-        mouseControls = inputControllers.Mouse;
 
         graphicsDeviceManager = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -148,18 +143,11 @@ public class Program : Game
             .Select(path => RoomLoader.GetRoomData(Path.Combine("Content", "Rooms", Path.GetFileName(path))))
             .ToArray();
 
-        EnemyFactory enemyFactory = new EnemyFactory(projectileManager);
+        EnemyFactory enemyFactory = new EnemyFactory();
         BlockFactory blockFactory = new BlockFactory(GameAssets.Instance.BlockSheet);
         ItemFactory itemFactory = new ItemFactory();
         roomManager = new RoomManager(rooms, enemyFactory, blockFactory, itemFactory);
 
-        foreach (IRoom room in roomManager.Rooms)
-            foreach (Door door in room.Doors)
-                door.Properties.OnCollide = _ =>
-                {
-                    if (door.CanEnter)
-                        pendingDoor = door;
-                };
     }
 
     // Link's position is his origin, not the top-left of his hitbox.
@@ -169,7 +157,7 @@ public class Program : Game
     {
         link.CorrectPosition(LinkPositionAt(tileTopLeft));
         link.Velocity = Vector2.Zero;
-        projectileManager.Clear();
+        ProjectileManager.Instance.Clear();
         upperMap?.OnRoomEntered(roomManager.CurrentRoom.Name);
 
     }
@@ -179,9 +167,7 @@ public class Program : Game
     /// </summary>
     private void BuildLevel()
     {
-        projectileManager = new ProjectileManager();
         LoadRooms();
-
         LevelRepresentation levelRep = new LevelRepresentation(roomManager);
 
         upperMap = new UpperMap(
@@ -199,16 +185,17 @@ public class Program : Game
         inventoryData = new InventoryData();
         inventoryManager = new InventoryManager(inventoryData, selectionController);
 
-        pendingDoor = null;
         Vector2 linkPos = LinkPositionAt(roomManager.CurrentRoom.PlayerSpawnPosition);
         link = new Link(linkPos, new StaticSprite(
             GameAssets.Instance.LinkSheet, linkPos,
             Color.White, new Rectangle(1, 11, 16, 16), 6.0f),
             SpritePainter!, GameAssets.Instance.LinkSheet,
-            mouseControls, kbControls);
+            inputControllers.Mouse, inputControllers.Keyboard);
 
         link.sourceRects = new Collection<Rectangle>(
             Enumerable.Repeat(Rectangle.Empty, LINK_SOURCE_RECT_COUNT).ToList());
+
+        collisionSystem = new CollisionSystem(roomManager.Rooms, link, dispatcher);
 
         selectionController = new SelectionController(inventoryData);
         inventoryGraphics = new InventoryAndHUDGraphics(
@@ -224,7 +211,6 @@ public class Program : Game
             inputControllers,
             this,
             link,
-            projectileManager,
             inventoryManager!,
             inventoryData,
             selectionController
@@ -247,8 +233,7 @@ public class Program : Game
 
     internal void UpdateGameplayInput(GameTime gameTime)
     {
-        kbControls.Update(gameTime);
-        mouseControls.Update(gameTime);
+        inputControllers.Update(gameTime);
     }
 
     internal void InteractWithDoor()
@@ -272,10 +257,12 @@ public class Program : Game
 
     internal void UpdateWorld(GameTime gameTime)
     {
-        projectileManager.Update(gameTime);
+        ProjectileManager.Instance.Update(gameTime);
         roomManager.Update(gameTime);
         link.Update(gameTime);
-        ProcessCollisions();
+        Door? door = collisionSystem.ProcessCollisions(roomManager.CurrentRoom);
+        if (door is not null)
+            StateMachine.ChangeState(new RoomTransitionState(this, door));
         selectionController.Update();
         soundManager.Update();
         base.Update(gameTime);
@@ -296,11 +283,11 @@ public class Program : Game
 
     internal void DrawScene(Vector2 cameraOffset)
     {
-        BeginWorld(RoomOffset(roomManager.CurrentRoom) + cameraOffset);
+        BeginWorld(RoomLayout.RoomOffset(roomManager.CurrentRoom) + cameraOffset);
 
         drawSystem.DrawRoom(roomManager.CurrentRoom);
         drawSystem.DrawLink(link);
-        projectileManager.Draw(SpritePainter!);
+        ProjectileManager.Instance.Draw(SpritePainter!);
         if (DrawBoundingBoxes)
         {
             BoundingBoxDrawer.Draw(SpritePainter!, link.BoundingBox, Color.Red);
@@ -310,10 +297,8 @@ public class Program : Game
             foreach (ICollidable collidable in roomManager.CurrentRoom.Collidables)
                 BoundingBoxDrawer.Draw(SpritePainter!, collidable.BoundingBox, BoundingBoxColor(collidable));
 
-            foreach (ICollidable projectile in projectileManager.Projectiles)
-            {
+            foreach (ICollidable projectile in ProjectileManager.Instance.Projectiles)
                 BoundingBoxDrawer.Draw(SpritePainter!, projectile.BoundingBox, Color.Cyan);
-            }
         }
 
         const float stringScale = 1.5f;
@@ -327,7 +312,7 @@ public class Program : Game
 
     internal void DrawLink(Vector2 cameraOffset)
     {
-        drawSystem.DrawLink(link, link.Position + RoomOffset(roomManager.CurrentRoom) + cameraOffset);
+        drawSystem.DrawLink(link, link.Position + RoomLayout.RoomOffset(roomManager.CurrentRoom) + cameraOffset);
     }
 
     internal void DrawLinkAt(Vector2 worldPosition, Rectangle clip) =>
@@ -335,7 +320,7 @@ public class Program : Game
 
     internal void DrawRoom(IRoom room, Vector2 shift, Rectangle clip)
     {
-        BeginWorld(RoomOffset(room) + shift, clip);
+        BeginWorld(RoomLayout.RoomOffset(room) + shift, clip);
         drawSystem.DrawRoom(room);
         EndBatch();
     }
@@ -353,93 +338,6 @@ public class Program : Game
     internal void BeginScreen() => BeginWorld(Vector2.Zero);
 
     internal void EndBatch() => drawSystem.EndBatch();
-
-    internal Rectangle RoomViewport(IRoom room)
-    {
-#pragma warning disable S109 // Magic numbers should not be used
-        Vector2 offset = RoomOffset(room);
-        int frameMargin = 2 * (int)RoomGrid.TILE_WORLD_SIZE;
-        return new Rectangle(
-            (int)offset.X - frameMargin,
-            (int)offset.Y - frameMargin,
-            room.Bounds.Width + 2 * frameMargin,
-            room.Bounds.Height + 2 * frameMargin);
-#pragma warning restore S109 // Magic numbers should not be used
-    }
-
-    private void ProcessCollisions()
-    {
-        IRoom room = roomManager.CurrentRoom;
-
-        // Resolve barriers first, so body and sword contacts use the corrected position.
-        foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
-            DispatchCollisions(new Collection<ICollidable> { link, block });
-        Vector2 roomOffset = RoomOffset(room);
-        Rectangle visibleWorldBounds = new(
-            (int)-roomOffset.X,
-            (int)-roomOffset.Y,
-            GameConstants.WINDOW_SIZE.Width,
-            GameConstants.WINDOW_SIZE.Height);
-        LinkCollisionHandler.ClampToRoom(link, visibleWorldBounds);
-        LinkCollisionHandler.ClampToRoom(link, room.Bounds, room.Doors);
-
-        foreach (ICollidable block in room.Blocks.OfType<ICollidable>())
-        {
-            foreach (IProjectile projectile in projectileManager.Projectiles)
-                DispatchCollisions(new Collection<ICollidable> { projectile, block });
-            foreach (ICollidable enemy in room.Enemies)
-                DispatchCollisions(new Collection<ICollidable> { enemy, block });
-        }
-
-        foreach (Bomb bomb in projectileManager.Projectiles.OfType<Bomb>())
-        {
-            if (!bomb.IsExploding)
-                continue;
-
-            foreach (Door bombableDoor in room.Doors)
-            {
-                if (bomb.BoundingBox.Intersects(bombableDoor.InteractionBounds(room.Bounds)) &&
-                    bombableDoor.TryBlowOpen())
-                    soundManager.PlaySound("Secret");
-            }
-        }
-
-        var collidables = new List<ICollidable> { link };
-        collidables.AddRange(room.Enemies);
-        collidables.AddRange(room.Items);
-        collidables.AddRange(room.Doors);
-        collidables.AddRange(projectileManager.Projectiles);
-
-        link.Sword.Update(link);
-        if (!link.Sword.BoundingBox.IsEmpty)
-            collidables.Add(link.Sword);
-        DispatchCollisions(collidables);
-
-        // Switch rooms after dispatch so handlers don't see a half-swapped room.
-        if (pendingDoor is Door door)
-        {
-            pendingDoor = null;
-            StateMachine.ChangeState(new RoomTransitionState(this, door));
-        }
-    }
-
-    private void DispatchCollisions(IReadOnlyList<ICollidable> collidables)
-    {
-        var detector = new CollisionDetector();
-        foreach (var collision in detector.DetectCollisions(collidables))
-            dispatcher.Dispatch(collision.A, collision.B, collision.Side);
-    }
-
-    internal static Vector2 RoomOffset(IRoom room)
-    {
-        Rectangle bounds = room.Bounds;
-        const float dbl = 2f;
-        float playHeight = GameConstants.WINDOW_SIZE.Height - InventoryAndHUDGraphics.HudHeight;
-        return new Vector2(
-            (GameConstants.WINDOW_SIZE.Width - bounds.Width) / dbl,
-            InventoryAndHUDGraphics.HudHeight + Math.Max(0f, (playHeight - bounds.Height) / dbl)
-        );
-    }
 
     private static Color BoundingBoxColor(ICollidable collidable)
     {

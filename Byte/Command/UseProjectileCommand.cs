@@ -15,7 +15,6 @@ namespace Byte.Command
         private const float SPAWN_DISTANCE = 60f;
 
         private readonly Link player;
-        private readonly ProjectileManager projectileManager;
         private readonly Func<IProjectile, bool> canUseItemCallback;
         private readonly Func<Vector2, Vector2, IProjectile> createProjectile;
 
@@ -25,12 +24,10 @@ namespace Byte.Command
         // createProjectile takes a spawn position and a screen-space direction
         public UseProjectileCommand(
                     Link link,
-                    ProjectileManager projectileManager,
                     Func<Vector2, Vector2, IProjectile> createProjectile,
                     Func<IProjectile, bool> canUseItemCallback)
         {
             player = link;
-            this.projectileManager = projectileManager;
             this.createProjectile = createProjectile;
             this.canUseItemCallback = canUseItemCallback;
         }
@@ -59,7 +56,7 @@ namespace Byte.Command
 
             lastUsed = gameTime.TotalGameTime;
             player.UseItem();
-            projectileManager.Add(createdProjectile);
+            ProjectileManager.Instance.Add(createdProjectile);
 
             OnProjectileFired!.Invoke(createdProjectile);
         }
