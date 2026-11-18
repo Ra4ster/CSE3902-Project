@@ -73,8 +73,8 @@ namespace Byte.Core.Rooms
             {
                 DoorDirection.North => new Vector2(-tileSize + GameConstants.SCALE, -half * tileSize),
                 DoorDirection.South => new Vector2(-tileSize + GameConstants.SCALE, tileSize),
-                DoorDirection.East => new Vector2(tileSize + 1, -tileSize / half),
-                DoorDirection.West => new Vector2(-half * tileSize + GameConstants.SCALE - 1, -tileSize / half),
+                DoorDirection.East => new Vector2(tileSize + GameConstants.SCALE, -tileSize / half),
+                DoorDirection.West => new Vector2(-half * tileSize + GameConstants.SCALE, -tileSize / half),
                 _ => Vector2.Zero
             });
         }

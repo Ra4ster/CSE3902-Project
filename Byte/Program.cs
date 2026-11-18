@@ -28,7 +28,7 @@ public class Program : Game
     private const int LINK_SOURCE_RECT_COUNT = 10;
     private const int HALF_HEARTS_PER_HEART = 2;
 
-    public static bool DrawBoundingBoxes { get; set; } = true;
+    public static bool DrawBoundingBoxes { get; set; } = false;
     public Link link = null!;
     public ISprite? linkSprite;
     private ProjectileManager projectileManager = new ProjectileManager();
@@ -125,7 +125,7 @@ public class Program : Game
     {
         soundManager.LoadSound(Content);
         GameAssets.Load(Content);
-        statusFont = Content.Load<SpriteFont>("Roboto");
+        statusFont = Content.Load<SpriteFont>("NES");
         SpritePainter = new SpriteBatch(GraphicsDevice);
         drawSystem = new DrawSystem(GraphicsDevice, SpritePainter);
         BoundingBoxDrawer = new BoundingBoxDrawer(GraphicsDevice);
@@ -193,7 +193,7 @@ public class Program : Game
 
         upperMap = new UpperMap(
         levelRep,
-        GameAssets.Instance.InventorySheet,               
+        GameAssets.Instance.InventorySheet,
         new Rectangle(
         (int)(4f * GameConstants.SCALE),
         (int)(4f * GameConstants.SCALE),

@@ -115,8 +115,10 @@ public sealed class WinState : IGameState
             GameStateConstants.WinTitleColor, GameStateConstants.TitleTextScale);
         _ = game.Overlay.DrawCenteredText(spriteBatch, GameStateConstants.WinSubtitleText,
             GameStateConstants.CenterY + GameStateConstants.LineSpacing, Color.White, GameStateConstants.TextScale);
-        _ = game.Overlay.DrawCenteredText(spriteBatch, GameStateConstants.WinHintText,
+        _ = game.Overlay.DrawCenteredText(spriteBatch, GameStateConstants.WinHintText1,
             GameStateConstants.CenterY + GameStateConstants.LineSpacing * HintLine, Color.White, GameStateConstants.TextScale);
+        _ = game.Overlay.DrawCenteredText(spriteBatch, GameStateConstants.WinHintText2,
+            GameStateConstants.CenterY + GameStateConstants.LineSpacing * (HintLine + 1), Color.White, GameStateConstants.TextScale);
         game.EndBatch();
     }
 }

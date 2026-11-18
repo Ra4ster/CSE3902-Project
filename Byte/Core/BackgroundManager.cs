@@ -9,7 +9,7 @@ namespace Byte
     {
         private BackgroundManager() {/* Eager Singleton */}
 
-        private const int START_X = 1;
+        private const int START_X = 0;
         private const int START_Y = 192;
         private const int WIDTH = 192;
         private const int HEIGHT = 112;
@@ -39,9 +39,7 @@ namespace Byte
                     CultureInfo.InvariantCulture,
                     out int roomNum) ||
                 roomNum < 1)
-            {
                 throw new KeyNotFoundException($"No room texture is named {bgName}");
-            }
 
             int roomIndex = roomNum - 1;
             int column = roomIndex % COLUMNS;
@@ -62,10 +60,8 @@ namespace Byte
             Texture2D blockSheet = GameAssets.Instance.BlockSheet;
             if (box.Left < 0 || box.Top < 0 ||
                 box.Right > blockSheet.Width || box.Bottom > blockSheet.Height)
-            {
                 throw new InvalidDataException(
                     $"Background '{bgName}' maps outside the block sheet ({blockSheet.Width}x{blockSheet.Height}).");
-            }
 
             painter.Draw(blockSheet, Vector2.Zero, box, Color.White, 0f, Vector2.Zero, SCALE_VEC, SpriteEffects.None, 0f);
         }

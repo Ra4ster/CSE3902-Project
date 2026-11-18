@@ -5,7 +5,7 @@ namespace Byte.States;
 public static class GameStateConstants
 {
     public const float TextScale = 1.75f;
-    public const float TitleTextScale = 3.0f;
+    public const float TitleTextScale = 2.0f;
     public static readonly float CenterY = GameConstants.WINDOW_SIZE.Height * 0.5f;
     public const float LineSpacing = 110f;
     public const float FullProgress = 1f;
@@ -40,6 +40,7 @@ public static class GameStateConstants
     public static readonly Color WinFlashColor = Color.White;
     public const string WinTitleText = "YOU GOT THE TRIFORCE!";
     public const string WinSubtitleText = "LEVEL 1 COMPLETE";
-    public const string WinHintText = "PRESS ENTER TO PLAY AGAIN";
+    public const string WinHintText1 = "PRESS ENTER TO";
+    public const string WinHintText2 = "PLAY AGAIN";
     public static readonly Color WinTitleColor = Color.Gold;
 }
