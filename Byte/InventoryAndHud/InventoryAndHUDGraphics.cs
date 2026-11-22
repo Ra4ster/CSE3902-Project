@@ -71,12 +71,12 @@ namespace Byte.InventoryAndHud
             LevelRepresentation level,
             UpperMap upperMap)
         {
-            this.itemSheet = itemSheet ?? throw new ArgumentNullException(nameof(itemSheet));
-            this.spriteSheet = spriteSheet ?? throw new ArgumentNullException(nameof(spriteSheet));
-            this.font = font ?? throw new ArgumentNullException(nameof(font));
-            this.inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
-            this.selectionController = selectionController ?? throw new ArgumentNullException(nameof(selectionController));
-            this.upperMap = upperMap ?? throw new ArgumentNullException(nameof(upperMap));
+            this.itemSheet = itemSheet;
+            this.spriteSheet = spriteSheet;
+            this.font = font;
+            this.inventory = inventory;
+            this.selectionController = selectionController;
+            this.upperMap = upperMap;
 
             GraphicsDevice device = this.spriteSheet.GraphicsDevice;
             blackPixel = CreateSolidPixel(device, Color.Black);
